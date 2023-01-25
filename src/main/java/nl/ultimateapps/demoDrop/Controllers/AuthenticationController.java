@@ -31,12 +31,12 @@ public class AuthenticationController {
     @Setter
     private  JwtUtil jwtUtil;
 
-    @GetMapping(value = "/authenticated")
+    @GetMapping(value = "/authenticated") // test route for authenticated users???
     public ResponseEntity<Object> authenticated(Authentication authentication, Principal principal) {
         return ResponseEntity.ok().body(principal);
     }
 
-    @PostMapping(value = "/authenticate")
+    @PostMapping(value = "/authenticate") // login a user
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         String username = authenticationRequest.getUsername();
         String password = authenticationRequest.getPassword();

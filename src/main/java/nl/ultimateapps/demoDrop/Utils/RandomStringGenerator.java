@@ -15,6 +15,5 @@ public class RandomStringGenerator {
                 .toString();
         return generatedString;
     }
-
 }
 

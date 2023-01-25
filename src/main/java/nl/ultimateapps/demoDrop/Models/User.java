@@ -45,17 +45,23 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
+
     @Getter
     @Setter
     private Set<Authority> authorities = new HashSet<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
     private List<Demo> demos;
+
     @OneToMany(mappedBy = "interestedUser", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
     private List<Conversation> conversationsAsInterestedParty;
+
+    @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.DETACH)
+    private List<Demo> favoriteDemos;
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);
@@ -64,7 +70,5 @@ public class User {
     public void removeAuthority(Authority authority) {
         this.authorities.remove(authority);
     }
+
 }
-
-
-

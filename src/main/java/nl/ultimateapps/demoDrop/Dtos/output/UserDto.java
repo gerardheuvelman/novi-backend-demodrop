@@ -1,36 +1,54 @@
 package nl.ultimateapps.demoDrop.Dtos.output;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import nl.ultimateapps.demoDrop.Models.Authority;
+import java.util.List;
 import java.util.Set;
 import lombok.*;
-
+import nl.ultimateapps.demoDrop.Models.Conversation;
+import nl.ultimateapps.demoDrop.Models.Demo;
 
 public class UserDto {
 
     @Getter
     @Setter
-    public String username;
+    private Long DemoId;
 
     @Getter
     @Setter
-    public String password;
+    private String username;
 
     @Getter
     @Setter
-    public Boolean enabled;
+    private String password;
 
     @Getter
     @Setter
-    public String apikey;
+    private boolean enabled;
 
     @Getter
     @Setter
-    public String email;
+    private String apikey;
 
-    //Relationships
-    @JsonSerialize
     @Getter
     @Setter
-    public Set<Authority> authorities;
+    private String email;
+
+    //Relationships:
+    @Getter
+    @Setter
+    private Set<Authority> authorities;
+
+    @JsonIncludeProperties({"title"})
+    @Getter
+    private List<Demo> demos;
+
+    @JsonIgnore
+    @Getter
+    private List<Conversation> conversationsAsInterestedParty;
+
+    @JsonIgnore
+    @Getter
+    private List<Demo> favoriteDemos;
 }

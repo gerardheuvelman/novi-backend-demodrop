@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import lombok.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/conversations")
 @AllArgsConstructor
@@ -45,7 +46,7 @@ public class ConversationController {
     @PutMapping("/{id}")
     public ResponseEntity<String> putConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
         long updatedConversationId = service.updateConversation(id, conversationDto);
-        return ResponseEntity.ok("CI module " + updatedConversationId + " was updated successfully");
+        return ResponseEntity.ok("Conversation " + updatedConversationId + " was updated successfully");
     }
 
     //Patch mapping (werkt het alleen met het veld "body"):
@@ -55,7 +56,13 @@ public class ConversationController {
         return ResponseEntity.ok("Conversation" + partiallyUpdatedConversationId + " was partially updated successfully");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("")
+    public ResponseEntity<String> deleteConversations() {
+        long numDeletedConversations = service.deleteConversations();
+        return ResponseEntity.ok(numDeletedConversations + " conversatinos deleted successfully.");
+    }
+
+        @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteConversation(@PathVariable long id) {
         long deletedConversation = service.deleteConversation(id);
         return ResponseEntity.ok("Conversation "+ deletedConversation + " was deleted successfully.");

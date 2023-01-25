@@ -1,7 +1,11 @@
 package nl.ultimateapps.demoDrop.Controllers;
 
+import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
+import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
+import nl.ultimateapps.demoDrop.Services.ConversationService;
+import nl.ultimateapps.demoDrop.Services.DemoService;
 import nl.ultimateapps.demoDrop.Services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +24,14 @@ public class UserController {
     @Getter
     @Setter
     private UserService userService;
+
+    @Getter
+    @Setter
+    private DemoService demoservice;
+
+    @Getter
+    @Setter
+    private ConversationService conversationService;
 
     @GetMapping(value = "")
     public ResponseEntity<List<UserDto>> getUsers() {
@@ -74,5 +86,17 @@ public class UserController {
     public ResponseEntity<Object> deleteUserAuthority(@PathVariable("username") String username, @PathVariable("authority") String authority) {
         userService.removeAuthority(username, authority);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = "/{username}/demos")
+    public ResponseEntity<List<DemoDto>> getDemosForUser(@PathVariable("username") String username) {
+        List<DemoDto> demoDtos = demoservice.getPersonalDemos(username);
+        return ResponseEntity.ok().body(demoDtos);
+    }
+
+    @GetMapping(value = "/{username}/conversations")
+    public ResponseEntity<List<ConversationDto>> getConversationsForUser(@PathVariable("username") String username) {
+        List<ConversationDto> conversationDtos = conversationService.getPersonalConversations(username);
+        return ResponseEntity.ok().body(conversationDtos);
     }
 }

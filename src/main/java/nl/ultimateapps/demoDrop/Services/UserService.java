@@ -1,9 +1,8 @@
 package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
-import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
-import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
+import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
 import nl.ultimateapps.demoDrop.Models.User;
 import nl.ultimateapps.demoDrop.Repositories.UserRepository;
@@ -34,7 +33,7 @@ public class UserService {
         List<UserDto> collection = new ArrayList<>();
         List<User> list = userRepository.findAll();
         for (User user : list) {
-            collection.add(fromUser(user));
+            collection.add(UserMapper.mapToDto(user));
         }
         return collection;
     }
@@ -43,7 +42,7 @@ public class UserService {
         UserDto dto = new UserDto();
         Optional<User> user = userRepository.findById(username);
         if (user.isPresent()){
-            dto = fromUser(user.get());
+            dto = UserMapper.mapToDto(user.get());
         }else {
             throw new UsernameNotFoundException(username);
         }
@@ -79,7 +78,7 @@ public class UserService {
     public Set<Authority> getAuthorities(String username) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        UserDto userDto = fromUser(user);
+        UserDto userDto = UserMapper.mapToDto(user);
         return userDto.getAuthorities();
     }
 
@@ -99,18 +98,6 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public static UserDto fromUser(User user){
-
-        var dto = new UserDto();
-        dto.username = user.getUsername();
-        dto.password = user.getPassword();
-        dto.enabled = user.isEnabled();
-        dto.apikey = user.getApikey();
-        dto.email = user.getEmail();
-        dto.authorities = user.getAuthorities();
-        return dto;
-    }
-
     public User toUser(UserDto userDto) { // niet alle velden zijn meegenomen . Allenede velden die je meerstuurt bij het creeren vn ene gebruiker.
 
         var user = new User();
@@ -127,9 +114,9 @@ public class UserService {
         if (userDto.getPassword() != null) {
             user.setPassword(userDto.getPassword());
         }
-        if (userDto.getEnabled() != null) {
-            user.setEnabled(userDto.getEnabled());
-        }
+
+        user.setEnabled(userDto.isEnabled());
+
         if (userDto.getApikey() != null) {
             user.setApikey(userDto.getApikey());
         }
@@ -140,5 +127,13 @@ public class UserService {
             user.setAuthorities(userDto.getAuthorities());
         }
         return user;
+    }
+
+    public void addAuthorityToUser(Authority authority, User user) {
+        user.addAuthority(authority);
+    }
+
+    public void removeAuthorityFromUser(Authority authority, User user) {
+        user.removeAuthority(authority);
     }
 }

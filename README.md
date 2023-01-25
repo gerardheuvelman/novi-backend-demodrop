@@ -21,6 +21,7 @@ DemoDrop offers the following functionality:
 Steps below are only to install and deploy this (back end) portion of the Demo Drop Web application. You must also install and run the front-end project, which can be found at www.github.com/......
 
 Prerequisites:
+- OS: Windows, MacOS or Linux.
 - Java JDK 17 or higher needs to be installed on your system
 - PostgreSQL must be installed on your system. Also
 - PGAdmin 4 (or higher) must be also be installed.
@@ -33,3 +34,8 @@ Installation steps:
 4. install dependencies by typing "mvn install" in a terminal window
 5. Open the file application.properties. In this file, enter your PgAdmin credentials at the dotted lines. Now save this file.
 5. Run the project.
+
+Initial configuration:  (!!!IMPORTANT!!!)
+1. Log in using username "admin" and password "admin". You will be redirected to the Admin Control Panel (ACP)
+2. Create a new admin account. with a strong password
+3. Delete the user "admin"

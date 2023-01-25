@@ -3,6 +3,8 @@ package nl.ultimateapps.demoDrop.Models;
 import javax.persistence.*;
 import java.util.Date;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 @Entity
 @AllArgsConstructor
@@ -11,9 +13,17 @@ public class Conversation {
 
     @Id
     @GeneratedValue
+    @GenericGenerator(
+            name = "sequence-generator",
+            strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+            parameters = {
+                    @Parameter(name = "sequence_name", value = "user_sequence"),
+                    @Parameter(name = "initial_value", value = "2004"),
+                    @Parameter(name = "increment_size", value = "1")
+            }
+    )
     @Getter
-    @Setter
-    private Long id;
+    private Long ConversationId;
 
     @Getter
     @Setter

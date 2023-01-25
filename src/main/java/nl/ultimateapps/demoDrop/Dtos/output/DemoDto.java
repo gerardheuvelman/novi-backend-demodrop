@@ -1,10 +1,12 @@
 package nl.ultimateapps.demoDrop.Dtos.output;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import nl.ultimateapps.demoDrop.Models.Conversation;
+import nl.ultimateapps.demoDrop.Models.*;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import lombok.*;
@@ -13,15 +15,19 @@ import lombok.*;
 @NoArgsConstructor
 public class DemoDto {
 
-    @NotNull
-    @Size(min = 2, max = 120)
     @Getter
     @Setter
-    private String title;
+    private Long DemoId;
 
     @Getter
     @Setter
     private Date createdDate;
+
+//    @NotNull // MOET VALIDATIE HIER OF IN DE MODEL KLASSE? (ik denk hier in de DTO)
+//    @Size(min = 2, max = 120)
+    @Getter
+    @Setter
+    private String title;
 
     @Getter
     @Setter
@@ -29,13 +35,30 @@ public class DemoDto {
 
     @Getter
     @Setter
-    private String audiofileUrl;
+    private Double BPM;
 
-    // Relationships
-    //    @JsonIgnore // OPTIONEEL, maar wel geadviseerd om de datasize klein te houden. Let ook op dat je recursie vermijdt!!
-    @JsonIncludeProperties({"id", "subject"})
+    //Relationships:
+    @Getter
+    @Setter
+    private File file;
+
+    @Getter
+    @Setter
+    private Genre genre;
+
+    // Relationships:
+    @JsonIncludeProperties({"username"})
+    @Getter
+    @Setter
+    private User user;
+
+    @JsonIgnore
     @Getter
     @Setter
     private List<Conversation> conversations;
-}
 
+    @JsonIgnore
+    @Getter
+    @Setter
+    private List<User> favoriteOfUsers;
+}

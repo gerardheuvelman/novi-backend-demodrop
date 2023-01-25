@@ -49,24 +49,49 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
 
-                .antMatchers(HttpMethod.GET,"/users", "/users/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.POST, "/users", "/users/**").permitAll()
-                .antMatchers(HttpMethod.PUT, "/users", "/users/**").hasRole("ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/users", "/users/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.GET,"/users/**").authenticated()  // FOR PROFILE PAGE
+                .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
+                .antMatchers(HttpMethod.PUT, "/users/**").authenticated() // EDIT PROFILE
+                .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE YOUR ACCOUNT
 
-                .antMatchers(HttpMethod.GET,"/demos", "/demos/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.POST,"/demos", "/demos/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.PUT,"/demos", "/demos/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.DELETE,"/demos", "/demos/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET, "/users/**/demos").authenticated() // PERSONAL DEMO LIST
+                .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
+                .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE, "/users/**/authorities/**").hasRole("ADMIN")  // ADMIN CONTROL PANEL
 
-                .antMatchers(HttpMethod.GET,"/conversations", "/conversations/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.POST,"/conversations", "/conversations/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.PUT,"/conversations", "/conversations/**").hasAnyRole("ADMIN", "USER")
-                .antMatchers(HttpMethod.DELETE,"/conversations", "/conversations/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers(HttpMethod.GET,"/demos").permitAll() // LIST DEMOS (PUBLICLY AVAILABLE DATA)
+                .antMatchers(HttpMethod.GET,"/demos/toptwelve").permitAll() //  SHORT DEMO LIST (HOMEPAGE)
+                .antMatchers(HttpMethod.GET,"/demos/**").permitAll() // GET DEMO (PUBLICLY AVAILABLE DATA)
+                .antMatchers(HttpMethod.POST,"/demos").authenticated() // CREATE/UPLOAD NEW DEMO
+                .antMatchers(HttpMethod.PUT, "/demos/**").authenticated() // EDIT DEMO DATA
+                .antMatchers(HttpMethod.DELETE,"/demos").hasRole("ADMIN")// ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE, "/demos/**").authenticated()// !!ONLY DELETE YOUR OWN DEMO (OR ADMIN ROLE)!!
 
-                .antMatchers("/authenticated").authenticated()
-                .antMatchers("/authenticate").permitAll()/*alleen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
-                .anyRequest().permitAll()
+                .antMatchers(HttpMethod.POST,"/demos/**/file").authenticated() // ASSIGN FILE (IN BODY) TO DEMO (MAX SIZE 1 MB!!!)
+
+                .antMatchers(HttpMethod.GET, "/files/**").authenticated() // DOWNLOAD SINGLE FILE
+                .antMatchers(HttpMethod.POST,"/files").authenticated() // UPLOAD SINGLE FILE  INTERNAL BACKEND REQUEST FOR ASSIGN FILE ROUTE
+
+                .antMatchers(HttpMethod.GET,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.GET,"/conversations/**").authenticated() // CONVERSATION DETAILS
+                .antMatchers(HttpMethod.POST,"/conversations").authenticated() // CREATE NEW CONVERSATION
+                .antMatchers(HttpMethod.PUT, "/conversations/**").authenticated() // REPLY TO EXISTING CONVERSATION
+                .antMatchers(HttpMethod.DELETE,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE, "/conversations/**").authenticated() // DELETE A CONVERSATION / ALL CONVERSATIONS
+
+                .antMatchers(HttpMethod.GET,"/gneres", "/genres/**").permitAll() // PUBLIC DATA
+                .antMatchers(HttpMethod.POST,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.PUT,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
+
+                .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN
+                .antMatchers(HttpMethod.GET, "/authenticated").authenticated() // AUTHENTICATION TEST ROUTE
+
+                .antMatchers(HttpMethod.POST, "admin/authenticate").permitAll() //ADMIN LOGIN TODO Implement Admin Control Panel
+                .anyRequest().permitAll()  // DEVELOPMENT PURPOSES - change to ADMIN later
 
                 .and()
                 .sessionManagement()
