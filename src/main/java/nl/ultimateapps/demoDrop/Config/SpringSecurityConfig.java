@@ -82,9 +82,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.DELETE,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE, "/conversations/**").authenticated() // DELETE A CONVERSATION / ALL CONVERSATIONS
 
-                .antMatchers(HttpMethod.GET,"/gneres", "/genres/**").permitAll() // PUBLIC DATA
+                .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // PUBLIC DATA
                 .antMatchers(HttpMethod.POST,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.PUT,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
 
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN

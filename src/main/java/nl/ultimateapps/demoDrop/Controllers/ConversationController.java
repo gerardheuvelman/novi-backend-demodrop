@@ -18,11 +18,11 @@ public class ConversationController {
 
     @Getter
     @Setter
-    private ConversationService service;
+    private ConversationService conversationService;
 
     @GetMapping("")
     public ResponseEntity<ArrayList<ConversationDto>> getConversations() {
-        ArrayList<ConversationDto> conversationDtos = service.getConversations();
+        ArrayList<ConversationDto> conversationDtos = conversationService.getConversations();
         if (conversationDtos.size()>0) {
             return ResponseEntity.ok(conversationDtos);
         } else {
@@ -32,39 +32,39 @@ public class ConversationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ConversationDto> getConversation (@PathVariable int id) {
-        ConversationDto conversationDto = service.getConversation(id);
+        ConversationDto conversationDto = conversationService.getConversation(id);
         return ResponseEntity.ok(conversationDto);
     }
 
     @PostMapping("")
     public ResponseEntity<String> postConversation(@RequestBody ConversationDto conversationDto) {
-        long savedConversation = service.createConversation(conversationDto);
+        long savedConversation = conversationService.createConversation(conversationDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/conversations/" + savedConversation).toUriString());
         return ResponseEntity.created(uri).body("Conversation created!");
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<String> putConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
-        long updatedConversationId = service.updateConversation(id, conversationDto);
+        long updatedConversationId = conversationService.updateConversation(id, conversationDto);
         return ResponseEntity.ok("Conversation " + updatedConversationId + " was updated successfully");
     }
 
     //Patch mapping (werkt het alleen met het veld "body"):
     @PatchMapping("/{id}")
     public ResponseEntity<String> patchCiModule(@PathVariable long id, @RequestBody ConversationDto ciModuleDto) {
-        long partiallyUpdatedConversationId = service.partialUpdateConversation(id, ciModuleDto);
+        long partiallyUpdatedConversationId = conversationService.partialUpdateConversation(id, ciModuleDto);
         return ResponseEntity.ok("Conversation" + partiallyUpdatedConversationId + " was partially updated successfully");
     }
 
     @DeleteMapping("")
     public ResponseEntity<String> deleteConversations() {
-        long numDeletedConversations = service.deleteConversations();
+        long numDeletedConversations = conversationService.deleteConversations();
         return ResponseEntity.ok(numDeletedConversations + " conversatinos deleted successfully.");
     }
 
         @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteConversation(@PathVariable long id) {
-        long deletedConversation = service.deleteConversation(id);
+        long deletedConversation = conversationService.deleteConversation(id);
         return ResponseEntity.ok("Conversation "+ deletedConversation + " was deleted successfully.");
     }
 }

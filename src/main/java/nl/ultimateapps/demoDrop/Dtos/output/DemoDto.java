@@ -38,10 +38,12 @@ public class DemoDto {
     private Double BPM;
 
     //Relationships:
+    @JsonIncludeProperties({"fileName", "url"})
     @Getter
     @Setter
     private File file;
 
+    @JsonIncludeProperties({"name"})
     @Getter
     @Setter
     private Genre genre;
