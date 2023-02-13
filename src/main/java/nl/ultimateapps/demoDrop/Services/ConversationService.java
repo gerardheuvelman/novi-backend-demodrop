@@ -9,8 +9,14 @@ import nl.ultimateapps.demoDrop.Models.User;
 import nl.ultimateapps.demoDrop.Repositories.ConversationRepository;
 import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
 import nl.ultimateapps.demoDrop.Repositories.UserRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import lombok.*;
@@ -31,15 +37,29 @@ public class ConversationService {
     @Setter
     private UserRepository userRepository;
 
-    public ArrayList<ConversationDto> getConversations() {
-        Iterable<Conversation> allConversations = conversationRepository.findAll();
-        ArrayList<ConversationDto> resultList = new ArrayList<>();
-        for (Conversation conversation : allConversations) {
-            ConversationDto newConversationDto = ConversationMapper.mapToDto(conversation);
-            resultList.add(newConversationDto);
+    public ArrayList<ConversationDto> getConversations(int limit) {
+        ArrayList<ConversationDto> conversationDtoArrayList = new ArrayList<>();
+        Iterable<Conversation> conversationIterable = conversationRepository.findAllByOrderByCreatedDateDesc();
+        ArrayList<Conversation> conversationArrayList = new ArrayList<>();
+        conversationIterable.forEach(conversationArrayList::add);
+        int numResults = conversationArrayList.size();
+        if (limit == 0) {
+            // return full list
+            for (Conversation conversation : conversationArrayList) {
+                ConversationDto conversationDto = ConversationMapper.mapToDto(conversation);
+                conversationDtoArrayList.add(conversationDto);
+            }
+        } else {
+            // return limited list
+            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
+                ConversationDto conversationDto = ConversationMapper.mapToDto(conversationArrayList.get(i));
+                conversationDtoArrayList.add(conversationDto);
+            }
         }
-        return resultList;
+        return conversationDtoArrayList;
     }
+
+
 
     public List<ConversationDto> getPersonalConversations(String username) {
         // First, get the User object
@@ -81,37 +101,59 @@ public class ConversationService {
         }
     }
 
-    public long createConversation(ConversationDto conversationDto) {
+    public ConversationDto startConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException {
+        Demo demo = conversationDto.getDemo();
+        demoRepository.save(demo); // dit is nodig omdat het demo object anders "transient" is.
         Conversation conversation =  ConversationMapper.mapToModel(conversationDto);
+        conversation.setCreatedDate(Date.from(Instant.now()));
+        conversation.setLatestReplyDate(Date.from(Instant.now()));
+        conversation.setDemo(demo);
+        // set the producer through the demo relationship:
+        conversation.setProducer(demo.getUser());
+        conversation.setReadByInterestedUser(true);
+        conversation.setReadByProducer(false);
+
+        // Set the current User object (interestedUser) from the Security context (NOT the request body!)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        if (userRepository.findById(currentPrincipalName) != null) {
+            conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
+        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+
         Conversation savedConversation = conversationRepository.save(conversation);
-        return savedConversation.getConversationId();
+        return ConversationMapper.mapToDto(savedConversation);
     }
 
-    public long updateConversation(long id, ConversationDto conversationDto) {
+    public ConversationDto replyToConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException {
         if (conversationRepository.findById(id).isPresent()) {
             Conversation conversation = conversationRepository.findById(id).get();
             conversation.setSubject((conversationDto.getSubject()));
             conversation.setCreatedDate((conversationDto.getCreatedDate()));
-            conversation.setLatestReplyDate((conversationDto.getLatestReplyDate()));
-            conversationRepository.save(conversation);
-            return conversation.getConversationId();
-
-        } else {
-            throw new RecordNotFoundException();
-        }
+            conversation.setLatestReplyDate(Date.from(Instant.now()));
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentPrincipalName = authentication.getName();
+            if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername()) ) {
+                conversation.setReadByInterestedUser(true);
+                conversation.setReadByProducer(false);
+            } else {
+                conversation.setReadByInterestedUser(false);
+                conversation.setReadByProducer(true);
+            }
+            return ConversationMapper.mapToDto( conversationRepository.save(conversation));
+        } else throw new RecordNotFoundException();
     }
 
-    public long partialUpdateConversation(long id, ConversationDto ConversationDto) {
+    public ConversationDto markConversationAsRead(long id) {
         if (conversationRepository.findById(id).isPresent()) {
-            Conversation Conversation = conversationRepository.findById(id).get();
-            if (Conversation.getBody() != null) {
-                Conversation.setBody(ConversationDto.getBody());
-            }
-            conversationRepository.save(Conversation);
-            return Conversation.getConversationId();
-        } else {
-            throw new RecordNotFoundException();
-        }
+            Conversation conversation = conversationRepository.findById(id).get();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentPrincipalName = authentication.getName();
+            if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername())) {
+                conversation.setReadByInterestedUser(true);
+            } else conversation.setReadByProducer(true);
+            conversationRepository.save(conversation);
+            return ConversationMapper.mapToDto(conversation);
+        } else throw new RecordNotFoundException();
     }
 
     public long deleteConversations() {
@@ -127,7 +169,6 @@ public class ConversationService {
             throw new RecordNotFoundException();
         }
     }
-
 
     public long deleteConversation(long id) {
         if (conversationRepository.findById(id).isPresent()) {

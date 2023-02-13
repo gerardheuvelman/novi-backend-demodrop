@@ -12,16 +12,15 @@ import org.hibernate.annotations.Parameter;
 public class Conversation {
 
     @Id
-    @GeneratedValue
     @GenericGenerator(
-            name = "sequence-generator",
+            name = "conversations-sequence-generator",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
-                    @Parameter(name = "sequence_name", value = "user_sequence"),
+                    @Parameter(name = "sequence_name", value = "conversations_sequence"),
                     @Parameter(name = "initial_value", value = "2004"),
                     @Parameter(name = "increment_size", value = "1")
-            }
-    )
+            })
+    @GeneratedValue(generator = "conversations-sequence-generator")
     @Getter
     private Long ConversationId;
 
@@ -41,6 +40,14 @@ public class Conversation {
     @Setter
     private String body;
 
+    @Getter
+    @Setter
+    private boolean readByProducer;
+
+    @Getter
+    @Setter
+    private boolean readByInterestedUser;
+
     //Relationships:
     @ManyToOne
     @JoinColumn(name = "Demo_id")  //optioneel. Dit is sowieso de default naam
@@ -49,7 +56,13 @@ public class Conversation {
     private Demo demo;
 
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "producer_name")
+    @Getter
+    @Setter
+    private User producer;
+
+    @ManyToOne
+    @JoinColumn(name = "interested_user_name")
     @Getter
     @Setter
     private User interestedUser;

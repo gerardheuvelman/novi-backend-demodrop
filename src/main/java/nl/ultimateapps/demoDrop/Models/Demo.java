@@ -13,18 +13,17 @@ import org.hibernate.annotations.Parameter;
 public class Demo {
 
     @Id
-    @GeneratedValue
     @GenericGenerator(
-            name = "sequence-generator",
+            name = "demos-sequence-generator",
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
-                    @Parameter(name = "sequence_name", value = "user_sequence"),
+                    @Parameter(name = "sequence_name", value = "demos_sequence"),
                     @Parameter(name = "initial_value", value = "1004"),
                     @Parameter(name = "increment_size", value = "1")
-            }
-    )
+            })
+    @GeneratedValue(generator = "demos-sequence-generator")
     @Getter
-    private Long DemoId;
+    private Long demoId;
 
     @Getter
     @Setter
@@ -40,14 +39,14 @@ public class Demo {
 
     @Getter
     @Setter
-    private Double BPM;
+    private Double bpm;
 
     //Relationships:
     @OneToOne
-    @JoinColumn(name = "file")
+    @JoinColumn(name = "audio_file")
     @Getter
     @Setter
-    private File file;
+    private AudioFile audioFile;
 
     @ManyToOne
     @JoinColumn(name = "genre")

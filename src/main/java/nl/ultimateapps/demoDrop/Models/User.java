@@ -1,6 +1,7 @@
 package nl.ultimateapps.demoDrop.Models;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
@@ -38,6 +39,11 @@ public class User {
     @Setter
     private String email;
 
+    @Column
+    @Getter
+    @Setter
+    private Date createdDate;
+
     //Relationships:
     @OneToMany(
             targetEntity = Authority.class,
@@ -55,10 +61,16 @@ public class User {
     @Setter
     private List<Demo> demos;
 
+    @OneToMany(mappedBy = "producer", cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
+    private List<Conversation> conversationsAsProducer;
+
     @OneToMany(mappedBy = "interestedUser", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
     private List<Conversation> conversationsAsInterestedParty;
+
 
     @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.DETACH)
     private List<Demo> favoriteDemos;

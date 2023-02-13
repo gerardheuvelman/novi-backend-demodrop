@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import nl.ultimateapps.demoDrop.Models.*;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 import lombok.*;
@@ -17,7 +14,7 @@ public class DemoDto {
 
     @Getter
     @Setter
-    private Long DemoId;
+    private Long demoId;
 
     @Getter
     @Setter
@@ -35,13 +32,13 @@ public class DemoDto {
 
     @Getter
     @Setter
-    private Double BPM;
+    private Double bpm;
 
     //Relationships:
     @JsonIncludeProperties({"fileName", "url"})
     @Getter
     @Setter
-    private File file;
+    private AudioFile audioFile;
 
     @JsonIncludeProperties({"name"})
     @Getter
@@ -59,7 +56,7 @@ public class DemoDto {
     @Setter
     private List<Conversation> conversations;
 
-    @JsonIgnore
+    @JsonIncludeProperties({"username"})
     @Getter
     @Setter
     private List<User> favoriteOfUsers;

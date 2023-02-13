@@ -1,5 +1,6 @@
 package nl.ultimateapps.demoDrop.Controllers;
 
+import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
 import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
@@ -34,8 +35,8 @@ public class UserController {
     private ConversationService conversationService;
 
     @GetMapping(value = "")
-    public ResponseEntity<List<UserDto>> getUsers() {
-        List<UserDto> userDtos = userService.getUsers();
+    public ResponseEntity<List<UserDto>> getUsers(@RequestParam int limit) {
+        List<UserDto> userDtos = userService.getUsers(limit);
         return ResponseEntity.ok().body(userDtos);
     }
 
@@ -46,18 +47,44 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<UserDto> createUser(@RequestBody UserDto dto) {;
-        String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
-        return ResponseEntity.created(location).build();
+    public ResponseEntity<Object> createStandardUser(@RequestBody UserDto dto) {;
+        if (!userService.userExists(dto.getUsername())) {
+            String newUsername = userService.createUser(dto);
+            userService.addAuthority(newUsername, "ROLE_USER");
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
+            return ResponseEntity.created(location).build();
+        } else return ResponseEntity.unprocessableEntity().build();
     }
+
+    @PostMapping(value = "/admin")
+    public ResponseEntity<Object> createAdminUser(@RequestBody UserDto dto) {;
+        if (!userService.userExists(dto.getUsername())) {
+            String newUsername = userService.createUser(dto);
+            userService.addAuthority(newUsername, "ROLE_ADMIN");
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
+            return ResponseEntity.created(location).build();
+        } else return ResponseEntity.unprocessableEntity().build();
+    }
+
 
     @PutMapping(value = "/{username}")
     public ResponseEntity<String> updateUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
         String userFromDb= userService.updateUser(username, dto);
         return ResponseEntity.ok("user \"" + userFromDb + "\" was updated successfully" );
     }
+
+    @PatchMapping(value = "/{username}/change-password")
+    public ResponseEntity<String> changePassword(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
+        String hashFromDb = userService.changePassword(username, userInputDto);
+        return ResponseEntity.ok("Password was updated successfully. Hash: " + hashFromDb);
+    }
+
+    @PatchMapping(value = "/{username}/change-email")
+    public ResponseEntity<String> changeEmail(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
+        String emailFromDb = userService.changeEmail(username, userInputDto);
+        return ResponseEntity.ok("Email was updated successfully to " + emailFromDb);
+    }
+
 
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
@@ -91,6 +118,12 @@ public class UserController {
     @GetMapping(value = "/{username}/demos")
     public ResponseEntity<List<DemoDto>> getDemosForUser(@PathVariable("username") String username) {
         List<DemoDto> demoDtos = demoservice.getPersonalDemos(username);
+        return ResponseEntity.ok().body(demoDtos);
+    }
+
+    @GetMapping(value = "/{username}/favdemos")
+    public ResponseEntity<List<DemoDto>> getFavoriteDemosForUser(@PathVariable("username") String username) {
+        List<DemoDto> demoDtos = demoservice.getFavoriteDemos(username);
         return ResponseEntity.ok().body(demoDtos);
     }
 

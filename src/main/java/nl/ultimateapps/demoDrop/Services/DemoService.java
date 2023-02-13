@@ -2,16 +2,22 @@ package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
+import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
+import nl.ultimateapps.demoDrop.Models.AudioFile;
 import nl.ultimateapps.demoDrop.Models.Demo;
-import nl.ultimateapps.demoDrop.Models.File;
+import nl.ultimateapps.demoDrop.Models.Genre;
 import nl.ultimateapps.demoDrop.Models.User;
-import nl.ultimateapps.demoDrop.Repositories.ConversationRepository;
-import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
-import nl.ultimateapps.demoDrop.Repositories.FileRepository;
-import nl.ultimateapps.demoDrop.Repositories.UserRepository;
+import nl.ultimateapps.demoDrop.Repositories.*;
+import nl.ultimateapps.demoDrop.Utils.JwtUtil;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,78 +27,53 @@ import lombok.*;
 @AllArgsConstructor
 public class DemoService {
 
+    private final JwtUtil jwtUtil;
     private final DemoRepository demoRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
     private final FileRepository fileRepository;
+    private final GenreRepository genreRepository;
 
-    // nah ga ik waarschinlijk niet gebruiken:
-//    public long assignconversationToDemo(long demoId, long conId) {
-//        if (repos.findById(demoId).isPresent()) {
-//            Demo Demo = repos.findById(demoId).get();
-//            if (Repos.findById(rcId).isPresent()) {
-//                RemoteController remoteControllerFromRepo = rcRepos.findById(rcId).get();
-//                Demo.setRemoteController(remoteControllerFromRepo);
-//                repos.save(Demo);
-//                return Demo.getId();
-//            } else {
-//                throw new RecordNotFoundException();
-//            }
-//        } else {
-//            throw new RecordNotFoundException();
-//        }
-//    }
-
-//    WERK NIET HELAAS, maar is meer toepasselijk dan het bovenstaande
-//    public long assignConversationsToDemo(long tvId, long[] ConversationIds) {
-//        if (repos.findById(tvId).isPresent()) {
-//            Demo Demo = repos.findById(tvId).get();
-//            for (long  ConversationId : ConversationIds) {
-//                if (ciRepos.findById(ConversationId).isPresent()) {
-//                    Conversation ConversationFromCiRepo = ciRepos.findById(ConversationId).get();
-//                    List<Conversation> ConversationsFromRepo = Demo.getConversations();
-//                    ConversationsFromRepo.add(ConversationFromCiRepo);
-//                    Demo.setConversations(ConversationsFromRepo);
-//                    repos.save(Demo);
-//                } else {
-//                    throw new RecordNotFoundException();
-//                }
-//            }
-//                    return Demo.getId();
-//        } else {
-//            throw new RecordNotFoundException();
-//        }
-//    }
-
-    public ArrayList<DemoDto> getDemos() {
-        Iterable<Demo> demoList = demoRepository.findAll();
-        ArrayList<DemoDto> resultList = new ArrayList<>();
-        for (Demo demo: demoList) {
-            DemoDto demoDto = DemoMapper.mapToDto(demo);
-            resultList.add(demoDto);
+    public ArrayList<DemoDto> getDemos(int limit) {
+        ArrayList<DemoDto> demoDtoList = new ArrayList<>();
+        Iterable<Demo> demoIterable = demoRepository.findAllByOrderByCreatedDateDesc();
+        ArrayList<Demo> demoArrayList = new ArrayList<>();
+        demoIterable.forEach(demoArrayList::add);
+        int numResults = demoArrayList.size();
+        if (limit == 0) {
+            // return full list
+            for (Demo demo : demoArrayList) {
+                DemoDto demoDto = DemoMapper.mapToDto(demo);
+                demoDtoList.add(demoDto);
+            }
+        } else {
+            // return limited list
+            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
+                DemoDto demoDto = DemoMapper.mapToDto(demoArrayList.get(i));
+                demoDtoList.add(demoDto);
+            }
         }
-        return resultList;
-    }
-
-    public ArrayList<DemoDto> getTopTwelveDemos() {
-        List<Demo> allDemos = demoRepository.findAll();
-        ArrayList<DemoDto> resultList = new ArrayList<>();
-        int numResults = allDemos.size();
-        for (int i = 0; i < (Math.min(numResults, 12)); i++) {
-            DemoDto newDemoDto = DemoMapper.mapToDto(allDemos.get(i));
-            resultList.add(newDemoDto);
-        }
-        return resultList;
+        return demoDtoList;
     }
 
     public ArrayList<DemoDto> getPersonalDemos(String username) {
-        // first, get the user object.
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByUserOrderByCreatedDateDesc(user);
         ArrayList<DemoDto> resultList = new ArrayList<>();
         for (Demo demo: demoList) {
         DemoDto demoDto = DemoMapper.mapToDto(demo);
         resultList.add(demoDto);
+        }
+        return resultList;
+    }
+
+    public ArrayList<DemoDto> getFavoriteDemos(String username) {
+        User user = userRepository.findById(username).get();
+        Iterable<Demo> demoList = demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user);
+        ArrayList<DemoDto> resultList = new ArrayList<>();
+        for (Demo demo: demoList) {
+            DemoDto demoDto = DemoMapper.mapToDto(demo);
+            resultList.add(demoDto);
         }
         return resultList;
     }
@@ -107,43 +88,152 @@ public class DemoService {
         }
     }
 
-    public long createDemo(DemoDto demoDto) {
-        Demo demo =  DemoMapper.mapToModel(demoDto);
-        Demo savedDemo = demoRepository.save(demo);
-        return savedDemo.getDemoId();
-    }
-// Onderstaande code uit het data uitwisseling project bijt de bovenstaande methode // TODO Uitwissen
-//    public Demo saveDemo(DemoDto demoDto) {
-//        Demo demo =  DemoMapper.mapToModel(demoDto);
-//        Demo savedDemo = demoRepository.save(demo);
-//        return demoRepository.save(demo);
-//    }
-
-    public long updateDemo(long id, DemoDto demoDto) {
+    public boolean checkIsFav(long id) throws UserPrincipalNotFoundException {
         if (demoRepository.findById(id).isPresent()) {
             Demo demo = demoRepository.findById(id).get();
-            demo.setTitle(demoDto.getTitle());
-            demo.setCreatedDate(demoDto.getCreatedDate());
-            demo.setLength(demoDto.getLength());
-            demo.setBPM(demoDto.getBPM());
-            demoRepository.save(demo);
-            return demo.getDemoId();
+
+            // Set the User object from the Security context (NOT the request body!)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentPrincipalName = authentication.getName();
+            if (userRepository.findById(currentPrincipalName) != null) {
+               User currentUser = (userRepository.findById(currentPrincipalName).get());
+                if (demo.getFavoriteOfUsers().contains(currentUser)) {
+                    return true;
+                } else return false;
+            } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         } else {
             throw new RecordNotFoundException();
         }
     }
 
-    public long partialUpdateDemo(long id, DemoDto DemoDto) {
+    public DemoDto createDemo(DemoDto demoDto) throws UserPrincipalNotFoundException {
+        Demo demo =  DemoMapper.mapToModel(demoDto);
+        demo.setCreatedDate(Date.from(Instant.now()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Set the User object from the Security context (NOT the request body!)
+        String currentPrincipalName = authentication.getName();
+        if (userRepository.findById(currentPrincipalName) != null) {
+            demo.setUser(userRepository.findById(currentPrincipalName).get());
+        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+        Demo savedDemo = demoRepository.save(demo);
+        return DemoMapper.mapToDto(savedDemo);
+    }
+
+    public DemoDto updateDemo(long id, DemoDto demoDto) {
         if (demoRepository.findById(id).isPresent()) {
-            Demo Demo = demoRepository.findById(id).get();
-            if (Demo.getTitle() != null) {
-                Demo.setTitle(DemoDto.getTitle());
+            Demo demo = demoRepository.findById(id).get();
+            demo.setLength(demoDto.getLength());
+            demo.setBpm(demoDto.getBpm());
+            //Relationships
+            if (demoDto.getAudioFile() != null) {
+                demo.setAudioFile(demoDto.getAudioFile());
             }
-            demoRepository.save(Demo);
-            return Demo.getDemoId();
+            if (demoDto.getGenre() != null) {
+                demo.setGenre(demoDto.getGenre());
+            }
+            demoRepository.save(demo);
+            return DemoMapper.mapToDto(demo);
         } else {
             throw new RecordNotFoundException();
         }
+    }
+
+    public boolean setFavStatus(long id, boolean desiredStatus) throws UserPrincipalNotFoundException {
+        Demo demo;
+        if (demoRepository.findById(id).isPresent()) {
+            demo = demoRepository.findById(id).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+
+        // Set the User object from the Security context (NOT the request body!)
+        User currentUser;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        if (userRepository.findById(currentPrincipalName) != null) {
+            currentUser = (userRepository.findById(currentPrincipalName).get());
+        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+        List<User> usersWhoFavoritedThisDemo = demo.getFavoriteOfUsers();
+        Boolean currentStatus = demo.getFavoriteOfUsers().contains(currentUser);
+        if (desiredStatus == true) {
+            if (currentStatus == false) {
+                usersWhoFavoritedThisDemo.add(currentUser);
+            }
+        }
+        else if (desiredStatus == false) {
+            if (currentStatus == true) {
+                usersWhoFavoritedThisDemo.remove(currentUser);
+            }
+        }
+        else throw new IllegalArgumentException();
+        demo.setFavoriteOfUsers(usersWhoFavoritedThisDemo);
+        demoRepository.save(demo);
+        return checkIsFav(id);
+    }
+
+    public DemoDto assignGenreToDemo(long id, String name) {
+        Demo demo;
+        Genre genre;
+        if (demoRepository.findById(id).isPresent()) {
+            demo = demoRepository.findById(id).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        if (genreRepository.findById(name).isPresent()) {
+            genre = genreRepository.findById(name).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        demo.setGenre(genre);
+        demoRepository.save(demo);
+        return DemoMapper.mapToDto(demo);
+    }
+
+    public DemoDto addUserToFavoriteOfUsersList(long id, String username) {
+        Demo demo;
+        User user ;
+        if (demoRepository.findById(id).isPresent()) {
+            demo = demoRepository.findById(id).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        if (userRepository.findById(username).isPresent()) {
+            user = userRepository.findById(username).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        // get list of users who favorited this demo:
+        List<User> userList = demo.getFavoriteOfUsers();
+        userList.add(user);
+        demo.setFavoriteOfUsers(userList);
+        demoRepository.save(demo);
+        return DemoMapper.mapToDto(demo);
+    }
+
+    public DemoDto removeUserFromFavoriteOfUsersList(long id, String username) {
+        Demo demo;
+        User user ;
+        if (demoRepository.findById(id).isPresent()) {
+            demo = demoRepository.findById(id).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        if (userRepository.findById(username).isPresent()) {
+            user = userRepository.findById(username).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        // get list of users who favorited this demo:
+        List<User> userList = demo.getFavoriteOfUsers();
+        boolean success;
+        if (userList.contains(user)) {
+            success = userList.remove(user);
+        } else throw  new UsernameNotFoundException(username);
+        if (!success) {
+            throw new RuntimeException();
+        }
+        demo.setFavoriteOfUsers(userList);
+        demoRepository.save(demo);
+        return DemoMapper.mapToDto(demo);
     }
 
     public long deleteDemos() {
@@ -181,15 +271,15 @@ public class DemoService {
         return resultList;
     }
 
-    public void assignFileToDemo(String name, Long demoNumber) {
-        Optional<Demo> optionalDemo = demoRepository.findById(demoNumber);
-        Optional<File> optionalFile = fileRepository.findByFileName(name);
+    public String assignFileToDemo(Long fileId, Long demoId) {
+        Optional<Demo> optionalDemo = demoRepository.findById(demoId);
+        Optional<AudioFile> optionalFile = fileRepository.findById(fileId);
         if (optionalDemo.isPresent() && optionalFile.isPresent()) {
             Demo demo = optionalDemo.get();
-            File file = optionalFile.get();
-            demo.setFile(file);
+            AudioFile audioFile = optionalFile.get();
+            demo.setAudioFile(audioFile);
             demoRepository.save(demo);
-        }
+            return "file " + fileId + " was successfully assigned to demo " + demoId;
+        } else throw new RecordNotFoundException();
     }
-
 }

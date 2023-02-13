@@ -9,6 +9,8 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
 
     public Iterable<Conversation> findByInterestedUserOrderByLatestReplyDateDesc(User user);
 
+    public Iterable<Conversation> findAllByOrderByCreatedDateDesc(); // Conversations sorted by date descending
+
     public Iterable<Conversation> findByDemoOrderByLatestReplyDateDesc(Demo demo);
 
 }

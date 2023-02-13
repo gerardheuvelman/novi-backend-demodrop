@@ -2,14 +2,16 @@ package nl.ultimateapps.demoDrop.Controllers;
 
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
-import nl.ultimateapps.demoDrop.Models.File;
+import nl.ultimateapps.demoDrop.Models.AudioFile;
 import nl.ultimateapps.demoDrop.Services.DemoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
+
 import lombok.*;
 import javax.transaction.Transactional;
 
@@ -25,34 +27,11 @@ public class DemoController {
 
     @Getter
     @Setter
-    private FileController fileController;
-
-//    @PutMapping("/{id}/conversation") // Bij TIE was hier Remote-controller gebruikt, wat een 1-op-1 relatie is. Nu moet ik het doen met Conversation (1-op-veel relatie!!!)
-//    public ResponseEntity<String> putConversation(@PathVariable long id, @RequestBody IdInputDto idInputDto) {
-//        long updatedConversationId = service.addConversationToDemo(id, idInputDto.id);
-//        return ResponseEntity.ok("Demo " + updatedDemoId + " has been assigned conversation " + idInputDto.id);
-//    }
-
-//    WERKT NIET HELAAS, maar dit is dus een 1-to-many relatie!!!
-//    @PutMapping("/{id}/cimodules")
-//    public ResponseEntity<String> putCiModule(@PathVariable long id, @RequestBody IdsInputDto idsInputDto) {
-//        long updatedTelevisionId = service.assignCiModulesToTelevision(id, idsInputDto.ids);
-//        return ResponseEntity.ok("Television " + updatedTelevisionId + " has been assigned The following Ci Modules: " + idsInputDto.ids);
-//    }
+    private AudioFileController audioFileController;
 
     @GetMapping("")
-    public ResponseEntity<ArrayList<DemoDto>> getDemos() {
-        ArrayList<DemoDto> demoDtos = demoService.getDemos();
-        if (demoDtos.size()>0) {
-            return ResponseEntity.ok(demoDtos);
-        } else {
-            throw new RecordNotFoundException("No demos found");
-        }
-    }
-
-    @GetMapping("/toptwelve")
-    public ResponseEntity<ArrayList<DemoDto>> getTopTwelveDemos() {
-        ArrayList<DemoDto> demoDtos = demoService.getTopTwelveDemos();
+    public ResponseEntity<ArrayList<DemoDto>> getDemos(@RequestParam int limit) {
+        ArrayList<DemoDto> demoDtos = demoService.getDemos(limit);
         if (demoDtos.size()>0) {
             return ResponseEntity.ok(demoDtos);
         } else {
@@ -68,26 +47,48 @@ public class DemoController {
         return ResponseEntity.ok(demoDto);
     }
 
+    @GetMapping("{id}/isfav")
+    public ResponseEntity<Boolean> checkIsFav(@PathVariable long id) throws UserPrincipalNotFoundException {
+        boolean favStatus  = demoService.checkIsFav(id);
+        return ResponseEntity.ok(favStatus);
+    }
+
     @PostMapping("")
-    public ResponseEntity<String> createDemo(@RequestBody DemoDto demoDto) {
-        long savedDemo = demoService.createDemo(demoDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/demos/" + savedDemo).toUriString());
-        return ResponseEntity.created(uri).body("Demo created!");
+    public ResponseEntity<DemoDto> createDemo(@RequestBody DemoDto demoDto) throws UserPrincipalNotFoundException {
+        DemoDto savedDemoDto = demoService.createDemo(demoDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/demos/" + savedDemoDto.getDemoId()).toUriString());
+        return ResponseEntity.created(uri).body(savedDemoDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> UpdateDemo(@PathVariable long id, @RequestBody DemoDto demoDto) {
-        long updatedDemoId = demoService.updateDemo(id, demoDto);
-        return ResponseEntity.ok("Demo " + updatedDemoId + " was updated successfully");
+    public ResponseEntity<DemoDto> UpdateDemo(@PathVariable long id, @RequestBody DemoDto demoDto) {
+          DemoDto updatedDemoDto = demoService.updateDemo(id, demoDto);
+        return ResponseEntity.ok(updatedDemoDto);
     }
 
-    //Patch mapping (IS BELANGRIJK VOOR EDITEN ZONDER ELKE KEER EEN NIEUWE FILE TE HOEVEN UPLOADEN ):
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> updateDemoInfo(@PathVariable long id, @RequestBody DemoDto demoDto) {
-        long partiallyUpdatedDemoId = demoService.partialUpdateDemo(id, demoDto);
-        return ResponseEntity.ok("Demo " + partiallyUpdatedDemoId + " was partially updated successfully");
+    @PatchMapping("{id}/setfav")
+    public ResponseEntity<Boolean> setFavStatus(@PathVariable long id, @RequestParam boolean status) throws UserPrincipalNotFoundException {
+        boolean newFavStatus  = demoService.setFavStatus(id, status);
+        return ResponseEntity.ok(newFavStatus);
     }
 
+    @PatchMapping("/{id}/setgenre/{genrename}")
+    public ResponseEntity<DemoDto> assignGenreToDemo(@PathVariable long id, @PathVariable String genrename) {
+        DemoDto partiallyUpdatedDemoDto = demoService.assignGenreToDemo(id, genrename);
+        return ResponseEntity.ok(partiallyUpdatedDemoDto);
+    }
+
+    @PatchMapping("/{id}/addfav/{username}")
+    public ResponseEntity<DemoDto> addUserToFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
+        DemoDto partiallyUpdatedDemoDto = demoService.addUserToFavoriteOfUsersList(id, username);
+        return ResponseEntity.ok(partiallyUpdatedDemoDto);
+    }
+
+    @PatchMapping("/{id}/remfav/{username}")
+    public ResponseEntity<DemoDto> removeUserFromFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
+        DemoDto partiallyUpdatedDemoDto = demoService.removeUserFromFavoriteOfUsersList(id, username);
+        return ResponseEntity.ok(partiallyUpdatedDemoDto);
+    }
 
     @DeleteMapping("")
     public ResponseEntity<String> deleteDemos() {
@@ -107,9 +108,9 @@ public class DemoController {
     }
 
     @PostMapping("/{id}/file")
-    public void assignFileToDemo(@PathVariable("id") Long demoId,
-                                 @RequestParam("file") MultipartFile multipartFile) {
-        File file = fileController.uploadSingleFile(multipartFile);
-        demoService.assignFileToDemo(file.getFileName(), demoId);
+    public ResponseEntity<String> uploadFileAndAssignToDemo(@PathVariable("id") Long demoId, @RequestParam("file") MultipartFile multipartFile) {
+        AudioFile audioFile = audioFileController.uploadSingleFile(multipartFile);
+        String result = demoService.assignFileToDemo(audioFile.getFileId(), demoId);
+        return ResponseEntity.ok(result);
     }
 }

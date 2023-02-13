@@ -1,5 +1,6 @@
 package nl.ultimateapps.demoDrop.Services;
 
+import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
 import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
@@ -10,15 +11,14 @@ import nl.ultimateapps.demoDrop.Utils.RandomStringGenerator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.time.Instant;
+import java.util.*;
+
 import lombok.*;
 
 @Service
 @AllArgsConstructor
-//@NoArgsConstructor - dit leidt tot problemen?
 public class UserService {
 
     @Lazy
@@ -29,13 +29,27 @@ public class UserService {
     @Getter
     @Setter
     private UserRepository userRepository;
-    public List<UserDto> getUsers() {
-        List<UserDto> collection = new ArrayList<>();
-        List<User> list = userRepository.findAll();
-        for (User user : list) {
-            collection.add(UserMapper.mapToDto(user));
+
+    public ArrayList<UserDto> getUsers(int limit) {
+        ArrayList<UserDto> userDtoList = new ArrayList<>();
+        Iterable<User> userIterable = userRepository.findAllByOrderByCreatedDateDesc();
+        ArrayList<User> userArrayList = new ArrayList<>();
+        userIterable.forEach(userArrayList::add);
+        int numResults = userArrayList.size();
+        if (limit == 0) {
+            // return full list
+            for (User user : userArrayList) {
+                UserDto userDto = UserMapper.mapToDto(user);
+                userDtoList.add(userDto);
+            }
+        } else {
+            // return limited list
+            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
+                UserDto userDto = UserMapper.mapToDto(userArrayList.get(i));
+                userDtoList.add(userDto);
+            }
         }
-        return collection;
+        return userDtoList;
     }
 
     public UserDto getUser(String username) {
@@ -56,10 +70,14 @@ public class UserService {
     public String createUser(UserDto userDto) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userDto.setEnabled(true);
         userDto.setApikey(randomString);
-        User newUser = userRepository.save(toUser(userDto));
+        userDto.setCreatedDate(Date.from(Instant.now()));
+        userDto.setAuthorities(new HashSet<>());
+        User newUser = userRepository.save(UserMapper.mapToModel(userDto));
         return newUser.getUsername();
     }
+
 
     public String updateUser(String username, UserDto userDto) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
@@ -68,6 +86,23 @@ public class UserService {
         userRepository.save(updateExistingUser(user, userDto));
         return user.getUsername();
 
+    }
+
+    public String changePassword(String username, UserInputDto userInputDto) {
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        userInputDto.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        User user = userRepository.findById(username).get();
+        user.setPassword(userInputDto.getPassword());
+        userRepository.save(user);
+        return user.getPassword();
+    }
+
+    public String changeEmail(String username, UserInputDto userInputDto) {
+        if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
+        User user = userRepository.findById(username).get();
+        user.setEmail(userInputDto.getEmail());
+        userRepository.save(user);
+        return user.getEmail();
     }
 
     public String deleteUser(String username) {
@@ -98,14 +133,15 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public User toUser(UserDto userDto) { // niet alle velden zijn meegenomen . Allenede velden die je meerstuurt bij het creeren vn ene gebruiker.
-
-        var user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-        user.setEmail(userDto.getEmail());
-        return user;
-    }
+//    public User toUser(UserDto userDto) { // niet alle velden zijn meegenomen . Allenede velden die je meerstuurt bij het creeren vn ene gebruiker.
+//
+//        var user = new User();
+//        user.setUsername(userDto.getUsername());
+//        user.setPassword(userDto.getPassword());
+//        user.setEmail(userDto.getEmail());
+//        user.setCreatedDate(userDto.getCreatedDate());
+//        return user;
+//    }
 
     public User updateExistingUser(User user, UserDto userDto) {
         if (userDto.getUsername() != null) {
@@ -122,6 +158,9 @@ public class UserService {
         }
         if (userDto.getEmail() != null) {
             user.setEmail(userDto.getEmail());
+        }
+        if (userDto.getCreatedDate() != null) {
+            user.setCreatedDate(userDto.getCreatedDate());
         }
         if (userDto.getAuthorities() != null) {
             user.setAuthorities(userDto.getAuthorities());

@@ -38,13 +38,29 @@ public class ConversationDto {
     @Setter
     private String body;
 
-    //Relationships:
     @Getter
     @Setter
-    private DemoDto demoDto;
+    private boolean readBbyProducer;
+
+    @Getter
+    @Setter
+    private boolean readByInterestedUser;
+
+    //Relationships:
+    @JsonIncludeProperties({"demoId", "title"})
+    @Getter
+    @Setter
+    private Demo demo;
 
     @JsonIncludeProperties({"username"})
     @Getter
     @Setter
-    private UserDto interestedUser;
+    private User producer;
+
+    @JsonIncludeProperties({"username"})
+    @Getter
+    @Setter
+    private User interestedUser;
+
+
 }

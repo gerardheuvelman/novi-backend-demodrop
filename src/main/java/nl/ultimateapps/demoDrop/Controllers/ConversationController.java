@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import lombok.*;
 
@@ -15,14 +16,13 @@ import lombok.*;
 @RequestMapping("/conversations")
 @AllArgsConstructor
 public class ConversationController {
-
     @Getter
     @Setter
     private ConversationService conversationService;
 
     @GetMapping("")
-    public ResponseEntity<ArrayList<ConversationDto>> getConversations() {
-        ArrayList<ConversationDto> conversationDtos = conversationService.getConversations();
+    public ResponseEntity<ArrayList<ConversationDto>> getConversations(@RequestParam int limit) {
+        ArrayList<ConversationDto> conversationDtos = conversationService.getConversations(limit);
         if (conversationDtos.size()>0) {
             return ResponseEntity.ok(conversationDtos);
         } else {
@@ -37,29 +37,28 @@ public class ConversationController {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> postConversation(@RequestBody ConversationDto conversationDto) {
-        long savedConversation = conversationService.createConversation(conversationDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/conversations/" + savedConversation).toUriString());
-        return ResponseEntity.created(uri).body("Conversation created!");
+    public ResponseEntity<ConversationDto> startConversation(@RequestBody ConversationDto conversationDto) throws UserPrincipalNotFoundException {
+        ConversationDto savedConversationDto = conversationService.startConversation(conversationDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/conversations/" + savedConversationDto.getConversationId()).toUriString());
+        return ResponseEntity.created(uri).body(savedConversationDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> putConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
-        long updatedConversationId = conversationService.updateConversation(id, conversationDto);
-        return ResponseEntity.ok("Conversation " + updatedConversationId + " was updated successfully");
+    public ResponseEntity<ConversationDto> replyToConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
+        ConversationDto updatedConversationDto = conversationService.replyToConversation(id, conversationDto);
+        return ResponseEntity.ok(updatedConversationDto);
     }
 
-    //Patch mapping (werkt het alleen met het veld "body"):
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> patchCiModule(@PathVariable long id, @RequestBody ConversationDto ciModuleDto) {
-        long partiallyUpdatedConversationId = conversationService.partialUpdateConversation(id, ciModuleDto);
-        return ResponseEntity.ok("Conversation" + partiallyUpdatedConversationId + " was partially updated successfully");
+    @PatchMapping ("{id}")
+    public ResponseEntity<ConversationDto> MarkConversationAsRead(@PathVariable long id) {
+        ConversationDto updatedConversationDto = conversationService.markConversationAsRead(id);
+        return ResponseEntity.ok(updatedConversationDto);
     }
 
     @DeleteMapping("")
     public ResponseEntity<String> deleteConversations() {
         long numDeletedConversations = conversationService.deleteConversations();
-        return ResponseEntity.ok(numDeletedConversations + " conversatinos deleted successfully.");
+        return ResponseEntity.ok(numDeletedConversations + " conversations deleted successfully.");
     }
 
         @DeleteMapping("/{id}")
@@ -68,4 +67,3 @@ public class ConversationController {
         return ResponseEntity.ok("Conversation "+ deletedConversation + " was deleted successfully.");
     }
 }
-

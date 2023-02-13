@@ -50,23 +50,29 @@ public class SpringSecurityConfig {
                 .authorizeRequests()
 
                 .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.GET,"/users/**").authenticated()  // FOR PROFILE PAGE
+                .antMatchers(HttpMethod.GET,"/users/**").authenticated()  // FETCH USER DATA
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
+                .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT
                 .antMatchers(HttpMethod.PUT, "/users/**").authenticated() // EDIT PROFILE
+                .antMatchers(HttpMethod.PATCH, "/users/**/change-password").authenticated() // CHANGE PASSWORD
+                .antMatchers(HttpMethod.PATCH, "/users/**/change-email").authenticated() // CHANGE EMAIL
                 .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE YOUR ACCOUNT
 
                 .antMatchers(HttpMethod.GET, "/users/**/demos").authenticated() // PERSONAL DEMO LIST
+                .antMatchers(HttpMethod.GET, "/users/**/favdemos").authenticated() // PERSONAL FAVORITE DEMO LIST
                 .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
                 .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE, "/users/**/authorities/**").hasRole("ADMIN")  // ADMIN CONTROL PANEL
 
                 .antMatchers(HttpMethod.GET,"/demos").permitAll() // LIST DEMOS (PUBLICLY AVAILABLE DATA)
-                .antMatchers(HttpMethod.GET,"/demos/toptwelve").permitAll() //  SHORT DEMO LIST (HOMEPAGE)
                 .antMatchers(HttpMethod.GET,"/demos/**").permitAll() // GET DEMO (PUBLICLY AVAILABLE DATA)
+                .antMatchers(HttpMethod.GET, "/demos/**/isfav").authenticated() // ADD A USER TO FAVLIST
                 .antMatchers(HttpMethod.POST,"/demos").authenticated() // CREATE/UPLOAD NEW DEMO
                 .antMatchers(HttpMethod.PUT, "/demos/**").authenticated() // EDIT DEMO DATA
+                .antMatchers(HttpMethod.PATCH, "/demos/**/setgenre/**").authenticated() // ASSIGN A GENRE TO A DEMO
+                .antMatchers(HttpMethod.PATCH, "/demos/**/setfav").authenticated() // REMOVE A USER FROM FAVLIST
                 .antMatchers(HttpMethod.DELETE,"/demos").hasRole("ADMIN")// ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE, "/demos/**").authenticated()// !!ONLY DELETE YOUR OWN DEMO (OR ADMIN ROLE)!!
 

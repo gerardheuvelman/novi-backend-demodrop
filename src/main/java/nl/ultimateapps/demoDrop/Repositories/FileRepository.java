@@ -1,11 +1,10 @@
 package nl.ultimateapps.demoDrop.Repositories;
 
-import nl.ultimateapps.demoDrop.Models.File;
+import nl.ultimateapps.demoDrop.Models.AudioFile;
 import org.springframework.data.jpa.repository.JpaRepository;
-import java.util.Optional;
 
-public interface FileRepository extends JpaRepository<File, String> {
+public interface FileRepository extends JpaRepository<AudioFile, Long> {
 
-    Optional<File> findByFileName(String fileName);
+//    Optional<File> findByFileName(String fileName);
 
 }

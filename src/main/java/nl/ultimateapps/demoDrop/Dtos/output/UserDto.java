@@ -3,17 +3,17 @@ package nl.ultimateapps.demoDrop.Dtos.output;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import nl.ultimateapps.demoDrop.Models.Authority;
+
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import lombok.*;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.Demo;
 
-public class UserDto {
+import javax.persistence.Column;
 
-    @Getter
-    @Setter
-    private Long DemoId;
+public class UserDto {
 
     @Getter
     @Setter
@@ -34,6 +34,11 @@ public class UserDto {
     @Getter
     @Setter
     private String email;
+
+    @Getter
+    @Setter
+    private Date createdDate;
+
 
     //Relationships:
     @Getter

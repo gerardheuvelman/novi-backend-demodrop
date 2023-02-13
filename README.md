@@ -32,7 +32,7 @@ Installation steps:
 2. In PGAdmin, create a new database named "demodrop". Take note of your login credentials.
 3. Open the project in an IDE.
 4. install dependencies by typing "mvn install" in a terminal window
-5. Open the file application.properties. In this file, enter your PgAdmin credentials at the dotted lines. Now save this file.
+5. Open the audioFile application.properties. In this audioFile, enter your PgAdmin credentials at the dotted lines. Now save this audioFile.
 5. Run the project.
 
 Initial configuration:  (!!!IMPORTANT!!!)

@@ -59,7 +59,7 @@ class DemoServiceTest {
         Mockito.when(demoRepository.findAll()).thenReturn(expectedDemoList);
 
         //ACT
-        List<DemoDto> actualDemoDtoList = demoService.getDemos();
+        List<DemoDto> actualDemoDtoList = demoService.getDemos(0);
 
         //ASSERT
         assertEquals(expectedDemoDtoList, actualDemoDtoList);
