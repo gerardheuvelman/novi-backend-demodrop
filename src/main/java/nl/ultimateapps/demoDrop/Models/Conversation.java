@@ -17,7 +17,7 @@ public class Conversation {
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
                     @Parameter(name = "sequence_name", value = "conversations_sequence"),
-                    @Parameter(name = "initial_value", value = "2004"),
+                    @Parameter(name = "initial_value", value = "2017"),
                     @Parameter(name = "increment_size", value = "1")
             })
     @GeneratedValue(generator = "conversations-sequence-generator")

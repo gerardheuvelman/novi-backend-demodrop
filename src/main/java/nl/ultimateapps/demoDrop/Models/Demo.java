@@ -18,7 +18,7 @@ public class Demo {
             strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
             parameters = {
                     @Parameter(name = "sequence_name", value = "demos_sequence"),
-                    @Parameter(name = "initial_value", value = "1004"),
+                    @Parameter(name = "initial_value", value = "1017"),
                     @Parameter(name = "increment_size", value = "1")
             })
     @GeneratedValue(generator = "demos-sequence-generator")
