@@ -82,7 +82,7 @@ public class UserController {
     @PatchMapping(value = "/{username}/change-email")
     public ResponseEntity<String> changeEmail(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
         String emailFromDb = userService.changeEmail(username, userInputDto);
-        return ResponseEntity.ok("Email was updated successfully to " + emailFromDb);
+        return ResponseEntity.ok("Email was successfully updated to " + emailFromDb);
     }
 
 

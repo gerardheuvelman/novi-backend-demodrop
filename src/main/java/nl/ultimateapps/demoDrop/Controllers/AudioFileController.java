@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/files")
+@RequestMapping("/audiofiles")
 @AllArgsConstructor
 public class AudioFileController {
 
@@ -34,18 +34,20 @@ public class AudioFileController {
     ResponseEntity<Resource> downLoadSingleFile(@PathVariable long fileId, HttpServletRequest request) {
         Resource resource = audioFileService.downLoadFile(fileId);
         // this mediaType decides witch type you accept if you only accept 1 type
-        // MediaType contentType = MediaType.IMAGE_JPEG;
+         MediaType mediaType = new MediaType(""); //EXPERIMENT!!! "audio/mpeg" does not work because of the "/"
         // this is going to accept multiple types
         // LET OP: bovenstaand is niet erg, want er wordt in de front end (React) gefilterd op filetype (audio files).
-        String mimeType;
-        try{
-            mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
-        } catch (IOException e) {
-            mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        }
+        // String mimeType;
+        // try{
+        //     mimeType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        // } catch (IOException e) {
+        //     mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        // }
+
         // for download attachment use next line
-        // return ResponseEntity.ok().contentType(contentType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
-        // for showing image in browser
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename()).body(resource);
+         return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + resource.getFilename()).body(resource);
+
+         // for showing image in browser
+//         return ResponseEntity.ok().contentType(MediaType.parseMediaType(mimeType)).header(HttpHeaders.CONTENT_DISPOSITION, "inline;fileName=" + resource.getFilename()).body(resource);
     }
 }

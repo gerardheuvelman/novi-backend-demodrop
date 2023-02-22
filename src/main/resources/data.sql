@@ -66,23 +66,22 @@ INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_d
 INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2015, 'anothersubject12', '2023-01-13', '2023-01-16','anotherbody12' , false, false);
 INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2016, 'anothersubject13', '2023-01-13', '2023-01-16','anotherbody13' , false, false);
 
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3001, 'PrimeAudio.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3002, 'DanceMonkey.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3003, 'DubstepWonderland.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3004, 'DanceMonkey2.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3005, 'DanceMonkey3.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3006, 'DanceMonkey4.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3007, 'DanceMonkey5.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3008, 'DanceMonkey6.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3009, 'DanceMonkey7.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3010, 'DanceMonkey8.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3011, 'DanceMonkey9.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3012, 'DanceMonkey10.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3013, 'DanceMonkey11.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3014, 'DanceMonkey12.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3015, 'DanceMonkey13.mp3');
-INSERT INTO audio_file (file_id, original_file_name) VALUES (3016, 'DanceMonkey14.mp3');
-
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3001, 'PrimeAudio.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3002, 'DanceMonkey.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3003, 'DubstepWonderland.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3004, 'DanceMonkey2.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3005, 'DanceMonkey3.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3006, 'DanceMonkey4.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3007, 'DanceMonkey5.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3008, 'DanceMonkey6.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3009, 'DanceMonkey7.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3010, 'DanceMonkey8.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3011, 'DanceMonkey9.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3012, 'DanceMonkey10.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3013, 'DanceMonkey11.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3014, 'DanceMonkey12.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3015, 'DanceMonkey13.mp3');
+INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3016, 'DanceMonkey14.mp3');
 
 INSERT INTO genre (name) VALUES ('Alternative dance');
 INSERT INTO genre (name) VALUES ('Dance');
@@ -103,6 +102,8 @@ INSERT INTO genre (name) VALUES ('Easy Listening');
 INSERT INTO genre (name) VALUES ('Underground');
 INSERT INTO genre (name) VALUES ('Alternative');
 INSERT INTO genre (name) VALUES ('Dub-Step');
+INSERT INTO genre (name) VALUES ('Other');
+INSERT INTO genre (name) VALUES ('Unknown');
 
 INSERT INTO demos_users_favorites_ (demo_id, user_id) VALUES (1002, 'gerard');
 

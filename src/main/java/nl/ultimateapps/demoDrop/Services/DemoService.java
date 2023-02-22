@@ -31,7 +31,7 @@ public class DemoService {
     private final DemoRepository demoRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
-    private final FileRepository fileRepository;
+    private final AudioFileRepository audioFileRepository;
     private final GenreRepository genreRepository;
 
     public ArrayList<DemoDto> getDemos(int limit) {
@@ -273,7 +273,7 @@ public class DemoService {
 
     public String assignFileToDemo(Long fileId, Long demoId) {
         Optional<Demo> optionalDemo = demoRepository.findById(demoId);
-        Optional<AudioFile> optionalFile = fileRepository.findById(fileId);
+        Optional<AudioFile> optionalFile = audioFileRepository.findById(fileId);
         if (optionalDemo.isPresent() && optionalFile.isPresent()) {
             Demo demo = optionalDemo.get();
             AudioFile audioFile = optionalFile.get();

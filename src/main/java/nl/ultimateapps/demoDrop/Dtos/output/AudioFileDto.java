@@ -7,7 +7,7 @@ public class AudioFileDto {
 
     @Getter
     @Setter
-    private long fileId;
+    private long audioFileId;
 
     @Getter
     @Setter

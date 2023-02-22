@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import lombok.*;
 
@@ -39,7 +37,7 @@ public class ConversationService {
 
     public ArrayList<ConversationDto> getConversations(int limit) {
         ArrayList<ConversationDto> conversationDtoArrayList = new ArrayList<>();
-        Iterable<Conversation> conversationIterable = conversationRepository.findAllByOrderByCreatedDateDesc();
+        Iterable<Conversation> conversationIterable = conversationRepository.findAllByOrderByLatestReplyDateDesc();
         ArrayList<Conversation> conversationArrayList = new ArrayList<>();
         conversationIterable.forEach(conversationArrayList::add);
         int numResults = conversationArrayList.size();
@@ -64,25 +62,23 @@ public class ConversationService {
     public List<ConversationDto> getPersonalConversations(String username) {
         // First, get the User object
         User user = userRepository.findById(username).get();
-        // Second, fetch personal demo list
-        Iterable<Demo> demos = demoRepository.findByUserOrderByCreatedDateDesc(user);
-        List<Conversation> conversationsFromDemos = new ArrayList<>();
-        // next, get the conversations associated with these demos, and add them to this list.
-        for (Demo demo : demos) {
-            for (Conversation conversation : conversationRepository.findByDemoOrderByLatestReplyDateDesc(demo)) {
-                conversationsFromDemos.add(conversation);
-            }
-        }
+        // get the conversations in which te user has the role "producer"
+        Iterable<Conversation> conversationsAsProducer = conversationRepository.findByProducerOrderByLatestReplyDateDesc(user);
         // now, get the conversations for this user by the field "interestedUser"
-        List<Conversation> conversationsFromInterestedUserField = new ArrayList<>();
-        for (Conversation conversation: conversationRepository.findByInterestedUserOrderByLatestReplyDateDesc(user)) {
-            conversationsFromInterestedUserField.add(conversation);
-        }
-        // Finally, splice these two lists together, and re-apply sorting
+        Iterable<Conversation> conversationsAsInterestedUser = conversationRepository.findByInterestedUserOrderByLatestReplyDateDesc(user);
+        // splice these two lists together into a new list;
         List<Conversation> completeConversationList = new ArrayList<>();
-        completeConversationList.addAll(conversationsFromDemos);
-        completeConversationList.addAll(conversationsFromInterestedUserField);
-//        completeConversationList.sort(); TODO implementeren
+        conversationsAsProducer.forEach(completeConversationList::add);
+        conversationsAsInterestedUser.forEach(completeConversationList::add);
+        // Since correct sorting was lost during the splice, re-apply it:
+        Comparator<Conversation> conversationComparator = new Comparator<Conversation>() {
+            @Override
+            public int compare(Conversation o1, Conversation o2) {
+                return (o2.getLatestReplyDate().compareTo(o1.getLatestReplyDate()));
+            }
+        };
+        completeConversationList.sort(conversationComparator);
+        // Translate ccmpleteConversationList to a final resultlist of corresponding DTO's
         List<ConversationDto> resultList = new ArrayList<>();
         for (Conversation conversation: completeConversationList) {
             ConversationDto conversationDto = ConversationMapper.mapToDto(conversation);
@@ -102,33 +98,39 @@ public class ConversationService {
     }
 
     public ConversationDto startConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException {
-        Demo demo = conversationDto.getDemo();
-        demoRepository.save(demo); // dit is nodig omdat het demo object anders "transient" is.
-        Conversation conversation =  ConversationMapper.mapToModel(conversationDto);
-        conversation.setCreatedDate(Date.from(Instant.now()));
-        conversation.setLatestReplyDate(Date.from(Instant.now()));
-        conversation.setDemo(demo);
-        // set the producer through the demo relationship:
-        conversation.setProducer(demo.getUser());
-        conversation.setReadByInterestedUser(true);
-        conversation.setReadByProducer(false);
+        long demoId = conversationDto.getDemo().getDemoId();
+        // get the demo object form the repository
+        Optional<Demo> optionalDemo = demoRepository.findById(demoId);
+        if (optionalDemo.isPresent()) {
+            Demo retrievedDemo = optionalDemo.get();
+            Conversation conversation =  ConversationMapper.mapToModel(conversationDto);
+            conversation.setCreatedDate(Date.from(Instant.now()));
+            conversation.setLatestReplyDate(Date.from(Instant.now()));
+            conversation.setDemo(retrievedDemo);
+            // set the producer through the demo relationship:
+            conversation.setProducer(retrievedDemo.getUser());
+            conversation.setReadByInterestedUser(true);
+            conversation.setReadByProducer(false);
+            // Set the current User object (interestedUser) from the Security context (NOT the request body!)
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String currentPrincipalName = authentication.getName();
+            if (userRepository.findById(currentPrincipalName) != null) {
+                conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
+            } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+            Conversation savedConversation = conversationRepository.save(conversation);
+            return ConversationMapper.mapToDto(savedConversation);
+        } else throw new RecordNotFoundException();
 
-        // Set the current User object (interestedUser) from the Security context (NOT the request body!)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        if (userRepository.findById(currentPrincipalName) != null) {
-            conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
-        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
 
-        Conversation savedConversation = conversationRepository.save(conversation);
-        return ConversationMapper.mapToDto(savedConversation);
+
+
     }
 
     public ConversationDto replyToConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException {
         if (conversationRepository.findById(id).isPresent()) {
             Conversation conversation = conversationRepository.findById(id).get();
             conversation.setSubject((conversationDto.getSubject()));
-            conversation.setCreatedDate((conversationDto.getCreatedDate()));
+            conversation.setBody((conversationDto.getBody()));
             conversation.setLatestReplyDate(Date.from(Instant.now()));
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String currentPrincipalName = authentication.getName();

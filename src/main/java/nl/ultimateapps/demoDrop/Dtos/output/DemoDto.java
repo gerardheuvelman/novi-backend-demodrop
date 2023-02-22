@@ -35,7 +35,7 @@ public class DemoDto {
     private Double bpm;
 
     //Relationships:
-    @JsonIncludeProperties({"fileName", "url"})
+    @JsonIncludeProperties({"audioFileId", "originalFileName"})
     @Getter
     @Setter
     private AudioFile audioFile;
@@ -46,7 +46,7 @@ public class DemoDto {
     private Genre genre;
 
     // Relationships:
-    @JsonIncludeProperties({"username"})
+    @JsonIncludeProperties({"username", "email"})
     @Getter
     @Setter
     private User user;

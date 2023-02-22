@@ -1,3 +1,15 @@
+# KNOWN BUGS: 
+- Frontend Inbox is not sorted by date, so perhaps I can sort the list in the backend. 
+- Replying to a message does not update the message body.
+- message sent confirmation email is still sent to the wrong address.
+- Creating a new conversation does not set the created date (remains null)
+- After creating or replying to a conversation (gerard), the inbox shows multiple copies of that conversation!
+- REWRITE getPersonalConversations() to not require retrieding a list of demo entities.
+
+
+# AANDACHTSPUNTEN VERDEDIGING: 
+- Ik gebruik een package genaamd "Modelmapper" om de vertaling tussen modellen en DTO's gemakkelijk en beheersbaar te houden.
+
 # DemoDrop- a general purpose online music demo marketplace (back end web project)
 
 ## About
@@ -28,12 +40,20 @@ Prerequisites:
 
 Installation steps:
 
-1. Clone this project (backend)
+1. Clone this project (Spring boot backend  project for the "DemoDrop" web app)
 2. In PGAdmin, create a new database named "demodrop". Take note of your login credentials.
 3. Open the project in an IDE.
-4. install dependencies by typing "mvn install" in a terminal window
-5. Open the audioFile application.properties. In this audioFile, enter your PgAdmin credentials at the dotted lines. Now save this audioFile.
-5. Run the project.
+4. At the root level of the project, create a file called ".env" and write the following lines in it, replacing the [EXAMPLE DATA]:
+   - MAIL_SMTP_SERVER = [smtp.gmail.com]
+   - MAIL_SMTP_PORT = [587]
+   - MAIL_USERNAME = [myemail@gmail.com]
+   - MAIL_PASSWORD = [Rumpl3$t1lt$k1n]
+   - DATASOURCE_URL = [jdbc:postgresql://localhost:5432/demodrop]
+   - DATASOURCE_USERNAME = [postgres]
+   - DATASOURCE_PASSWORD = [myp0$tgr3$p@$$w0rd]
+
+5. install dependencies by typing "mvn install" in a terminal window
+7. Run the project.
 
 Initial configuration:  (!!!IMPORTANT!!!)
 1. Log in using username "admin" and password "admin". You will be redirected to the Admin Control Panel (ACP)

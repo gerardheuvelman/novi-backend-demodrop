@@ -52,12 +52,12 @@ public class ConversationDto {
     @Setter
     private Demo demo;
 
-    @JsonIncludeProperties({"username"})
+    @JsonIncludeProperties({"username", "email"})
     @Getter
     @Setter
     private User producer;
 
-    @JsonIncludeProperties({"username"})
+    @JsonIncludeProperties({"username", "email"})
     @Getter
     @Setter
     private User interestedUser;

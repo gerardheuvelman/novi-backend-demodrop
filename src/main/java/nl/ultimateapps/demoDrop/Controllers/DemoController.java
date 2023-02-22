@@ -110,7 +110,7 @@ public class DemoController {
     @PostMapping("/{id}/file")
     public ResponseEntity<String> uploadFileAndAssignToDemo(@PathVariable("id") Long demoId, @RequestParam("file") MultipartFile multipartFile) {
         AudioFile audioFile = audioFileController.uploadSingleFile(multipartFile);
-        String result = demoService.assignFileToDemo(audioFile.getFileId(), demoId);
+        String result = demoService.assignFileToDemo(audioFile.getAudioFileId(), demoId);
         return ResponseEntity.ok(result);
     }
 }

@@ -3,7 +3,7 @@ package nl.ultimateapps.demoDrop.Services;
 import lombok.Getter;
 import lombok.Setter;
 import nl.ultimateapps.demoDrop.Models.AudioFile;
-import nl.ultimateapps.demoDrop.Repositories.FileRepository;
+import nl.ultimateapps.demoDrop.Repositories.AudioFileRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -28,12 +28,12 @@ public class AudioFileService {
     private Path fileStoragePath;
     private final String fileStorageLocation;
 
-    private final FileRepository fileRepository;
+    private final AudioFileRepository audioFileRepository;
 
-    public AudioFileService(@Value("${my.upload_location}") String fileStorageLocation, FileRepository fileRepository) {
+    public AudioFileService(@Value("${my.upload_location}") String fileStorageLocation, AudioFileRepository audioFileRepository) {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
-        this.fileRepository = fileRepository;
+        this.audioFileRepository = audioFileRepository;
         try {
             Files.createDirectories(fileStoragePath);
         } catch (IOException e) {
@@ -83,9 +83,9 @@ public class AudioFileService {
     private AudioFile storeFile(MultipartFile multipartFile) {
         String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         AudioFile newAudioFile = new AudioFile();
-        fileRepository.save(newAudioFile); // This sets the FileId field
-        Long fileId = newAudioFile.getFileId();
-        String newFilename = Long.toString(fileId) + ".mp3";
+        audioFileRepository.save(newAudioFile); // This sets the FileId field
+        Long audioFileId = newAudioFile.getAudioFileId();
+        String newFilename = Long.toString(audioFileId) + ".mp3";
         Path filePath = Paths.get(fileStoragePath + java.io.File.separator + newFilename); // LET OP: Door File.separator werkt dit nu op zowel Mac als Windows
         try {
             Files.copy(multipartFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -93,7 +93,7 @@ public class AudioFileService {
             throw new RuntimeException("Issue in storing the file", e);
         }
         newAudioFile.setOriginalFileName(originalFileName);
-        fileRepository.save(newAudioFile);
+        audioFileRepository.save(newAudioFile);
         return newAudioFile;
     }
 

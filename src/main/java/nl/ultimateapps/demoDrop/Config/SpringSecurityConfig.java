@@ -78,8 +78,8 @@ public class SpringSecurityConfig {
 
                 .antMatchers(HttpMethod.POST,"/demos/**/file").authenticated() // ASSIGN FILE (IN BODY) TO DEMO (MAX SIZE 1 MB!!!)
 
-                .antMatchers(HttpMethod.GET, "/files/**").authenticated() // DOWNLOAD SINGLE FILE
-                .antMatchers(HttpMethod.POST,"/files").authenticated() // UPLOAD SINGLE FILE  INTERNAL BACKEND REQUEST FOR ASSIGN FILE ROUTE
+                .antMatchers(HttpMethod.GET, "/audiofiles/**").permitAll() // DOWNLOAD SINGLE FILE (IN DEMODROP, EVERYONE CAN DOWNLOAD FILES)
+                .antMatchers(HttpMethod.POST,"/audiofiles").authenticated() // UPLOAD SINGLE FILE  INTERNAL BACKEND REQUEST FOR ASSIGN FILE ROUTE
 
                 .antMatchers(HttpMethod.GET,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.GET,"/conversations/**").authenticated() // CONVERSATION DETAILS
@@ -96,7 +96,11 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/authenticated").authenticated() // AUTHENTICATION TEST ROUTE
 
                 .antMatchers(HttpMethod.POST, "admin/authenticate").permitAll() //ADMIN LOGIN TODO Implement Admin Control Panel
-                .anyRequest().permitAll()  // DEVELOPMENT PURPOSES - change to ADMIN later
+
+                .antMatchers(HttpMethod.POST, "email/send").authenticated() //SEND EMAIL
+                .antMatchers(HttpMethod.POST, "email/sendwithattachment").authenticated() //SEND EMAIL WITH AN ATTACHMENT
+
+                .anyRequest().permitAll()  // DEVELOPMENT PURPOSES! CHANGE TO DENYALL() BEFORE RELEASE!!
 
                 .and()
                 .sessionManagement()

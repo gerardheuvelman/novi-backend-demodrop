@@ -22,7 +22,7 @@ public class AudioFile {
     @GeneratedValue(generator = "files-sequence-generator")
     @Getter
     @Setter
-    private long fileId;
+    private long audioFileId;
 
     @Getter
     @Setter
