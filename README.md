@@ -1,10 +1,6 @@
 # KNOWN BUGS: 
-- Frontend Inbox is not sorted by date, so perhaps I can sort the list in the backend. 
-- Replying to a message does not update the message body.
-- message sent confirmation email is still sent to the wrong address.
-- Creating a new conversation does not set the created date (remains null)
-- After creating or replying to a conversation (gerard), the inbox shows multiple copies of that conversation!
-- REWRITE getPersonalConversations() to not require retrieding a list of demo entities.
+- when deletin a user who still has favorited demo's, We get a 500 response
+- 
 
 
 # AANDACHTSPUNTEN VERDEDIGING: 
@@ -51,6 +47,7 @@ Installation steps:
    - DATASOURCE_URL = [jdbc:postgresql://localhost:5432/demodrop]
    - DATASOURCE_USERNAME = [postgres]
    - DATASOURCE_PASSWORD = [myp0$tgr3$p@$$w0rd]
+   - CLIENT_APP_URL = [http://localhost:3000]
 
 5. install dependencies by typing "mvn install" in a terminal window
 7. Run the project.

@@ -1,9 +1,7 @@
 package nl.ultimateapps.demoDrop.Controllers;
 
 
-import lombok.AllArgsConstructor;
 import nl.ultimateapps.demoDrop.Dtos.output.EmailDetailsDto;
-import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import nl.ultimateapps.demoDrop.Helpers.mappers.EmailDetailsMapper;
 import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Services.EmailService;

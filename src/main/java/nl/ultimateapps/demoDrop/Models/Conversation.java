@@ -5,6 +5,7 @@ import java.util.Date;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @AllArgsConstructor
@@ -26,10 +27,12 @@ public class Conversation {
 
     @Getter
     @Setter
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdDate;
 
     @Getter
     @Setter
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date latestReplyDate;
 
     @Getter

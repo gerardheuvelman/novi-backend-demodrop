@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "users")
@@ -42,6 +43,7 @@ public class User {
     @Column
     @Getter
     @Setter
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createdDate;
 
     //Relationships:

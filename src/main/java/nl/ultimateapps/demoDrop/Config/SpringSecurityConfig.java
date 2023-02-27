@@ -51,11 +51,13 @@ public class SpringSecurityConfig {
 
                 .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.GET,"/users/**").authenticated()  // FETCH USER DATA
+                .antMatchers(HttpMethod.GET,"/users/**/getstatus").authenticated()  // FETCH ACCOUNT STATUS
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
                 .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT
                 .antMatchers(HttpMethod.PUT, "/users/**").authenticated() // EDIT PROFILE
                 .antMatchers(HttpMethod.PATCH, "/users/**/change-password").authenticated() // CHANGE PASSWORD
                 .antMatchers(HttpMethod.PATCH, "/users/**/change-email").authenticated() // CHANGE EMAIL
+                .antMatchers(HttpMethod.PATCH, "/users/**/setstatus").hasRole("ADMIN") // SET ACCOUNT STATUS
                 .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
                 .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE YOUR ACCOUNT
 

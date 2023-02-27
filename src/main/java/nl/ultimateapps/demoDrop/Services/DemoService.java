@@ -4,16 +4,13 @@ import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
-import nl.ultimateapps.demoDrop.Models.AudioFile;
-import nl.ultimateapps.demoDrop.Models.Demo;
-import nl.ultimateapps.demoDrop.Models.Genre;
-import nl.ultimateapps.demoDrop.Models.User;
+import nl.ultimateapps.demoDrop.Models.*;
 import nl.ultimateapps.demoDrop.Repositories.*;
+import nl.ultimateapps.demoDrop.Utils.HyperlinkBuilder;
 import nl.ultimateapps.demoDrop.Utils.JwtUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -33,6 +30,7 @@ public class DemoService {
     private final UserRepository userRepository;
     private final AudioFileRepository audioFileRepository;
     private final GenreRepository genreRepository;
+    private final EmailService emailService;
 
     public ArrayList<DemoDto> getDemos(int limit) {
         ArrayList<DemoDto> demoDtoList = new ArrayList<>();
@@ -115,6 +113,24 @@ public class DemoService {
             demo.setUser(userRepository.findById(currentPrincipalName).get());
         } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         Demo savedDemo = demoRepository.save(demo);
+
+        // before returning, send a confirmation email:
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setSubject("DemoDrop - Demo upload confirmation");
+        HyperlinkBuilder hyperlinkBuilder = new HyperlinkBuilder();
+        String hyperlink = hyperlinkBuilder.buildDemoHyperlink(savedDemo);
+        // build email body:
+        StringBuilder bodyBuilder = new StringBuilder();
+        bodyBuilder.append("Your new demo named ");
+        bodyBuilder.append(demo.getTitle());
+        bodyBuilder.append(" was uploaded successfully to the system.\nCLick on the link below to see it.\n ");
+        bodyBuilder.append(hyperlink);
+        emailDetails.setMsgBody(bodyBuilder.toString());
+
+        emailDetails.setRecipient(demo.getUser().getEmail());
+        String sendResult = emailService.sendSimpleMail(emailDetails);
+        System.out.println(sendResult);
+
         return DemoMapper.mapToDto(savedDemo);
     }
 

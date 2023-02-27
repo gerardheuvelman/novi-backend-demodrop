@@ -13,11 +13,11 @@ public class EmailDetails {
 
     @Getter
     @Setter
-    private String msgBody;
+    private String subject;
 
     @Getter
     @Setter
-    private String subject;
+    private String msgBody;
 
     @Getter
     @Setter

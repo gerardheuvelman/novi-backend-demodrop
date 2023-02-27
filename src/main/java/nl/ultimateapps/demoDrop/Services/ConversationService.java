@@ -5,6 +5,7 @@ import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.ConversationMapper;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.Demo;
+import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Models.User;
 import nl.ultimateapps.demoDrop.Repositories.ConversationRepository;
 import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
@@ -12,6 +13,7 @@ import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
@@ -34,6 +36,10 @@ public class ConversationService {
     @Getter
     @Setter
     private UserRepository userRepository;
+
+    @Getter
+    @Setter
+    private EmailService emailService;
 
     public ArrayList<ConversationDto> getConversations(int limit) {
         ArrayList<ConversationDto> conversationDtoArrayList = new ArrayList<>();
@@ -58,7 +64,6 @@ public class ConversationService {
     }
 
 
-
     public List<ConversationDto> getPersonalConversations(String username) {
         // First, get the User object
         User user = userRepository.findById(username).get();
@@ -80,7 +85,7 @@ public class ConversationService {
         completeConversationList.sort(conversationComparator);
         // Translate ccmpleteConversationList to a final resultlist of corresponding DTO's
         List<ConversationDto> resultList = new ArrayList<>();
-        for (Conversation conversation: completeConversationList) {
+        for (Conversation conversation : completeConversationList) {
             ConversationDto conversationDto = ConversationMapper.mapToDto(conversation);
             resultList.add(conversationDto);
         }
@@ -97,52 +102,62 @@ public class ConversationService {
         }
     }
 
-    public ConversationDto startConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException {
+    public ConversationDto createConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException {
         long demoId = conversationDto.getDemo().getDemoId();
         // get the demo object form the repository
-        Optional<Demo> optionalDemo = demoRepository.findById(demoId);
-        if (optionalDemo.isPresent()) {
-            Demo retrievedDemo = optionalDemo.get();
-            Conversation conversation =  ConversationMapper.mapToModel(conversationDto);
-            conversation.setCreatedDate(Date.from(Instant.now()));
-            conversation.setLatestReplyDate(Date.from(Instant.now()));
-            conversation.setDemo(retrievedDemo);
-            // set the producer through the demo relationship:
-            conversation.setProducer(retrievedDemo.getUser());
-            conversation.setReadByInterestedUser(true);
-            conversation.setReadByProducer(false);
-            // Set the current User object (interestedUser) from the Security context (NOT the request body!)
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentPrincipalName = authentication.getName();
-            if (userRepository.findById(currentPrincipalName) != null) {
-                conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
-            } else throw new UserPrincipalNotFoundException(currentPrincipalName);
-            Conversation savedConversation = conversationRepository.save(conversation);
-            return ConversationMapper.mapToDto(savedConversation);
-        } else throw new RecordNotFoundException();
-
-
-
-
+        if (!demoRepository.findById(demoId).isPresent()) {
+            throw new RecordNotFoundException();
+        }
+        Demo retrievedDemo = demoRepository.findById(demoId).get();
+        Conversation conversation = ConversationMapper.mapToModel(conversationDto);
+        Date now = Date.from(Instant.now());
+        conversation.setCreatedDate(now);
+        conversation.setLatestReplyDate(now);
+        conversation.setDemo(retrievedDemo);
+        // set the producer through the demo relationship:
+        conversation.setProducer(retrievedDemo.getUser());
+        conversation.setReadByInterestedUser(true);
+        conversation.setReadByProducer(false);
+        // Set the current User object (interestedUser) from the Security context (NOT the request body!)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println();
+        System.out.println("Request principal: " + currentPrincipalName);
+        System.out.println();
+        if (userRepository.findById(currentPrincipalName) != null) {
+            conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
+        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+        Conversation savedConversation = conversationRepository.save(conversation);
+        // before returning, send a "New message" email to the producer of the demo and log it :
+        String sendResult = emailService.SendNewMessageEmail(savedConversation, true);
+        System.out.println(sendResult);
+        return ConversationMapper.mapToDto(savedConversation);
     }
 
-    public ConversationDto replyToConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException {
-        if (conversationRepository.findById(id).isPresent()) {
-            Conversation conversation = conversationRepository.findById(id).get();
-            conversation.setSubject((conversationDto.getSubject()));
-            conversation.setBody((conversationDto.getBody()));
-            conversation.setLatestReplyDate(Date.from(Instant.now()));
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentPrincipalName = authentication.getName();
-            if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername()) ) {
-                conversation.setReadByInterestedUser(true);
-                conversation.setReadByProducer(false);
-            } else {
-                conversation.setReadByInterestedUser(false);
-                conversation.setReadByProducer(true);
-            }
-            return ConversationMapper.mapToDto( conversationRepository.save(conversation));
-        } else throw new RecordNotFoundException();
+    public ConversationDto updateConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException {
+        if (!conversationRepository.findById(id).isPresent()) {
+            throw new RecordNotFoundException();
+        }
+        Conversation conversation = conversationRepository.findById(id).get();
+        conversation.setSubject((conversationDto.getSubject()));
+        conversation.setBody((conversationDto.getBody()));
+        conversation.setLatestReplyDate(Date.from(Instant.now()));
+        // set the 'readBy flags'
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername())) {
+            conversation.setReadByInterestedUser(true);
+            conversation.setReadByProducer(false);
+        } else {
+            conversation.setReadByInterestedUser(false);
+            conversation.setReadByProducer(true);
+        }
+        Conversation savedConversation = conversationRepository.save(conversation);
+        // before returning, send a "New message" email to the producer of the demo and log it :
+        String sendResult = emailService.SendNewMessageEmail(savedConversation, false);
+        System.out.println(sendResult);
+        return ConversationMapper.mapToDto(savedConversation);
+
     }
 
     public ConversationDto markConversationAsRead(long id) {
@@ -162,7 +177,7 @@ public class ConversationService {
         if (conversationRepository.findAll() != null) {
             List<Conversation> conversations = conversationRepository.findAll();
             long numDeletedConversations = 0;
-            for ( Conversation conversation : conversations) {
+            for (Conversation conversation : conversations) {
                 conversationRepository.delete(conversation);
                 numDeletedConversations++;
             }

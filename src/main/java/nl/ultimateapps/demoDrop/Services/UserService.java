@@ -2,6 +2,7 @@ package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
@@ -53,14 +54,11 @@ public class UserService {
     }
 
     public UserDto getUser(String username) {
-        UserDto dto = new UserDto();
         Optional<User> user = userRepository.findById(username);
-        if (user.isPresent()){
-            dto = UserMapper.mapToDto(user.get());
-        }else {
-            throw new UsernameNotFoundException(username);
+        if (!user.isPresent()){
+            return null;
         }
-        return dto;
+        return UserMapper.mapToDto(user.get());
     }
 
     public boolean userExists(String username) {
@@ -175,4 +173,24 @@ public class UserService {
     public void removeAuthorityFromUser(Authority authority, User user) {
         user.removeAuthority(authority);
     }
+
+    public boolean checkAccountStatus(String username) {
+        User user = new User();
+        if (userRepository.findById(username).isPresent()) {
+            user = userRepository.findById(username).get();
+        }
+        return user.isEnabled();
+    }
+    public boolean setAccountStatus(String username, boolean desiredStatus) {
+        User user;
+        if (userRepository.findById(username).isPresent()) {
+            user = userRepository.findById(username).get();
+        } else {
+            throw new RecordNotFoundException();
+        }
+        user.setEnabled(desiredStatus);
+        userRepository.save(user);
+        return checkAccountStatus(username);
+    }
+
 }

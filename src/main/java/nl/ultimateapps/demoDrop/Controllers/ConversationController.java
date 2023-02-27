@@ -38,14 +38,14 @@ public class ConversationController {
 
     @PostMapping("")
     public ResponseEntity<ConversationDto> startConversation(@RequestBody ConversationDto conversationDto) throws UserPrincipalNotFoundException {
-        ConversationDto savedConversationDto = conversationService.startConversation(conversationDto);
+        ConversationDto savedConversationDto = conversationService.createConversation(conversationDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/conversations/" + savedConversationDto.getConversationId()).toUriString());
         return ResponseEntity.created(uri).body(savedConversationDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ConversationDto> replyToConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
-        ConversationDto updatedConversationDto = conversationService.replyToConversation(id, conversationDto);
+        ConversationDto updatedConversationDto = conversationService.updateConversation(id, conversationDto);
         return ResponseEntity.ok(updatedConversationDto);
     }
 

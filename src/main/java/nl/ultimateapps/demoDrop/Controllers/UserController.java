@@ -41,9 +41,18 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
-        UserDto optionalUser = userService.getUser(username);
-        return ResponseEntity.ok().body(optionalUser);
+    public ResponseEntity<Object> getUser(@PathVariable("username") String username) {
+        UserDto user = userService.getUser(username);
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        else return ResponseEntity.ok().body(user);
+    }
+
+    @GetMapping("{username}/getstatus")
+    public ResponseEntity<Boolean> checkIsEnabled(@PathVariable String username) {
+        boolean accountStatus  = userService.checkAccountStatus(username);
+        return ResponseEntity.ok(accountStatus);
     }
 
     @PostMapping(value = "")
@@ -79,11 +88,19 @@ public class UserController {
         return ResponseEntity.ok("Password was updated successfully. Hash: " + hashFromDb);
     }
 
+    @PatchMapping(value = "/{username}/setstatus")
+    public ResponseEntity<Boolean> setAccountStatus(@PathVariable("username") String username, @RequestParam boolean status) {
+         boolean newAccountStatus = userService.setAccountStatus(username, status);
+        return ResponseEntity.ok(newAccountStatus);
+    }
+
+
     @PatchMapping(value = "/{username}/change-email")
     public ResponseEntity<String> changeEmail(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
         String emailFromDb = userService.changeEmail(username, userInputDto);
         return ResponseEntity.ok("Email was successfully updated to " + emailFromDb);
     }
+
 
 
     @DeleteMapping(value = "/{username}")
