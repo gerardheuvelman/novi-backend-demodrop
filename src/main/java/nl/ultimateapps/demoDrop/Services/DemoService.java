@@ -123,7 +123,7 @@ public class DemoService {
         StringBuilder bodyBuilder = new StringBuilder();
         bodyBuilder.append("Your new demo named ");
         bodyBuilder.append(demo.getTitle());
-        bodyBuilder.append(" was uploaded successfully to the system.\nCLick on the link below to see it.\n ");
+        bodyBuilder.append(" was successfully uploaded to the system.\nClick on the link below to see it.\n ");
         bodyBuilder.append(hyperlink);
         emailDetails.setMsgBody(bodyBuilder.toString());
 
@@ -137,6 +137,7 @@ public class DemoService {
     public DemoDto updateDemo(long id, DemoDto demoDto) {
         if (demoRepository.findById(id).isPresent()) {
             Demo demo = demoRepository.findById(id).get();
+            demo.setTitle(demoDto.getTitle());
             demo.setLength(demoDto.getLength());
             demo.setBpm(demoDto.getBpm());
             //Relationships

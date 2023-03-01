@@ -33,7 +33,7 @@ public class AudioFileController {
     ResponseEntity<Resource> downLoadSingleFile(@PathVariable long fileId, HttpServletRequest request) {
         Resource resource = audioFileService.downLoadFile(fileId);
         // this mediaType decides witch type you accept if you only accept 1 type
-         MediaType mediaType = new MediaType(""); //EXPERIMENT!!! "audio/mpeg" does not work because of the "/"
+         MediaType mediaType = new MediaType("audio", "mpeg");
         // this is going to accept multiple types
         // LET OP: bovenstaand is niet erg, want er wordt in de front end (React) gefilterd op filetype (audio files).
         // String mimeType;
