@@ -29,6 +29,11 @@ public class AudioFile {
     private String originalFileName;
 
     // Relationships:
-    // A one-to-one (mappedBy "file") Relationship met "Demo" is Implied!
+    // A one-to-one (mappedBy "file") Relationship met "Demo" is Implied:
+    @OneToOne
+    @Getter
+    @Setter
+    private Demo demo;
+
 
 }

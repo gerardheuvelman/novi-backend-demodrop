@@ -9,6 +9,7 @@ import nl.ultimateapps.demoDrop.Services.ConversationService;
 import nl.ultimateapps.demoDrop.Services.DemoService;
 import nl.ultimateapps.demoDrop.Services.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
@@ -101,12 +102,12 @@ public class UserController {
         return ResponseEntity.ok("Email was successfully updated to " + emailFromDb);
     }
 
-
-
     @DeleteMapping(value = "/{username}")
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
-        String userFromService = userService.deleteUser(username);
-        return ResponseEntity.ok("User \""+ userFromService + "\" was deleted successfully");
+        boolean deletionSuccessful = userService.deleteUser(username);
+        if (deletionSuccessful) {
+            return ResponseEntity.ok("User \""+ username + "\" was deleted successfully");
+        } else throw new AccessDeniedException("You have insufficient rights to delete this account");
     }
 
     @GetMapping(value = "/{username}/authorities")

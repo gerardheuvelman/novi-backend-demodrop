@@ -8,6 +8,7 @@ import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
 import nl.ultimateapps.demoDrop.Models.User;
 import nl.ultimateapps.demoDrop.Repositories.UserRepository;
+import nl.ultimateapps.demoDrop.Utils.AuthHelper;
 import nl.ultimateapps.demoDrop.Utils.RandomStringGenerator;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,7 +56,7 @@ public class UserService {
 
     public UserDto getUser(String username) {
         Optional<User> user = userRepository.findById(username);
-        if (!user.isPresent()){
+        if (!user.isPresent()) {
             return null;
         }
         return UserMapper.mapToDto(user.get());
@@ -103,9 +104,11 @@ public class UserService {
         return user.getEmail();
     }
 
-    public String deleteUser(String username) {
-        userRepository.deleteById(username);
-        return username;
+    public boolean deleteUser(String username) {
+        if (AuthHelper.checkAuthorization(username)) {
+            userRepository.deleteById(username);
+            return true;
+        } else return false;
     }
 
     public Set<Authority> getAuthorities(String username) {
@@ -143,7 +146,7 @@ public class UserService {
 
     public User updateExistingUser(User user, UserDto userDto) {
         if (userDto.getUsername() != null) {
-        user.setUsername(userDto.getUsername());
+            user.setUsername(userDto.getUsername());
         }
         if (userDto.getPassword() != null) {
             user.setPassword(userDto.getPassword());
@@ -181,6 +184,7 @@ public class UserService {
         }
         return user.isEnabled();
     }
+
     public boolean setAccountStatus(String username, boolean desiredStatus) {
         User user;
         if (userRepository.findById(username).isPresent()) {

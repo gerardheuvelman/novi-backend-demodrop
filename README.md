@@ -1,6 +1,8 @@
 # KNOWN BUGS: 
-- when deletin a user who still has favorited demo's, We get a 500 response
-- 
+- It may be possible to remove the account of another person than yourself.
+
+TODO:
+- implement delete mapping for audiofile 
 
 
 # AANDACHTSPUNTEN VERDEDIGING: 

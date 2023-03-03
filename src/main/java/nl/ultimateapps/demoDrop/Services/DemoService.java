@@ -6,11 +6,14 @@ import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import nl.ultimateapps.demoDrop.Models.*;
 import nl.ultimateapps.demoDrop.Repositories.*;
+import nl.ultimateapps.demoDrop.Utils.AuthHelper;
 import nl.ultimateapps.demoDrop.Utils.HyperlinkBuilder;
 import nl.ultimateapps.demoDrop.Utils.JwtUtil;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +32,9 @@ public class DemoService {
     private final DemoRepository demoRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
-    private final AudioFileRepository audioFileRepository;
     private final GenreRepository genreRepository;
+    private final AudioFileRepository audioFileRepository;
+    private final AudioFileService audioFileService;
     private final EmailService emailService;
 
     public ArrayList<DemoDto> getDemos(int limit) {
@@ -58,18 +63,22 @@ public class DemoService {
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByUserOrderByCreatedDateDesc(user);
         ArrayList<DemoDto> resultList = new ArrayList<>();
-        for (Demo demo: demoList) {
-        DemoDto demoDto = DemoMapper.mapToDto(demo);
-        resultList.add(demoDto);
+        for (Demo demo : demoList) {
+            DemoDto demoDto = DemoMapper.mapToDto(demo);
+            resultList.add(demoDto);
         }
         return resultList;
     }
 
     public ArrayList<DemoDto> getFavoriteDemos(String username) {
+        // check associative authorization:
+        if (!AuthHelper.checkAuthorization(username)) {
+            throw new org.springframework.security.access.AccessDeniedException("User has insufficient rights to access Favorited demos for user " + username);
+        }
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user);
         ArrayList<DemoDto> resultList = new ArrayList<>();
-        for (Demo demo: demoList) {
+        for (Demo demo : demoList) {
             DemoDto demoDto = DemoMapper.mapToDto(demo);
             resultList.add(demoDto);
         }
@@ -86,18 +95,17 @@ public class DemoService {
         }
     }
 
-    public boolean checkIsFav(long id) throws UserPrincipalNotFoundException {
-        if (demoRepository.findById(id).isPresent()) {
-            Demo demo = demoRepository.findById(id).get();
-
-            // Set the User object from the Security context (NOT the request body!)
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentPrincipalName = authentication.getName();
-            if (userRepository.findById(currentPrincipalName) != null) {
-               User currentUser = (userRepository.findById(currentPrincipalName).get());
-                if (demo.getFavoriteOfUsers().contains(currentUser)) {
-                    return true;
-                } else return false;
+    public boolean checkIsFav(long demoId) throws UserPrincipalNotFoundException {
+        if (demoRepository.findById(demoId).isPresent()) {
+            Demo demo = demoRepository.findById(demoId).get();
+            // Check associative authorization:
+            if (!AuthHelper.checkAuthorization(demo)) {
+                throw new AccessDeniedException("User has insufficient rights to check fav status for demo " + demoId);
+            }
+            String currentPrincipalName = AuthHelper.getPrincipalUsername();
+            if (userRepository.findById(currentPrincipalName).isPresent()) {
+                User currentUser = (userRepository.findById(currentPrincipalName).get());
+                return demo.getFavoriteOfUsers().contains(currentUser);
             } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         } else {
             throw new RecordNotFoundException();
@@ -105,11 +113,11 @@ public class DemoService {
     }
 
     public DemoDto createDemo(DemoDto demoDto) throws UserPrincipalNotFoundException {
-        Demo demo =  DemoMapper.mapToModel(demoDto);
+        Demo demo = DemoMapper.mapToModel(demoDto);
         demo.setCreatedDate(Date.from(Instant.now()));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Set the User object from the Security context (NOT the request body!)
-        String currentPrincipalName = authentication.getName();
-        if (userRepository.findById(currentPrincipalName) != null) {
+        // Set the User object from the Security context (NOT the request body!)
+        String currentPrincipalName = AuthHelper.getPrincipalUsername();
+        if (userRepository.findById(currentPrincipalName).isPresent()) {
             demo.setUser(userRepository.findById(currentPrincipalName).get());
         } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         Demo savedDemo = demoRepository.save(demo);
@@ -134,9 +142,13 @@ public class DemoService {
         return DemoMapper.mapToDto(savedDemo);
     }
 
-    public DemoDto updateDemo(long id, DemoDto demoDto) {
-        if (demoRepository.findById(id).isPresent()) {
-            Demo demo = demoRepository.findById(id).get();
+    public DemoDto updateDemo(long demoId, DemoDto demoDto) {
+        if (demoRepository.findById(demoId).isPresent()) {
+            Demo demo = demoRepository.findById(demoId).get();
+            // check associative authorization:
+            if (! AuthHelper.checkAuthorization(demo)) {
+                throw new AccessDeniedException("User has insufficient rights to update demo " + demoId);
+            }
             demo.setTitle(demoDto.getTitle());
             demo.setLength(demoDto.getLength());
             demo.setBpm(demoDto.getBpm());
@@ -166,22 +178,20 @@ public class DemoService {
         User currentUser;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        if (userRepository.findById(currentPrincipalName) != null) {
+        if (userRepository.findById(currentPrincipalName).isPresent()) {
             currentUser = (userRepository.findById(currentPrincipalName).get());
         } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         List<User> usersWhoFavoritedThisDemo = demo.getFavoriteOfUsers();
-        Boolean currentStatus = demo.getFavoriteOfUsers().contains(currentUser);
-        if (desiredStatus == true) {
-            if (currentStatus == false) {
+        boolean currentStatus = demo.getFavoriteOfUsers().contains(currentUser);
+        if (desiredStatus) {
+            if (!currentStatus) {
                 usersWhoFavoritedThisDemo.add(currentUser);
             }
-        }
-        else if (desiredStatus == false) {
-            if (currentStatus == true) {
+        } else if (!desiredStatus) {
+            if (currentStatus) {
                 usersWhoFavoritedThisDemo.remove(currentUser);
             }
-        }
-        else throw new IllegalArgumentException();
+        } else throw new IllegalArgumentException();
         demo.setFavoriteOfUsers(usersWhoFavoritedThisDemo);
         demoRepository.save(demo);
         return checkIsFav(id);
@@ -207,7 +217,7 @@ public class DemoService {
 
     public DemoDto addUserToFavoriteOfUsersList(long id, String username) {
         Demo demo;
-        User user ;
+        User user;
         if (demoRepository.findById(id).isPresent()) {
             demo = demoRepository.findById(id).get();
         } else {
@@ -228,7 +238,7 @@ public class DemoService {
 
     public DemoDto removeUserFromFavoriteOfUsersList(long id, String username) {
         Demo demo;
-        User user ;
+        User user;
         if (demoRepository.findById(id).isPresent()) {
             demo = demoRepository.findById(id).get();
         } else {
@@ -244,7 +254,7 @@ public class DemoService {
         boolean success;
         if (userList.contains(user)) {
             success = userList.remove(user);
-        } else throw  new UsernameNotFoundException(username);
+        } else throw new UsernameNotFoundException(username);
         if (!success) {
             throw new RuntimeException();
         }
@@ -254,17 +264,14 @@ public class DemoService {
     }
 
     public long deleteDemos() {
-        if (demoRepository.findAll() != null) {
-            List<Demo> demos= demoRepository.findAll();
-            long numDeletedDemos = 0;
-            for ( Demo demo : demos  ) {
-                demoRepository.delete(demo);
-                numDeletedDemos++;
-            }
-            return numDeletedDemos;
-        } else {
-            throw new RecordNotFoundException();
+        List<Demo> demos = demoRepository.findAll();
+        long numDeletedDemos = 0;
+        for (Demo demo : demos) {
+            demoRepository.delete(demo);
+            numDeletedDemos++;
         }
+        return numDeletedDemos;
+
     }
 
     public long deleteDemo(long id) {
@@ -288,7 +295,17 @@ public class DemoService {
         return resultList;
     }
 
-    public String assignFileToDemo(Long fileId, Long demoId) {
+    public boolean uploadFileAndAssignToDemo(Long demoId, MultipartFile multipartFile) throws AccessDeniedException {
+        DemoDto demoDto = getDemo(demoId);
+        User associatedUser = demoDto.getUser();
+        if (AuthHelper.checkAuthorization(associatedUser)) {
+            AudioFile audioFile = audioFileService.processFileUpload(multipartFile);
+            return assignFileToDemo(audioFile.getAudioFileId(), demoId);
+        } else
+            throw new AccessDeniedException("You have insufficient rights to upload a file to be associated with demo " + demoId);
+    }
+
+    public boolean assignFileToDemo(Long fileId, Long demoId) {
         Optional<Demo> optionalDemo = demoRepository.findById(demoId);
         Optional<AudioFile> optionalFile = audioFileRepository.findById(fileId);
         if (optionalDemo.isPresent() && optionalFile.isPresent()) {
@@ -296,7 +313,7 @@ public class DemoService {
             AudioFile audioFile = optionalFile.get();
             demo.setAudioFile(audioFile);
             demoRepository.save(demo);
-            return "file " + fileId + " was successfully assigned to demo " + demoId;
+            return true;
         } else throw new RecordNotFoundException();
     }
 }

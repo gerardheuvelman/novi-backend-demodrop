@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import lombok.*;
@@ -31,26 +32,26 @@ public class ConversationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ConversationDto> getConversation (@PathVariable int id) {
+    public ResponseEntity<ConversationDto> getConversation (@PathVariable int id) throws AccessDeniedException {
         ConversationDto conversationDto = conversationService.getConversation(id);
         return ResponseEntity.ok(conversationDto);
     }
 
     @PostMapping("")
-    public ResponseEntity<ConversationDto> startConversation(@RequestBody ConversationDto conversationDto) throws UserPrincipalNotFoundException {
+    public ResponseEntity<ConversationDto> startConversation(@RequestBody ConversationDto conversationDto) throws UserPrincipalNotFoundException, AccessDeniedException {
         ConversationDto savedConversationDto = conversationService.createConversation(conversationDto);
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/conversations/" + savedConversationDto.getConversationId()).toUriString());
         return ResponseEntity.created(uri).body(savedConversationDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ConversationDto> replyToConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) {
+    public ResponseEntity<ConversationDto> replyToConversation(@PathVariable long id, @RequestBody ConversationDto conversationDto) throws AccessDeniedException {
         ConversationDto updatedConversationDto = conversationService.updateConversation(id, conversationDto);
         return ResponseEntity.ok(updatedConversationDto);
     }
 
     @PatchMapping ("{id}")
-    public ResponseEntity<ConversationDto> MarkConversationAsRead(@PathVariable long id) {
+    public ResponseEntity<ConversationDto> MarkConversationAsRead(@PathVariable long id) throws AccessDeniedException {
         ConversationDto updatedConversationDto = conversationService.markConversationAsRead(id);
         return ResponseEntity.ok(updatedConversationDto);
     }

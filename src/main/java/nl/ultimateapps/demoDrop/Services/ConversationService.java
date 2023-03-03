@@ -5,16 +5,15 @@ import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.ConversationMapper;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.Demo;
-import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Models.User;
 import nl.ultimateapps.demoDrop.Repositories.ConversationRepository;
 import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
 import nl.ultimateapps.demoDrop.Repositories.UserRepository;
+import nl.ultimateapps.demoDrop.Utils.AuthHelper;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import io.github.cdimascio.dotenv.Dotenv;
-
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.*;
@@ -42,6 +41,9 @@ public class ConversationService {
     private EmailService emailService;
 
     public ArrayList<ConversationDto> getConversations(int limit) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+
         ArrayList<ConversationDto> conversationDtoArrayList = new ArrayList<>();
         Iterable<Conversation> conversationIterable = conversationRepository.findAllByOrderByLatestReplyDateDesc();
         ArrayList<Conversation> conversationArrayList = new ArrayList<>();
@@ -92,9 +94,12 @@ public class ConversationService {
         return resultList;
     }
 
-    public ConversationDto getConversation(long id) {
-        if (conversationRepository.findById(id).isPresent()) {
-            Conversation conversation = conversationRepository.findById(id).get();
+    public ConversationDto getConversation(long conversationId) throws AccessDeniedException {
+        if (conversationRepository.findById(conversationId).isPresent()) {
+            Conversation conversation = conversationRepository.findById(conversationId).get();
+            if (!AuthHelper.checkAuthorization(conversation)) {
+                throw new AccessDeniedException("User has insufficient rights to retrieve conversation " + conversationId);
+            }
             ConversationDto conversationDto = ConversationMapper.mapToDto(conversation);
             return conversationDto;
         } else {
@@ -102,13 +107,18 @@ public class ConversationService {
         }
     }
 
-    public ConversationDto createConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException {
+    public ConversationDto createConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException, AccessDeniedException {
         long demoId = conversationDto.getDemo().getDemoId();
         // get the demo object form the repository
         if (!demoRepository.findById(demoId).isPresent()) {
             throw new RecordNotFoundException();
         }
         Demo retrievedDemo = demoRepository.findById(demoId).get();
+
+        // Check associative authorization
+        if (!AuthHelper.checkAuthorization(retrievedDemo)) {
+            throw new AccessDeniedException("User has insufficient rights to create a new conversation for demo " + demoId);
+        }
         Conversation conversation = ConversationMapper.mapToModel(conversationDto);
         Date now = Date.from(Instant.now());
         conversation.setCreatedDate(now);
@@ -118,15 +128,13 @@ public class ConversationService {
         conversation.setProducer(retrievedDemo.getUser());
         conversation.setReadByInterestedUser(true);
         conversation.setReadByProducer(false);
-        // Set the current User object (interestedUser) from the Security context (NOT the request body!)
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentPrincipalName = authentication.getName();
-        System.out.println();
-        System.out.println("Request principal: " + currentPrincipalName);
-        System.out.println();
-        if (userRepository.findById(currentPrincipalName) != null) {
-            conversation.setInterestedUser(userRepository.findById(currentPrincipalName).get());
-        } else throw new UserPrincipalNotFoundException(currentPrincipalName);
+        // set the field "interestedUser" from the current security principal.
+        String currentPrincipalName = AuthHelper.getPrincipalUsername();
+        if (!userRepository.findById(currentPrincipalName).isPresent()) {
+            throw new UserPrincipalNotFoundException(currentPrincipalName);
+        }
+        User currentPrincipal = userRepository.findById(currentPrincipalName).get();
+        conversation.setInterestedUser(currentPrincipal);
         Conversation savedConversation = conversationRepository.save(conversation);
         // before returning, send a "New message" email to the producer of the demo and log it :
         String sendResult = emailService.SendNewMessageEmail(savedConversation, true);
@@ -134,11 +142,15 @@ public class ConversationService {
         return ConversationMapper.mapToDto(savedConversation);
     }
 
-    public ConversationDto updateConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException {
+    public ConversationDto updateConversation(long id, ConversationDto conversationDto) throws RecordNotFoundException, AccessDeniedException {
         if (!conversationRepository.findById(id).isPresent()) {
             throw new RecordNotFoundException();
         }
         Conversation conversation = conversationRepository.findById(id).get();
+        // check associative authorization:
+        if (! AuthHelper.checkAuthorization(conversation)) {
+            throw new AccessDeniedException("User has insufficient rights to edit conversation " + conversation.getConversationId());
+        }
         conversation.setSubject((conversationDto.getSubject()));
         conversation.setBody((conversationDto.getBody()));
         conversation.setLatestReplyDate(Date.from(Instant.now()));
@@ -160,12 +172,15 @@ public class ConversationService {
 
     }
 
-    public ConversationDto markConversationAsRead(long id) {
+    public ConversationDto markConversationAsRead(long id) throws AccessDeniedException {
         if (conversationRepository.findById(id).isPresent()) {
             Conversation conversation = conversationRepository.findById(id).get();
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String currentPrincipalName = authentication.getName();
-            if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername())) {
+            // check associative authorization:
+            if (! AuthHelper.checkAuthorization(conversation)) {
+                throw new AccessDeniedException("User has insufficient rights to mark conversation" + conversation.getConversationId() + " as read.");
+            }
+            String currentUserName = AuthHelper.getPrincipalUsername();
+            if (currentUserName.equals(conversation.getInterestedUser().getUsername())) {
                 conversation.setReadByInterestedUser(true);
             } else conversation.setReadByProducer(true);
             conversationRepository.save(conversation);
@@ -174,6 +189,10 @@ public class ConversationService {
     }
 
     public long deleteConversations() {
+        // check authorization
+        if (!AuthHelper.hasAdminRole()) {
+            throw new org.springframework.security.access.AccessDeniedException("User must ave admin Role to delete all conversations.");
+        }
         if (conversationRepository.findAll() != null) {
             List<Conversation> conversations = conversationRepository.findAll();
             long numDeletedConversations = 0;
@@ -187,12 +206,15 @@ public class ConversationService {
         }
     }
 
-    public long deleteConversation(long id) {
-        if (conversationRepository.findById(id).isPresent()) {
-            Conversation conversation = conversationRepository.findById(id).get();
-            long retrievedId = conversation.getConversationId();
-            conversationRepository.deleteById(id);
-            return retrievedId;
+    public long deleteConversation(long conversationId) {
+        if (conversationRepository.findById(conversationId).isPresent()) {
+            Conversation conversation = conversationRepository.findById(conversationId).get();
+            // Check associative authorization
+            if (!AuthHelper.checkAuthorization(conversation)) {
+                throw new AccessDeniedException("User has insufficient rights to delete conversation " + conversationId);
+            }
+            conversationRepository.deleteById(conversationId);
+            return conversationId;
         } else {
             throw new RecordNotFoundException();
         }

@@ -74,7 +74,7 @@ public class User {
     private List<Conversation> conversationsAsInterestedParty;
 
 
-    @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.DETACH)
+    @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.REMOVE)
     private List<Demo> favoriteDemos;
 
     public void addAuthority(Authority authority) {

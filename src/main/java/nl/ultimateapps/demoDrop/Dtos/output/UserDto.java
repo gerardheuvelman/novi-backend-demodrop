@@ -41,6 +41,7 @@ public class UserDto {
 
 
     //Relationships:
+    @JsonIncludeProperties({"authority"})
     @Getter
     @Setter
     private Set<Authority> authorities;

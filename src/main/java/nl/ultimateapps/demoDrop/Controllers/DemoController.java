@@ -1,14 +1,17 @@
 package nl.ultimateapps.demoDrop.Controllers;
 
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
+import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Models.AudioFile;
+import nl.ultimateapps.demoDrop.Services.AudioFileService;
 import nl.ultimateapps.demoDrop.Services.DemoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 
@@ -27,7 +30,7 @@ public class DemoController {
 
     @Getter
     @Setter
-    private AudioFileController audioFileController;
+    private AudioFileService audioFileService;
 
     @GetMapping("")
     public ResponseEntity<ArrayList<DemoDto>> getDemos(@RequestParam int limit) {
@@ -108,9 +111,9 @@ public class DemoController {
     }
 
     @PostMapping("/{id}/file")
-    public ResponseEntity<String> uploadFileAndAssignToDemo(@PathVariable("id") Long demoId, @RequestParam("file") MultipartFile multipartFile) {
-        AudioFile audioFile = audioFileController.uploadSingleFile(multipartFile);
-        String result = demoService.assignFileToDemo(audioFile.getAudioFileId(), demoId);
-        return ResponseEntity.ok(result);
+    public ResponseEntity<String> uploadFileAndAssignToDemo(@PathVariable("id") Long demoId, @RequestParam("file") MultipartFile multipartFile) throws AccessDeniedException {
+        if (demoService.uploadFileAndAssignToDemo (demoId, multipartFile)) {
+            return ResponseEntity.ok("A new file was successfully uploaded and associated with demoId " + demoId);
+        } else throw new BadRequestException();
     }
 }
