@@ -1,8 +1,9 @@
 package nl.ultimateapps.demoDrop.Utils;
 
-import nl.ultimateapps.demoDrop.Models.Conversation;
-import nl.ultimateapps.demoDrop.Models.Demo;
-import nl.ultimateapps.demoDrop.Models.User;
+import lombok.AllArgsConstructor;
+import nl.ultimateapps.demoDrop.Exceptions.DemoDropAuthenticationException;
+import nl.ultimateapps.demoDrop.Models.*;
+import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,12 +11,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
 
+@AllArgsConstructor
 public class AuthHelper {
 
     public static String getPrincipalUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated()) {
-            throw new AccessDeniedException("User is not authenticated");
+        if (!authentication.isAuthenticated()) {
+            throw new DemoDropAuthenticationException("User is not authenticated");
         }
         return authentication.getName();
     }
@@ -52,31 +54,38 @@ public class AuthHelper {
         } else return true;
     }
 
-        public static boolean checkAuthorization (User user){
-            String username = user.getUsername();
-            if (!checkAuthorization(username)) {
-                throw new AccessDeniedException("User has insufficient rights to perform this action. ");
-            }
-
-            return checkAuthorization(username);
-        }
-
-        public static boolean checkAuthorization (Demo demo){
-            String username = demo.getUser().getUsername();
-            if (!checkAuthorization(username)) {
-                throw new AccessDeniedException("User has insufficient rights to perform this action. ");
-            }
-            return checkAuthorization(username);
-        }
-
-        public static boolean checkAuthorization (Conversation conversation){
-            String producerName = conversation.getProducer().getUsername();
-            String interestedUserName = conversation.getInterestedUser().getUsername();
-            boolean principalIsProducerOrAdmin = checkAuthorization(producerName);
-            boolean principalIsInterestedUserOrAdmin = checkAuthorization(interestedUserName);
-            if (!(principalIsProducerOrAdmin || principalIsInterestedUserOrAdmin)) {
-                throw new AccessDeniedException("User has insufficient rights to perform this action. ");
-            }
-            return principalIsProducerOrAdmin || principalIsInterestedUserOrAdmin;
-        }
+    public static boolean checkAuthorization(User user) {
+        String username = user.getUsername();
+        return checkAuthorization(username);
     }
+
+    public static boolean checkAuthorization(Demo demo) {
+        String username = demo.getUser().getUsername();
+        return checkAuthorization(username);
+    }
+
+    public static boolean checkAuthorization(Conversation conversation) {
+        String producerName = conversation.getProducer().getUsername();
+        String interestedUserName = conversation.getInterestedUser().getUsername();
+        boolean principalIsProducerOrAdmin = checkAuthorization(producerName);
+        boolean principalIsInterestedUserOrAdmin = checkAuthorization(interestedUserName);
+        return principalIsProducerOrAdmin || principalIsInterestedUserOrAdmin;
+    }
+
+    public static boolean checkAuthorization(AudioFile audioFile) {
+        String fileOwnerName = audioFile.getDemo().getUser().getUsername();
+        return checkAuthorization(fileOwnerName);
+    }
+
+//    public static boolean checkAuthorization(EmailDetails emailDetails) {
+//        String recipientName = emailDetails.getRecipientUsername();
+//        // check if this is a user in the system
+//
+//
+//
+//        return checkAuthorization(fileOwnerName);
+//    }
+
+
+
+}

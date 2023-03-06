@@ -2,14 +2,14 @@ package nl.ultimateapps.demoDrop.Dtos.output;
 
 import lombok.*;
 
-@Data // MOET DIT HIER???
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmailDetailsDto {
 
     @Getter
     @Setter
-    private String recipient;
+    private String recipientUsername;
 
     @Getter
     @Setter
@@ -17,6 +17,7 @@ public class EmailDetailsDto {
 
     @Getter
     @Setter
+
     private String subject;
 
     @Getter

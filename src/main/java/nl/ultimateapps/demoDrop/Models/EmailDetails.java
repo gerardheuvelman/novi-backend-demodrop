@@ -9,7 +9,7 @@ public class EmailDetails {
 
     @Getter
     @Setter
-    private String recipient;
+    private String recipientUsername;
 
     @Getter
     @Setter

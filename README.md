@@ -1,8 +1,8 @@
 # KNOWN BUGS: 
-- It may be possible to remove the account of another person than yourself.
+- POST /audiofiles geeft 400 (Required request part 'multipartFile' is not present)
 
 TODO:
-- implement delete mapping for audiofile 
+- implement delete mapping for audiofile
 
 
 # AANDACHTSPUNTEN VERDEDIGING: 
@@ -14,7 +14,7 @@ TODO:
 
 Welcome to DemoDrop. DemoDrop is a general purpose online marketplace where Misic producers can upload their material and sell the rights to DJ's and other parties that are interested in playing said music. 
 
-DemoDrop is being developed by Gerard Heuvelman, as the final assignment of the bootcamp Full Stack Dveloper of Novi University, Utrecht, The Netherlands
+DemoDrop is continuously being developed by Gerard Heuvelman, as the final assignment of the bootcamp Full Stack Dveloper of Novi University, Utrecht, The Netherlands
 
 At this time, DemoDrop exists solely as a source-code only prototype, and as such still requires an IDE to run. 
 

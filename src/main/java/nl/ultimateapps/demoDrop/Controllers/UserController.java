@@ -4,6 +4,7 @@ import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
 import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Services.ConversationService;
 import nl.ultimateapps.demoDrop.Services.DemoService;
@@ -35,19 +36,26 @@ public class UserController {
     @Setter
     private ConversationService conversationService;
 
+    @GetMapping(value = "/public")
+    public ResponseEntity<List<UserPublicDto>> getUserPublicDtos(@RequestParam int limit) {
+        List<UserPublicDto> userPublicDtos = userService.getUserPublicDtos(limit);
+        return ResponseEntity.ok().body(userPublicDtos);
+    }
+    @GetMapping(value = "/public/{username}")
+    public ResponseEntity<UserPublicDto> getUserPublic(@PathVariable("username") String username) {
+        UserPublicDto userPublicDto = userService.getUserPublicDto(username);
+        return ResponseEntity.ok().body(userPublicDto);
+    }
     @GetMapping(value = "")
     public ResponseEntity<List<UserDto>> getUsers(@RequestParam int limit) {
-        List<UserDto> userDtos = userService.getUsers(limit);
+        List<UserDto> userDtos = userService.getUserDtos(limit);
         return ResponseEntity.ok().body(userDtos);
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<Object> getUser(@PathVariable("username") String username) {
-        UserDto user = userService.getUser(username);
-        if (user == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        else return ResponseEntity.ok().body(user);
+    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
+        UserDto userDto = userService.getUserDto(username);
+        return ResponseEntity.ok().body(userDto);
     }
 
     @GetMapping("{username}/getstatus")

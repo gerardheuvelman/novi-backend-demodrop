@@ -4,10 +4,10 @@ import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Services.ConversationService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import lombok.*;
@@ -50,7 +50,7 @@ public class ConversationController {
         return ResponseEntity.ok(updatedConversationDto);
     }
 
-    @PatchMapping ("{id}")
+    @PatchMapping ("{id}/markread")
     public ResponseEntity<ConversationDto> MarkConversationAsRead(@PathVariable long id) throws AccessDeniedException {
         ConversationDto updatedConversationDto = conversationService.markConversationAsRead(id);
         return ResponseEntity.ok(updatedConversationDto);

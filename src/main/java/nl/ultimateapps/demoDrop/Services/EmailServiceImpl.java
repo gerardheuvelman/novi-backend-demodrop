@@ -1,45 +1,54 @@
 package nl.ultimateapps.demoDrop.Services;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Models.User;
+import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import nl.ultimateapps.demoDrop.Utils.HyperlinkBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
-import java.util.Objects;
 
 @Service
+
 public class EmailServiceImpl implements EmailService {
 
     private JavaMailSender javaMailSender;
 
+    private final UserRepository userRepository;
+
     private String sender;
 
-    public EmailServiceImpl(JavaMailSender javaMailSender, @Value("${spring.mail.username}") String sender) {
-        System.out.println(sender);
+    public EmailServiceImpl(JavaMailSender javaMailSender, UserRepository userRepository, @Value("${spring.mail.username}") String sender) {
         this.javaMailSender = javaMailSender;
+        this.userRepository = userRepository;
         this.sender = sender;
     }
 
-    public String sendSimpleMail(EmailDetails details) {
+    public String sendSimpleMail(EmailDetails emailDetails) { // AUTH ONLY
+        if (userRepository.findById(emailDetails.getRecipientUsername()).isEmpty()) {
+            throw new UsernameNotFoundException(emailDetails.getRecipientUsername());
+        }
+        User recipient = userRepository.findById(emailDetails.getRecipientUsername()).get();
+        String recipientEmail = recipient.getEmail();
+
         // Try block to check for exceptions
         try {
             // Creating a simple mail message
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
             // Setting up necessary details
             simpleMailMessage.setFrom(sender);
-            simpleMailMessage.setTo(details.getRecipient());
-            simpleMailMessage.setText(details.getMsgBody());
-            simpleMailMessage.setSubject(details.getSubject());
+            simpleMailMessage.setTo(recipientEmail);
+            simpleMailMessage.setText(emailDetails.getMsgBody());
+            simpleMailMessage.setSubject(emailDetails.getSubject());
 
             // Sending the mail
             javaMailSender.send(simpleMailMessage);
@@ -52,7 +61,12 @@ public class EmailServiceImpl implements EmailService {
         }
     }
 
-    public String sendMailWithAttachment(EmailDetails details) {
+    public String sendMailWithAttachment(EmailDetails emailDetails) { // AUTH ONLY
+        if (userRepository.findById(emailDetails.getRecipientUsername()).isEmpty()) {
+            throw new UsernameNotFoundException(emailDetails.getRecipientUsername());
+        }
+        User recipient = userRepository.findById(emailDetails.getRecipientUsername()).get();
+        String recipientEmail = recipient.getEmail();
         // Creating a mime message
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper;
@@ -61,13 +75,13 @@ public class EmailServiceImpl implements EmailService {
             // Setting multipart as true for attachments to be sent
             mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(sender);
-            mimeMessageHelper.setTo(details.getRecipient());
-            mimeMessageHelper.setText(details.getMsgBody());
+            mimeMessageHelper.setTo(recipientEmail);
+            mimeMessageHelper.setText(emailDetails.getMsgBody());
             mimeMessageHelper.setSubject(
-                    details.getSubject());
+                    emailDetails.getSubject());
 
             // Adding the attachment
-            FileSystemResource file = new FileSystemResource(new File(details.getAttachment()));
+            FileSystemResource file = new FileSystemResource(new File(emailDetails.getAttachment()));
             mimeMessageHelper.addAttachment(file.getFilename(), file);
 
             // Sending the mail
@@ -116,7 +130,7 @@ public class EmailServiceImpl implements EmailService {
         String emailBody = bodyBuilder.toString();
 
         // Send the email:
-        EmailDetails emailDetails = new EmailDetails(emailRecipient.getEmail(), emailSubject, emailBody, null);
+        EmailDetails emailDetails = new EmailDetails(emailRecipient.getUsername(), emailSubject, emailBody, null);
         return sendSimpleMail(emailDetails);
     }
 

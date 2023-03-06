@@ -49,55 +49,64 @@ public class SpringSecurityConfig {
                 .httpBasic().disable()
                 .authorizeRequests()
 
-                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.GET,"/users/**").authenticated()  // FETCH USER DATA
-                .antMatchers(HttpMethod.GET,"/users/**/getstatus").authenticated()  // FETCH ACCOUNT STATUS
+                .antMatchers(HttpMethod.GET,"/users/public").permitAll() // LIST USERS (PUBLIC INFO)
+                .antMatchers(HttpMethod.GET,"/users/public/**").permitAll()  // GET USER (PUBLIC INFO)
+
+                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // LIST USERS
+                .antMatchers(HttpMethod.GET, "/users/**/demos").permitAll() // PERSONAL DEMO LIST
+                .antMatchers(HttpMethod.GET, "/users/**/favdemos").authenticated() // PERSONAL FAVORITE DEMO LIST
+                .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
+                .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // LIST USER AUTHORITIES
+                .antMatchers(HttpMethod.GET,"/users/**/getstatus").hasRole("ADMIN")  // FETCH ACCOUNT STATUS
+                .antMatchers(HttpMethod.GET,"/users/**/").hasRole("ADMIN")  // GET USER
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
                 .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT
+                .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ASSIGN AUTHORITY TO USER
                 .antMatchers(HttpMethod.PUT, "/users/**").authenticated() // EDIT PROFILE
                 .antMatchers(HttpMethod.PATCH, "/users/**/change-password").authenticated() // CHANGE PASSWORD
                 .antMatchers(HttpMethod.PATCH, "/users/**/change-email").authenticated() // CHANGE EMAIL
                 .antMatchers(HttpMethod.PATCH, "/users/**/setstatus").hasRole("ADMIN") // SET ACCOUNT STATUS
-                .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE YOUR ACCOUNT
-
-                .antMatchers(HttpMethod.GET, "/users/**/demos").authenticated() // PERSONAL DEMO LIST
-                .antMatchers(HttpMethod.GET, "/users/**/favdemos").authenticated() // PERSONAL FAVORITE DEMO LIST
-                .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
-                .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.DELETE, "/users/**/authorities/**").hasRole("ADMIN")  // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // DELETE ALL USERS
+                .antMatchers(HttpMethod.DELETE, "/users/**/authorities/**").hasRole("ADMIN")  // REMOVE AUTHORITY FROM USER
+                .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE USER ACCOUNT
 
                 .antMatchers(HttpMethod.GET,"/demos").permitAll() // LIST DEMOS (PUBLICLY AVAILABLE DATA)
                 .antMatchers(HttpMethod.GET,"/demos/**").permitAll() // GET DEMO (PUBLICLY AVAILABLE DATA)
-                .antMatchers(HttpMethod.GET, "/demos/**/isfav").authenticated() // ADD A USER TO FAVLIST
+                .antMatchers(HttpMethod.GET, "/demos/**/isfav").authenticated() // CHECK DEMO AGAINST FAVLIST
                 .antMatchers(HttpMethod.POST,"/demos").authenticated() // CREATE/UPLOAD NEW DEMO
                 .antMatchers(HttpMethod.PUT, "/demos/**").authenticated() // EDIT DEMO DATA
                 .antMatchers(HttpMethod.PATCH, "/demos/**/setgenre/**").authenticated() // ASSIGN A GENRE TO A DEMO
-                .antMatchers(HttpMethod.PATCH, "/demos/**/setfav").authenticated() // REMOVE A USER FROM FAVLIST
-                .antMatchers(HttpMethod.DELETE,"/demos").hasRole("ADMIN")// ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.DELETE, "/demos/**").authenticated()// !!ONLY DELETE YOUR OWN DEMO (OR ADMIN ROLE)!!
+                .antMatchers(HttpMethod.PATCH, "/demos/**/setfav").authenticated() // ADD / REMOVE A USER FROM FAVLIST
+                .antMatchers(HttpMethod.DELETE,"/demos").hasRole("ADMIN")// DELETE ALL DEMOS
+                .antMatchers(HttpMethod.DELETE, "/demos/**").authenticated()// DELETE SINGLE DEMO
 
-                .antMatchers(HttpMethod.POST,"/demos/**/file").authenticated() // ASSIGN FILE (IN BODY) TO DEMO (MAX SIZE 1 MB!!!)
+                .antMatchers(HttpMethod.POST,"/demos/**/upload").authenticated() // UPLOAD MP3 FILE & ASSIGN TO EXISTING DEMO (>1MB ENABLED)
+                .antMatchers(HttpMethod.POST,"/demos/**/download").authenticated() // DOWNLOAD MP3 FILE
 
-                .antMatchers(HttpMethod.GET, "/audiofiles/**").permitAll() // DOWNLOAD SINGLE FILE (IN DEMODROP, EVERYONE CAN DOWNLOAD FILES)
-                .antMatchers(HttpMethod.POST,"/audiofiles").authenticated() // UPLOAD SINGLE FILE  INTERNAL BACKEND REQUEST FOR ASSIGN FILE ROUTE
+                // AUDIOFILE ROUTES (ADMIN ONLY)
+                .antMatchers(HttpMethod.GET, "/audiofiles").hasRole("ADMIN") // LIST AUDIOFILES
+                .antMatchers(HttpMethod.GET, "/audiofiles/**").hasRole("ADMIN") // GET AUDIOFILE
+                .antMatchers(HttpMethod.DELETE,"/audiofiles").hasRole("ADMIN") // DELETE ALL AUDIOFILES (ALSO ON DISK)
+                .antMatchers(HttpMethod.DELETE,"/audiofiles/**").hasRole("ADMIN") // DELETE SINGLE AUDIOFILE (ALSO ON DISK)
+                .antMatchers(HttpMethod.DELETE,"/audiofiles/purge").hasRole("ADMIN") // DELETE ORPHAN AUDIOFILES (ALSO ON DISK)
 
-                .antMatchers(HttpMethod.GET,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                // To be moved into Audifile Service:
+                .antMatchers(HttpMethod.POST,"/audiofiles/processnewmp3file").authenticated() // UPLOAD SINGLE FILE (INTERNAL REQUEST FOR UPLOAD & ASSIGN ROUTE)
+
+                .antMatchers(HttpMethod.GET,"/conversations").hasRole("ADMIN") // LIST CONVERSATIONS
                 .antMatchers(HttpMethod.GET,"/conversations/**").authenticated() // CONVERSATION DETAILS
                 .antMatchers(HttpMethod.POST,"/conversations").authenticated() // CREATE NEW CONVERSATION
                 .antMatchers(HttpMethod.PUT, "/conversations/**").authenticated() // REPLY TO EXISTING CONVERSATION
-                .antMatchers(HttpMethod.DELETE,"/conversations").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.DELETE, "/conversations/**").authenticated() // DELETE A CONVERSATION / ALL CONVERSATIONS
+                .antMatchers(HttpMethod.PATCH, "/conversations/**/markread").authenticated()//  MARK CONVERSATION AS READ
+                .antMatchers(HttpMethod.DELETE,"/conversations").hasRole("ADMIN") // DELETE ALL CONVERSATIONS
+                .antMatchers(HttpMethod.DELETE, "/conversations/**").hasRole("ADMIN") //  DELETE SINGLE CONVERSATION
 
-                .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // PUBLIC DATA
-                .antMatchers(HttpMethod.POST,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
-                .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // ADMIN CONTROL PANEL
+                .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // LIST MUSIC GENRES
+                .antMatchers(HttpMethod.POST,"/genres", "/genres/**").hasRole("ADMIN") // CREATE MUSIC GENRE
+                .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // DELETE MUSIC GENRE
 
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN
                 .antMatchers(HttpMethod.GET, "/authenticated").authenticated() // AUTHENTICATION TEST ROUTE
-
-                .antMatchers(HttpMethod.POST, "admin/authenticate").permitAll() //ADMIN LOGIN TODO Implement Admin Control Panel
 
                 .antMatchers(HttpMethod.POST, "email/send").authenticated() //SEND EMAIL
                 .antMatchers(HttpMethod.POST, "email/sendwithattachment").authenticated() //SEND EMAIL WITH AN ATTACHMENT

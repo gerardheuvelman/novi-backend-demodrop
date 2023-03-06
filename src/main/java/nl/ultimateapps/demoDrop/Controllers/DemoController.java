@@ -6,16 +6,21 @@ import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Models.AudioFile;
 import nl.ultimateapps.demoDrop.Services.AudioFileService;
 import nl.ultimateapps.demoDrop.Services.DemoService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 
 import lombok.*;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 
 @CrossOrigin
@@ -42,18 +47,19 @@ public class DemoController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{demoId}")
     @Transactional
     // Dit moet omdat het anders niet toegestaan is om een large object (de mp3 file) automatisch mee te geven.
-    public ResponseEntity<DemoDto> getDemo (@PathVariable long id) {
-        DemoDto demoDto = demoService.getDemo(id);
+    public ResponseEntity<DemoDto> getDemo (@PathVariable long demoId) {
+        DemoDto demoDto = demoService.getDemo(demoId);
         return ResponseEntity.ok(demoDto);
     }
 
-    @GetMapping("{id}/isfav")
-    public ResponseEntity<Boolean> checkIsFav(@PathVariable long id) throws UserPrincipalNotFoundException {
-        boolean favStatus  = demoService.checkIsFav(id);
-        return ResponseEntity.ok(favStatus);
+    @GetMapping("/{demoId}/download")
+    public ResponseEntity<Resource> downloadMp3File(@PathVariable long demoId, HttpServletRequest request) {
+         Resource mp3File = demoService.downloadMp3File(demoId);
+        MediaType mediaType = new MediaType("audio", "mpeg");
+        return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + mp3File.getFilename()).body(mp3File);
     }
 
     @PostMapping("")
@@ -69,6 +75,12 @@ public class DemoController {
         return ResponseEntity.ok(updatedDemoDto);
     }
 
+    @GetMapping("{id}/isfav")
+    public ResponseEntity<Boolean> checkIsFav(@PathVariable long id) throws UserPrincipalNotFoundException {
+        boolean favStatus  = demoService.checkIsFav(id);
+        return ResponseEntity.ok(favStatus);
+    }
+
     @PatchMapping("{id}/setfav")
     public ResponseEntity<Boolean> setFavStatus(@PathVariable long id, @RequestParam boolean status) throws UserPrincipalNotFoundException {
         boolean newFavStatus  = demoService.setFavStatus(id, status);
@@ -76,22 +88,22 @@ public class DemoController {
     }
 
     @PatchMapping("/{id}/setgenre/{genrename}")
-    public ResponseEntity<DemoDto> assignGenreToDemo(@PathVariable long id, @PathVariable String genrename) {
+    public ResponseEntity<DemoDto> assignGenreToDemo(@PathVariable long id, @PathVariable String genrename) throws AccessDeniedException {
         DemoDto partiallyUpdatedDemoDto = demoService.assignGenreToDemo(id, genrename);
         return ResponseEntity.ok(partiallyUpdatedDemoDto);
     }
 
-    @PatchMapping("/{id}/addfav/{username}")
-    public ResponseEntity<DemoDto> addUserToFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
-        DemoDto partiallyUpdatedDemoDto = demoService.addUserToFavoriteOfUsersList(id, username);
-        return ResponseEntity.ok(partiallyUpdatedDemoDto);
-    }
-
-    @PatchMapping("/{id}/remfav/{username}")
-    public ResponseEntity<DemoDto> removeUserFromFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
-        DemoDto partiallyUpdatedDemoDto = demoService.removeUserFromFavoriteOfUsersList(id, username);
-        return ResponseEntity.ok(partiallyUpdatedDemoDto);
-    }
+//    @PatchMapping("/{id}/addfav/{username}")
+//    public ResponseEntity<DemoDto> addUserToFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
+//        DemoDto partiallyUpdatedDemoDto = demoService.addUserToFavoriteOfUsersList(id, username);
+//        return ResponseEntity.ok(partiallyUpdatedDemoDto);
+//    }
+//
+//    @PatchMapping("/{id}/remfav/{username}")
+//    public ResponseEntity<DemoDto> removeUserFromFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
+//        DemoDto partiallyUpdatedDemoDto = demoService.removeUserFromFavoriteOfUsersList(id, username);
+//        return ResponseEntity.ok(partiallyUpdatedDemoDto);
+//    }
 
     @DeleteMapping("")
     public ResponseEntity<String> deleteDemos() {
@@ -110,7 +122,7 @@ public class DemoController {
         return ResponseEntity.ok(demoService.getDemoContaining(query));
     }
 
-    @PostMapping("/{id}/file")
+    @PostMapping("/{id}/upload")
     public ResponseEntity<String> uploadFileAndAssignToDemo(@PathVariable("id") Long demoId, @RequestParam("file") MultipartFile multipartFile) throws AccessDeniedException {
         if (demoService.uploadFileAndAssignToDemo (demoId, multipartFile)) {
             return ResponseEntity.ok("A new file was successfully uploaded and associated with demoId " + demoId);

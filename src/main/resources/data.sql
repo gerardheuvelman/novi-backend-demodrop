@@ -1,7 +1,7 @@
 INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');
 INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('gerard', 'ROLE_USER');
-INSERT INTO authorities (username, authority) VALUES ('someotheruser1', 'ROLE_USER');
+INSERT INTO authorities (username, authority) VALUES ('aalke', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser2', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser3', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser4', 'ROLE_USER');
@@ -18,7 +18,7 @@ INSERT INTO authorities (username, authority) VALUES ('someotheruser13', 'ROLE_U
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('admin', '$2y$10$Te.lNeGaDiRAUAXXpBbR7.3s9vi/K8tKGNe2EvfuEjMOquXAbR/Uy', true, 'fakeKey1', 'admin@demodrop.nl', '2023-01-01');
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('gerard', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey2', 'gerardheuvelman@gmail.com','2023-01-02');
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('hendrik', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser1', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com1','2023-01-03');
+INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('aalke', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com1','2023-01-03');
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser2', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com2','2023-01-03');
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser3', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com3','2023-01-03');
 INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser4', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com4','2023-01-03');
@@ -120,7 +120,7 @@ SET username = 'gerard'
 WHERE demo_id = 1003;
 
 UPDATE demo
-SET username = 'someotheruser1'
+SET username = 'aalke'
 WHERE demo_id = 1004;
 
 UPDATE demo
@@ -302,7 +302,7 @@ SET genre = 'Dance'
 WHERE demo_id = 1016;
 
 UPDATE conversation
-SET demo_id = 1001, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1001, producer_name = 'gerard', interested_user_name = 'aalke'
 WHERE conversation_id = 2001;
 
 UPDATE conversation
