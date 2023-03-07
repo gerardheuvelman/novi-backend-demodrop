@@ -35,7 +35,7 @@ public class DemoDto {
     private Double bpm;
 
     //Relationships:
-    @JsonIgnore
+    @JsonIncludeProperties({"audioFileId", "originalFileName"})
     @Getter
     @Setter
     private AudioFile audioFile;

@@ -3,9 +3,8 @@ package nl.ultimateapps.demoDrop.Controllers;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
-import nl.ultimateapps.demoDrop.Models.AudioFile;
-import nl.ultimateapps.demoDrop.Services.AudioFileService;
-import nl.ultimateapps.demoDrop.Services.DemoService;
+import nl.ultimateapps.demoDrop.Services.AudioFileServiceImpl;
+import nl.ultimateapps.demoDrop.Services.DemoServiceImpl;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -16,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.ArrayList;
+import java.util.List;
 
 import lombok.*;
 
@@ -31,15 +30,15 @@ public class DemoController {
 
     @Getter
     @Setter
-    private DemoService demoService;
+    private DemoServiceImpl demoService;
 
     @Getter
     @Setter
-    private AudioFileService audioFileService;
+    private AudioFileServiceImpl audioFileService;
 
     @GetMapping("")
-    public ResponseEntity<ArrayList<DemoDto>> getDemos(@RequestParam int limit) {
-        ArrayList<DemoDto> demoDtos = demoService.getDemos(limit);
+    public ResponseEntity<List<DemoDto>> getDemos(@RequestParam int limit) {
+        List<DemoDto> demoDtos = demoService.getDemos(limit);
         if (demoDtos.size()>0) {
             return ResponseEntity.ok(demoDtos);
         } else {
@@ -48,14 +47,13 @@ public class DemoController {
     }
 
     @GetMapping("/{demoId}")
-    @Transactional
-    // Dit moet omdat het anders niet toegestaan is om een large object (de mp3 file) automatisch mee te geven.
     public ResponseEntity<DemoDto> getDemo (@PathVariable long demoId) {
         DemoDto demoDto = demoService.getDemo(demoId);
         return ResponseEntity.ok(demoDto);
     }
 
     @GetMapping("/{demoId}/download")
+    @Transactional // Dit moet omdat het anders niet toegestaan is om een large object (de mp3 file) automatisch mee te geven.
     public ResponseEntity<Resource> downloadMp3File(@PathVariable long demoId, HttpServletRequest request) {
          Resource mp3File = demoService.downloadMp3File(demoId);
         MediaType mediaType = new MediaType("audio", "mpeg");

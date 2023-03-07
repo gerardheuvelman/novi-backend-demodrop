@@ -66,22 +66,22 @@ INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_d
 INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2015, 'anothersubject12', '2023-01-13', '2023-01-16','anotherbody12' , false, false);
 INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2016, 'anothersubject13', '2023-01-13', '2023-01-16','anotherbody13' , false, false);
 
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3001, 'PrimeAudio.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3002, 'DanceMonkey.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3003, 'DubstepWonderland.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3004, 'DanceMonkey2.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3005, 'DanceMonkey3.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3006, 'DanceMonkey4.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3007, 'DanceMonkey5.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3008, 'DanceMonkey6.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3009, 'DanceMonkey7.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3010, 'DanceMonkey8.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3011, 'DanceMonkey9.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3012, 'DanceMonkey10.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3013, 'DanceMonkey11.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3014, 'DanceMonkey12.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3015, 'DanceMonkey13.mp3');
-INSERT INTO audio_file (audio_file_id, original_file_name) VALUES (3016, 'DanceMonkey14.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3001, '2023-01-01' ,'PrimeAudio.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3002, '2023-01-01' ,'DanceMonkey.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3003, '2023-01-01' ,'DubstepWonderland.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3004, '2023-01-01' ,'DanceMonkey2.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3005, '2023-01-01' ,'DanceMonkey3.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3006, '2023-01-01' ,'DanceMonkey4.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3007, '2023-01-01' ,'DanceMonkey5.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3008, '2023-01-01' ,'DanceMonkey6.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3009, '2023-01-01' ,'DanceMonkey7.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3010, '2023-01-01' ,'DanceMonkey8.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3011, '2023-01-01' ,'DanceMonkey9.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3012, '2023-01-01' ,'DanceMonkey10.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3013, '2023-01-01' ,'DanceMonkey11.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3014, '2023-01-01' ,'DanceMonkey12.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3015, '2023-01-01' ,'DanceMonkey13.mp3');
+INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3016, '2023-01-01' ,'DanceMonkey14.mp3');
 
 INSERT INTO genre (name) VALUES ('Alternative dance');
 INSERT INTO genre (name) VALUES ('Dance');

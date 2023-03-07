@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.ultimateapps.demoDrop.Dtos.output.GenreDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
-import nl.ultimateapps.demoDrop.Services.GenreService;
+import nl.ultimateapps.demoDrop.Services.GenreServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,7 +20,7 @@ public class GenreController {
 
     @Getter
     @Setter
-    private GenreService genreService;
+    private GenreServiceImpl genreService;
 
     @GetMapping("")
     public ResponseEntity<ArrayList<GenreDto>> getGenres() {

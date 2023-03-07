@@ -6,9 +6,9 @@ import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
-import nl.ultimateapps.demoDrop.Services.ConversationService;
-import nl.ultimateapps.demoDrop.Services.DemoService;
-import nl.ultimateapps.demoDrop.Services.UserService;
+import nl.ultimateapps.demoDrop.Services.ConversationServiceImpl;
+import nl.ultimateapps.demoDrop.Services.DemoServiceImpl;
+import nl.ultimateapps.demoDrop.Services.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +26,15 @@ public class UserController {
 
     @Getter
     @Setter
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @Getter
     @Setter
-    private DemoService demoservice;
+    private DemoServiceImpl demoservice;
 
     @Getter
     @Setter
-    private ConversationService conversationService;
+    private ConversationServiceImpl conversationService;
 
     @GetMapping(value = "/public")
     public ResponseEntity<List<UserPublicDto>> getUserPublicDtos(@RequestParam int limit) {
@@ -53,7 +53,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("username") String username) {
+    public ResponseEntity<UserDto> getUserEssentialInfo(@PathVariable("username") String username) {
         UserDto userDto = userService.getUserDto(username);
         return ResponseEntity.ok().body(userDto);
     }
@@ -93,8 +93,10 @@ public class UserController {
 
     @PatchMapping(value = "/{username}/change-password")
     public ResponseEntity<String> changePassword(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
-        String hashFromDb = userService.changePassword(username, userInputDto);
-        return ResponseEntity.ok("Password was updated successfully. Hash: " + hashFromDb);
+        String oldHash = userService.getUserDto(username).getPassword();
+        String newHash = userService.changePassword(username, userInputDto);
+        String message = "Password was updated successfully."+ System.lineSeparator() + "Old hash: " + oldHash + System.lineSeparator() + "New hash: " + newHash;
+        return ResponseEntity.ok(message);
     }
 
     @PatchMapping(value = "/{username}/setstatus")

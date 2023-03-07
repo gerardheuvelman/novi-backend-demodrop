@@ -1,6 +1,6 @@
 package nl.ultimateapps.demoDrop.Config;
 
-import nl.ultimateapps.demoDrop.Services.CustomUserDetailsService;
+import nl.ultimateapps.demoDrop.Services.CustomUserDetailsServiceImpl;
 import nl.ultimateapps.demoDrop.Filters.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,7 +26,7 @@ public class SpringSecurityConfig {
 
     @Getter
     @Setter
-    private  CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsServiceImpl customUserDetailsService;
 
     @Getter
     @Setter
@@ -58,7 +58,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
                 .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // LIST USER AUTHORITIES
                 .antMatchers(HttpMethod.GET,"/users/**/getstatus").hasRole("ADMIN")  // FETCH ACCOUNT STATUS
-                .antMatchers(HttpMethod.GET,"/users/**/").hasRole("ADMIN")  // GET USER
+                .antMatchers(HttpMethod.GET,"/users/**/").permitAll() // GET ESSENTIAL USER INFO
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
                 .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT
                 .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ASSIGN AUTHORITY TO USER
@@ -83,15 +83,12 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.POST,"/demos/**/upload").authenticated() // UPLOAD MP3 FILE & ASSIGN TO EXISTING DEMO (>1MB ENABLED)
                 .antMatchers(HttpMethod.POST,"/demos/**/download").authenticated() // DOWNLOAD MP3 FILE
 
-                // AUDIOFILE ROUTES (ADMIN ONLY)
+                // Direct CRUD for audiofiles (admin only)
                 .antMatchers(HttpMethod.GET, "/audiofiles").hasRole("ADMIN") // LIST AUDIOFILES
-                .antMatchers(HttpMethod.GET, "/audiofiles/**").hasRole("ADMIN") // GET AUDIOFILE
+                .antMatchers(HttpMethod.GET, "/audiofiles/**").hasRole("ADMIN") // GET SINGLE AUDIOFILE INFO
                 .antMatchers(HttpMethod.DELETE,"/audiofiles").hasRole("ADMIN") // DELETE ALL AUDIOFILES (ALSO ON DISK)
                 .antMatchers(HttpMethod.DELETE,"/audiofiles/**").hasRole("ADMIN") // DELETE SINGLE AUDIOFILE (ALSO ON DISK)
-                .antMatchers(HttpMethod.DELETE,"/audiofiles/purge").hasRole("ADMIN") // DELETE ORPHAN AUDIOFILES (ALSO ON DISK)
-
-                // To be moved into Audifile Service:
-                .antMatchers(HttpMethod.POST,"/audiofiles/processnewmp3file").authenticated() // UPLOAD SINGLE FILE (INTERNAL REQUEST FOR UPLOAD & ASSIGN ROUTE)
+                .antMatchers(HttpMethod.DELETE,"/audiofiles/purge").hasRole("ADMIN") // DELETE ORPHAN MP3 FILES ON DISK
 
                 .antMatchers(HttpMethod.GET,"/conversations").hasRole("ADMIN") // LIST CONVERSATIONS
                 .antMatchers(HttpMethod.GET,"/conversations/**").authenticated() // CONVERSATION DETAILS

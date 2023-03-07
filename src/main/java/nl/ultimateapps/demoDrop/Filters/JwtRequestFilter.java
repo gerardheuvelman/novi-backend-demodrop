@@ -1,6 +1,6 @@
 package nl.ultimateapps.demoDrop.Filters;
 
-import nl.ultimateapps.demoDrop.Services.CustomUserDetailsService;
+import nl.ultimateapps.demoDrop.Services.CustomUserDetailsServiceImpl;
 import nl.ultimateapps.demoDrop.Utils.JwtUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +21,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Getter
     @Setter
-    private CustomUserDetailsService customUserDetailsService;
+    private CustomUserDetailsServiceImpl customUserDetailsService;
 
     @Getter
     @Setter

@@ -2,8 +2,10 @@ package nl.ultimateapps.demoDrop.Models;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @AllArgsConstructor
@@ -26,11 +28,16 @@ public class AudioFile {
 
     @Getter
     @Setter
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Date createdDate;
+
+    @Getter
+    @Setter
     private String originalFileName;
 
     // Relationships:
     // A one-to-one (mappedBy "file") Relationship met "Demo" is Implied:
-    @OneToOne
+    @OneToOne (mappedBy = "audioFile")
     @Getter
     @Setter
     private Demo demo;
