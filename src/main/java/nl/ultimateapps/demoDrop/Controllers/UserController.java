@@ -6,9 +6,7 @@ import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
-import nl.ultimateapps.demoDrop.Services.ConversationServiceImpl;
-import nl.ultimateapps.demoDrop.Services.DemoServiceImpl;
-import nl.ultimateapps.demoDrop.Services.UserServiceImpl;
+import nl.ultimateapps.demoDrop.Services.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +24,15 @@ public class UserController {
 
     @Getter
     @Setter
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Getter
     @Setter
-    private DemoServiceImpl demoservice;
+    private DemoService demoservice;
 
     @Getter
     @Setter
-    private ConversationServiceImpl conversationService;
+    private ConversationService conversationService;
 
     @GetMapping(value = "/public")
     public ResponseEntity<List<UserPublicDto>> getUserPublicDtos(@RequestParam int limit) {
@@ -144,7 +142,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}/demos")
-    public ResponseEntity<List<DemoDto>> getDemosForUser(@PathVariable("username") String username) {
+    public ResponseEntity<List<DemoDto>> getPersonalDemos(@PathVariable("username") String username) {
         List<DemoDto> demoDtos = demoservice.getPersonalDemos(username);
         return ResponseEntity.ok().body(demoDtos);
     }

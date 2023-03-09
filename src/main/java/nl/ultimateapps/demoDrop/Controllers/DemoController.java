@@ -3,7 +3,9 @@ package nl.ultimateapps.demoDrop.Controllers;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
+import nl.ultimateapps.demoDrop.Services.AudioFileService;
 import nl.ultimateapps.demoDrop.Services.AudioFileServiceImpl;
+import nl.ultimateapps.demoDrop.Services.DemoService;
 import nl.ultimateapps.demoDrop.Services.DemoServiceImpl;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -30,15 +32,25 @@ public class DemoController {
 
     @Getter
     @Setter
-    private DemoServiceImpl demoService;
+    private DemoService demoService;
 
     @Getter
     @Setter
-    private AudioFileServiceImpl audioFileService;
+    private AudioFileService audioFileService;
 
     @GetMapping("")
     public ResponseEntity<List<DemoDto>> getDemos(@RequestParam int limit) {
         List<DemoDto> demoDtos = demoService.getDemos(limit);
+        if (demoDtos.size()>0) {
+            return ResponseEntity.ok(demoDtos);
+        } else {
+            throw new RecordNotFoundException("No demos found");
+        }
+    }
+
+    @GetMapping("/bygenre")
+    public ResponseEntity<List<DemoDto>> getDemosByGenre(@RequestParam String genre, @RequestParam int limit) {
+        List<DemoDto> demoDtos = demoService.getDemosByGenre(genre, limit);
         if (demoDtos.size()>0) {
             return ResponseEntity.ok(demoDtos);
         } else {
@@ -90,18 +102,6 @@ public class DemoController {
         DemoDto partiallyUpdatedDemoDto = demoService.assignGenreToDemo(id, genrename);
         return ResponseEntity.ok(partiallyUpdatedDemoDto);
     }
-
-//    @PatchMapping("/{id}/addfav/{username}")
-//    public ResponseEntity<DemoDto> addUserToFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
-//        DemoDto partiallyUpdatedDemoDto = demoService.addUserToFavoriteOfUsersList(id, username);
-//        return ResponseEntity.ok(partiallyUpdatedDemoDto);
-//    }
-//
-//    @PatchMapping("/{id}/remfav/{username}")
-//    public ResponseEntity<DemoDto> removeUserFromFavoriteOfUsersList(@PathVariable long id, @PathVariable String username) {
-//        DemoDto partiallyUpdatedDemoDto = demoService.removeUserFromFavoriteOfUsersList(id, username);
-//        return ResponseEntity.ok(partiallyUpdatedDemoDto);
-//    }
 
     @DeleteMapping("")
     public ResponseEntity<String> deleteDemos() {

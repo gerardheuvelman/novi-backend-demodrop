@@ -57,7 +57,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.GET, "/users/**/favdemos").authenticated() // PERSONAL FAVORITE DEMO LIST
                 .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
                 .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // LIST USER AUTHORITIES
-                .antMatchers(HttpMethod.GET,"/users/**/getstatus").hasRole("ADMIN")  // FETCH ACCOUNT STATUS
+                .antMatchers(HttpMethod.GET,"/users/**/getstatus").permitAll()  // FETCH ACCOUNT STATUS
                 .antMatchers(HttpMethod.GET,"/users/**/").permitAll() // GET ESSENTIAL USER INFO
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
                 .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT

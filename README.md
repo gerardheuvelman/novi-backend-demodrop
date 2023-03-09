@@ -1,8 +1,10 @@
 # KNOWN BUGS: 
 - POST /audiofiles geeft 400 (Required request part 'multipartFile' is not present)
+- when deleting some dodgy genres, the message window does not close
 
 TODO:
-- implement delete mapping for audiofile
+- When deleting genres, all demo's that have that genre should not be recursively deleted, but rather get their genre set to "unknown"
+- 
 
 
 # AANDACHTSPUNTEN VERDEDIGING: 

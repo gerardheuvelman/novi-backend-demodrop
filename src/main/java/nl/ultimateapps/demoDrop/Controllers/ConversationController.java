@@ -2,6 +2,7 @@ package nl.ultimateapps.demoDrop.Controllers;
 
 import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
+import nl.ultimateapps.demoDrop.Services.ConversationService;
 import nl.ultimateapps.demoDrop.Services.ConversationServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -19,7 +20,7 @@ import lombok.*;
 public class ConversationController {
     @Getter
     @Setter
-    private ConversationServiceImpl conversationService;
+    private ConversationService conversationService;
 
     @GetMapping("")
     public ResponseEntity<ArrayList<ConversationDto>> getConversations(@RequestParam int limit) {

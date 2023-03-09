@@ -12,9 +12,9 @@ import java.util.List;
 public interface DemoService {
     List<DemoDto> getDemos(int limit);
 
-    ArrayList<DemoDto> getPersonalDemos(String username);
+    List<DemoDto> getPersonalDemos(String username);
 
-    ArrayList<DemoDto> getFavoriteDemos(String username);
+    List<DemoDto> getFavoriteDemos(String username);
 
     DemoDto getDemo(long demoId);
 
@@ -39,4 +39,6 @@ public interface DemoService {
     boolean assignFileToDemo(Long fileId, Long demoId);
 
     Resource downloadMp3File(long demoId);
+
+    List<DemoDto> getDemosByGenre(String genre, int limit);
 }

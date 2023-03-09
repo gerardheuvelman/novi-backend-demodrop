@@ -57,10 +57,10 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public ArrayList<DemoDto> getPersonalDemos(String username) { // NO AUTH
+    public List<DemoDto> getPersonalDemos(String username) { // NO AUTH
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByUserOrderByCreatedDateDesc(user);
-        ArrayList<DemoDto> resultList = new ArrayList<>();
+        List<DemoDto> resultList = new ArrayList<>();
         for (Demo demo : demoList) {
             DemoDto demoDto = DemoMapper.mapToDto(demo);
             resultList.add(demoDto);
@@ -69,18 +69,45 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public ArrayList<DemoDto> getFavoriteDemos(String username) { //AUTH ONLY
+    public List<DemoDto> getFavoriteDemos(String username) { //AUTH ONLY
         if (!AuthHelper.checkAuthorization(username)) { // check associative authorization
             throw new org.springframework.security.access.AccessDeniedException("User has insufficient rights to access Favorited demos for user " + username);
         }
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user);
-        ArrayList<DemoDto> resultList = new ArrayList<>();
+        List<DemoDto> resultList = new ArrayList<>();
         for (Demo demo : demoList) {
             DemoDto demoDto = DemoMapper.mapToDto(demo);
             resultList.add(demoDto);
         }
         return resultList;
+    }
+
+    @Override
+    public List<DemoDto> getDemosByGenre(String genreName, int limit) {
+        if (genreRepository.findById(genreName).isEmpty()) {
+            throw new RecordNotFoundException("Genre " + genreName + " not found in repository.");
+        }
+        Genre genre = genreRepository.findById(genreName).get();
+        Iterable<Demo> demoIterable = demoRepository.findByGenreOrderByCreatedDateDesc(genre);
+        List<Demo> demoList = new ArrayList<>();
+        demoIterable.forEach(demoList::add);
+        int numResults = demoList.size();
+        List<DemoDto> demoDtoList = new ArrayList<>();
+        if (limit == 0) {
+            // return full list
+            for (Demo demo : demoList) {
+                DemoDto demoDto = DemoMapper.mapToDto(demo);
+                demoDtoList.add(demoDto);
+            }
+        } else {
+            // return limited list
+            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
+                DemoDto demoDto = DemoMapper.mapToDto(demoList.get(i));
+                demoDtoList.add(demoDto);
+            }
+        }
+        return demoDtoList;
     }
 
     @Override

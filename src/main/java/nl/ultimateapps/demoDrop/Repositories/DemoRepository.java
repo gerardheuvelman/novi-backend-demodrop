@@ -1,6 +1,7 @@
 package nl.ultimateapps.demoDrop.Repositories;
 
 import nl.ultimateapps.demoDrop.Models.Demo;
+import nl.ultimateapps.demoDrop.Models.Genre;
 import nl.ultimateapps.demoDrop.Models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -14,6 +15,7 @@ public interface DemoRepository extends JpaRepository<Demo, Long> {
 
     public Iterable<Demo> findAllByOrderByCreatedDateDesc(); // Demos sorted by date descending
 
+    public Iterable<Demo> findByGenreOrderByCreatedDateDesc(Genre genre);
 
     public Iterable<Demo> findByUserOrderByCreatedDateDesc(User user); // Personal Demo list
 
