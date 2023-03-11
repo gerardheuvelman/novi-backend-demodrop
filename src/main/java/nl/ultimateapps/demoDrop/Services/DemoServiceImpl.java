@@ -7,17 +7,14 @@ import nl.ultimateapps.demoDrop.Models.*;
 import nl.ultimateapps.demoDrop.Repositories.*;
 import nl.ultimateapps.demoDrop.Utils.AuthHelper;
 import nl.ultimateapps.demoDrop.Utils.HyperlinkBuilder;
-import nl.ultimateapps.demoDrop.Utils.JwtUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,12 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class DemoServiceImpl implements DemoService {
 
-    private final JwtUtil jwtUtil;
     private final DemoRepository demoRepository;
     private final UserRepository userRepository;
     private final GenreRepository genreRepository;
     private final AudioFileRepository audioFileRepository;
-    private final AudioFileServiceImpl audioFileService;
+    private final AudioFileService audioFileService;
     private final EmailService emailService;
 
     @Override
@@ -40,20 +36,7 @@ public class DemoServiceImpl implements DemoService {
         List<Demo> demoArrayList = new ArrayList<>();
         demoIterable.forEach(demoArrayList::add);
         int numResults = demoArrayList.size();
-        if (limit == 0) {
-            // return full list
-            for (Demo demo : demoArrayList) {
-                DemoDto demoDto = DemoMapper.mapToDto(demo);
-                demoDtoList.add(demoDto);
-            }
-        } else {
-            // return limited list
-            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
-                DemoDto demoDto = DemoMapper.mapToDto(demoArrayList.get(i));
-                demoDtoList.add(demoDto);
-            }
-        }
-        return demoDtoList;
+        return createDemoDtoList(limit, demoDtoList, demoArrayList, numResults);
     }
 
     @Override
@@ -94,20 +77,7 @@ public class DemoServiceImpl implements DemoService {
         demoIterable.forEach(demoList::add);
         int numResults = demoList.size();
         List<DemoDto> demoDtoList = new ArrayList<>();
-        if (limit == 0) {
-            // return full list
-            for (Demo demo : demoList) {
-                DemoDto demoDto = DemoMapper.mapToDto(demo);
-                demoDtoList.add(demoDto);
-            }
-        } else {
-            // return limited list
-            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
-                DemoDto demoDto = DemoMapper.mapToDto(demoList.get(i));
-                demoDtoList.add(demoDto);
-            }
-        }
-        return demoDtoList;
+        return createDemoDtoList(limit, demoDtoList, demoList, numResults);
     }
 
     @Override
@@ -320,5 +290,22 @@ public class DemoServiceImpl implements DemoService {
         AudioFile audioFile = demo.getAudioFile();
         Resource mp3File = audioFileService.downloadMp3File(audioFile);
         return mp3File;
+    }
+
+    private List<DemoDto> createDemoDtoList(int limit, List<DemoDto> demoDtoList, List<Demo> demoArrayList, int numResults) {
+        if (limit == 0) {
+            // return full list
+            for (Demo demo : demoArrayList) {
+                DemoDto demoDto = DemoMapper.mapToDto(demo);
+                demoDtoList.add(demoDto);
+            }
+        } else {
+            // return limited list
+            for (int i = 0; i < (Math.min(numResults, limit)); i++) {
+                DemoDto demoDto = DemoMapper.mapToDto(demoArrayList.get(i));
+                demoDtoList.add(demoDto);
+            }
+        }
+        return demoDtoList;
     }
 }

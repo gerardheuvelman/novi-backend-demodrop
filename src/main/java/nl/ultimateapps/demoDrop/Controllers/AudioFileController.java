@@ -7,17 +7,9 @@ import nl.ultimateapps.demoDrop.Dtos.output.AudioFileDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Models.AudioFile;
 import nl.ultimateapps.demoDrop.Services.AudioFileService;
-import nl.ultimateapps.demoDrop.Services.AudioFileServiceImpl;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @CrossOrigin
@@ -46,18 +38,16 @@ public class AudioFileController {
         return ResponseEntity.ok(audioFileDto);
     }
 
-//    @GetMapping("/{audioFileId}/download")
-//    @Transactional  // Dit moet omdat het anders niet toegestaan is om een large object (de mp3 file) automatisch mee te geven.
-//    public ResponseEntity<Resource> downloadMp3File(@PathVariable long audioFileId, HttpServletRequest request) {
-//        Resource mp3File = audioFileService.downloadMp3File(audioFileId);
-//        MediaType mediaType = new MediaType("audio", "mpeg");
-//        return ResponseEntity.ok().contentType(mediaType).header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=" + mp3File.getFilename()).body(mp3File);
-//    }
-
     @PostMapping("")
-    AudioFile uploadSingleFile(@RequestParam("multipartFile") MultipartFile multipartFile){
+    AudioFile uploadFile(@RequestParam("multipartFile") MultipartFile multipartFile){
         AudioFile newAudioFile = audioFileService.processFileUpload(multipartFile);
         return newAudioFile;
+    }
+
+    @PutMapping("/{audioFileId}")
+    ResponseEntity<AudioFileDto> editAudioFile(@PathVariable Long audioFileId, @RequestBody AudioFileDto audioFileDto) {
+        AudioFileDto updatedaudioFileDto = audioFileService.editAudioFile(audioFileId, audioFileDto);
+        return ResponseEntity.ok(updatedaudioFileDto);
     }
 
     @DeleteMapping("/{audioFileId}")

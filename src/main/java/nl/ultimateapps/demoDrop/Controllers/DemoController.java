@@ -34,9 +34,9 @@ public class DemoController {
     @Setter
     private DemoService demoService;
 
-    @Getter
-    @Setter
-    private AudioFileService audioFileService;
+//    @Getter
+//    @Setter
+//    private AudioFileService audioFileService;
 
     @GetMapping("")
     public ResponseEntity<List<DemoDto>> getDemos(@RequestParam int limit) {

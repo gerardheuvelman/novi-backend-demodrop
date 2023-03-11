@@ -89,6 +89,17 @@ public class AudioFileServiceImpl implements AudioFileService {
         }
     }
 
+    public AudioFileDto editAudioFile(Long audioFileId, AudioFileDto audioFileDto ){
+        AudioFile audioFile;
+        if (audioFileRepository.findById(audioFileId).isPresent()) {
+            audioFile = audioFileRepository.findById(audioFileId).get();
+        } else throw new RecordNotFoundException();
+        audioFile.setOriginalFileName(audioFileDto.getOriginalFileName());
+        audioFileRepository.save(audioFile);
+        return AudioFileMapper.mapToDto(audioFile);
+    }
+
+
     @Override
     public long deleteAudioFile(long audioFileId) { //ADMIN ONLY
         AudioFile audioFile;

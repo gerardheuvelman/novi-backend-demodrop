@@ -24,6 +24,7 @@ public class Demo {
             })
     @GeneratedValue(generator = "demos-sequence-generator")
     @Getter
+    @Setter
     private Long demoId;
 
     @Getter
