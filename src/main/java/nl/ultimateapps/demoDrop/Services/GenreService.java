@@ -14,4 +14,6 @@ public interface GenreService {
     long deleteGenres();
 
     String deleteGenre(String name);
+
+    String renameGenre(String oldGenreName, GenreDto genreDto);
 }

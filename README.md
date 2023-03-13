@@ -1,6 +1,5 @@
 # KNOWN BUGS: 
-- POST /audiofiles geeft 400 (Required request part 'multipartFile' is not present)
-- when deleting some dodgy genres, the message window does not close
+- "rename Genre returns 500 with message: "identifier of an instance of nl.ultimateapps.demoDrop.Models.Genre was altered from Dance to Dance renamed"
 
 TODO:
 - When deleting genres, all demo's that have that genre should not be recursively deleted, but rather get their genre set to "unknown"

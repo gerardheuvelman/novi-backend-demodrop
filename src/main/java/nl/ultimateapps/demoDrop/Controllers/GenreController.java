@@ -48,9 +48,16 @@ public class GenreController {
 
     @PostMapping("")
     public ResponseEntity<String> postGenre(@RequestBody GenreDto genreDto) {
-        String savedGenre = genreService.createGenre(genreDto);
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/genres/" + savedGenre).toUriString());
-        return ResponseEntity.created(uri).body("Genre created!");
+        String savedGenreName = genreService.createGenre(genreDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/genres/" + savedGenreName).toUriString());
+        return ResponseEntity.created(uri).body("Genre " + savedGenreName + " was created!");
+    }
+
+    @PutMapping("/{oldGenreName}")
+    public ResponseEntity<String> renameGenre(@PathVariable String oldGenreName, @RequestBody GenreDto genreDto) {
+        String renamedGenreName = genreService.renameGenre(oldGenreName, genreDto);
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/genres/" + renamedGenreName).toUriString());
+        return ResponseEntity.created(uri).body("Genre " + oldGenreName + "was successfully renamed to " + renamedGenreName +  "!");
     }
 
     @DeleteMapping("")

@@ -71,4 +71,16 @@ public class GenreServiceImpl implements GenreService {
             throw new RecordNotFoundException();
         }
     }
+
+    @Override
+    public String renameGenre(String oldGenreName, GenreDto genreDto) {
+        if (genreRepository.findById(oldGenreName).isPresent()) {
+            Genre genre = genreRepository.findById(oldGenreName).get();
+            genre.setName(genreDto.getName());
+            Genre updatedGenre = genreRepository.save(genre);
+            return updatedGenre.getName();
+        } else {
+            throw new RecordNotFoundException();
+        }
+    }
 }

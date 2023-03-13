@@ -99,7 +99,8 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/conversations/**").hasRole("ADMIN") //  DELETE SINGLE CONVERSATION
 
                 .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // LIST MUSIC GENRES
-                .antMatchers(HttpMethod.POST,"/genres", "/genres/**").hasRole("ADMIN") // CREATE MUSIC GENRE
+                .antMatchers(HttpMethod.POST,"/genres").hasRole("ADMIN") // CREATE MUSIC GENRE
+                .antMatchers(HttpMethod.PUT,"/genres/**").hasRole("ADMIN") // RENAME MUSIC GENRE
                 .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // DELETE MUSIC GENRE
 
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN
