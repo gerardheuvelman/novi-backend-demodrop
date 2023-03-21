@@ -1,5 +1,6 @@
 package nl.ultimateapps.demoDrop.Services;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nl.ultimateapps.demoDrop.Dtos.output.AudioFileDto;
@@ -33,8 +34,10 @@ public class AudioFileServiceImpl implements AudioFileService {
     @Setter
     private Path fileStoragePath;
     @Getter
+    @Setter
     private final String fileStorageLocation;
-
+    @Getter
+    @Setter
     private final AudioFileRepository audioFileRepository;
 
     public AudioFileServiceImpl(@Value("${my.upload_location}") String fileStorageLocation, AudioFileRepository audioFileRepository) {

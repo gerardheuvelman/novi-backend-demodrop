@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Demo {
 
     @Id

@@ -6,7 +6,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 public interface DemoService {
@@ -32,7 +31,7 @@ public interface DemoService {
 
     long deleteDemo(long demoId);
 
-    Iterable<DemoDto> getDemoContaining(String query);
+    List<DemoDto> getDemosContaining(String query);
 
     boolean uploadFileAndAssignToDemo(Long demoId, MultipartFile multipartFile) throws AccessDeniedException;
 

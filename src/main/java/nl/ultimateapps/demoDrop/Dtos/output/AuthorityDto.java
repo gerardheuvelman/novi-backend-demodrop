@@ -1,12 +1,14 @@
-package nl.ultimateapps.demoDrop.Models;
+package nl.ultimateapps.demoDrop.Dtos.output;
 
-import java.io.Serializable;
 import lombok.*;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class AuthorityKey implements Serializable {
+public class AuthorityDto {
 
     @Getter
     @Setter

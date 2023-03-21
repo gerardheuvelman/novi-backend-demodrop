@@ -3,10 +3,7 @@ package nl.ultimateapps.demoDrop.Controllers;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
-import nl.ultimateapps.demoDrop.Services.AudioFileService;
-import nl.ultimateapps.demoDrop.Services.AudioFileServiceImpl;
 import nl.ultimateapps.demoDrop.Services.DemoService;
-import nl.ultimateapps.demoDrop.Services.DemoServiceImpl;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -33,10 +30,6 @@ public class DemoController {
     @Getter
     @Setter
     private DemoService demoService;
-
-//    @Getter
-//    @Setter
-//    private AudioFileService audioFileService;
 
     @GetMapping("")
     public ResponseEntity<List<DemoDto>> getDemos(@RequestParam int limit) {
@@ -116,8 +109,8 @@ public class DemoController {
     }
 
     @GetMapping("/find")
-    public ResponseEntity<Iterable<DemoDto>> getDemoContaining(@RequestParam String query) {
-        return ResponseEntity.ok(demoService.getDemoContaining(query));
+    public ResponseEntity<List<DemoDto>> getDemoContaining(@RequestParam String query) {
+        return ResponseEntity.ok(demoService.getDemosContaining(query));
     }
 
     @PostMapping("/{id}/upload")

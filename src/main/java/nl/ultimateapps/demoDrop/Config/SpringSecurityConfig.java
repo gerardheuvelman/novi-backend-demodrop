@@ -71,8 +71,10 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE USER ACCOUNT
 
                 .antMatchers(HttpMethod.GET,"/demos").permitAll() // LIST DEMOS (PUBLICLY AVAILABLE DATA)
+                .antMatchers(HttpMethod.GET,"/demos/find").permitAll() // LIST DEMOS CONTAINING QUERY
                 .antMatchers(HttpMethod.GET,"/demos/**").permitAll() // GET DEMO (PUBLICLY AVAILABLE DATA)
                 .antMatchers(HttpMethod.GET, "/demos/**/isfav").authenticated() // CHECK DEMO AGAINST FAVLIST
+                .antMatchers(HttpMethod.GET, "/demos/bygenre").authenticated() // GET DEMOS BY GENRE(QUERY PARAMETER)
                 .antMatchers(HttpMethod.POST,"/demos").authenticated() // CREATE/UPLOAD NEW DEMO
                 .antMatchers(HttpMethod.PUT, "/demos/**").authenticated() // EDIT DEMO DATA
                 .antMatchers(HttpMethod.PATCH, "/demos/**/setgenre/**").authenticated() // ASSIGN A GENRE TO A DEMO
@@ -100,7 +102,6 @@ public class SpringSecurityConfig {
 
                 .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // LIST MUSIC GENRES
                 .antMatchers(HttpMethod.POST,"/genres").hasRole("ADMIN") // CREATE MUSIC GENRE
-                .antMatchers(HttpMethod.PUT,"/genres/**").hasRole("ADMIN") // RENAME MUSIC GENRE
                 .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // DELETE MUSIC GENRE
 
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN

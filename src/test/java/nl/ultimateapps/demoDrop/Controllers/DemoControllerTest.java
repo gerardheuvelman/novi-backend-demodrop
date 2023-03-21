@@ -31,7 +31,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(DemoController.class)
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
-//@ContextConfiguration(classes = {DemoController.class})
 
 public class DemoControllerTest {
 
@@ -47,14 +46,8 @@ public class DemoControllerTest {
     @Autowired
     JwtRequestFilter jwtRequestFilter;
 
-
-
-
     @MockBean
     private DemoService demoService;
-
-    @Autowired
-    private DemoController demoController;
 
     @Test
     public void testEndpointGetDemos() throws Exception {

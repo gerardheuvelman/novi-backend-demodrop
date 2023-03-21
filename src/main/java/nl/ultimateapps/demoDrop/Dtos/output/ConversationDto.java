@@ -8,11 +8,14 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
+
 import lombok.*;
 import nl.ultimateapps.demoDrop.Models.User;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class ConversationDto {
 
     @Getter
@@ -27,9 +30,6 @@ public class ConversationDto {
     @Setter
     private Date latestReplyDate;
 
-    // LEt OP deze annotaties staan uit (volges mij alleen nodig bij entiteiten)
-    //    @NotNull
-    //    @Size(min = 2, max = 120)
     @Getter
     @Setter
     private String subject;
@@ -61,6 +61,4 @@ public class ConversationDto {
     @Getter
     @Setter
     private User interestedUser;
-
-
 }

@@ -1,13 +1,15 @@
 package nl.ultimateapps.demoDrop.Dtos.output;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import nl.ultimateapps.demoDrop.Models.Demo;
 
 import javax.persistence.OneToOne;
 import java.util.Date;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class AudioFileDto {
 
     @Getter

@@ -3,9 +3,10 @@ package nl.ultimateapps.demoDrop.Services;
 import nl.ultimateapps.demoDrop.Dtos.output.GenreDto;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface GenreService {
-    ArrayList<GenreDto> getGenres();
+    List<GenreDto> getGenres();
 
     GenreDto getGenre(String name);
 
@@ -14,6 +15,4 @@ public interface GenreService {
     long deleteGenres();
 
     String deleteGenre(String name);
-
-    String renameGenre(String oldGenreName, GenreDto genreDto);
 }

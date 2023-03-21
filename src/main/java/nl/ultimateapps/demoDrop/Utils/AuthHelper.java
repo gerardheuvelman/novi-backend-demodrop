@@ -7,6 +7,7 @@ import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collection;
@@ -41,7 +42,8 @@ public class AuthHelper {
 
     public static boolean checkAuthorization(String username) {
         // make sure that the username current user is the same as the username being passed in.
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
         if (!authentication.isAuthenticated()) {
             throw new DemoDropAuthenticationException("User must be authenticated to perform this action");
         }
@@ -71,21 +73,4 @@ public class AuthHelper {
         boolean principalIsInterestedUserOrAdmin = checkAuthorization(interestedUserName);
         return principalIsProducerOrAdmin || principalIsInterestedUserOrAdmin;
     }
-
-    public static boolean checkAuthorization(AudioFile audioFile) {
-        String fileOwnerName = audioFile.getDemo().getUser().getUsername();
-        return checkAuthorization(fileOwnerName);
-    }
-
-//    public static boolean checkAuthorization(EmailDetails emailDetails) {
-//        String recipientName = emailDetails.getRecipientUsername();
-//        // check if this is a user in the system
-//
-//
-//
-//        return checkAuthorization(fileOwnerName);
-//    }
-
-
-
 }

@@ -102,14 +102,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public String changePassword(String username, UserInputDto userInputDto) {
         if (!AuthHelper.checkAuthorization(username)) { // check associative authorization
-            throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + " has insufficient rights to change the password for user " + username);
+            throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to change the password for user " + username);
         }
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        userInputDto.setPassword(passwordEncoder.encode(userInputDto.getPassword()));
+        String encodedPassword = passwordEncoder.encode(userInputDto.getPassword());
+        userInputDto.setPassword(encodedPassword);
         User user = userRepository.findById(username).get();
         user.setPassword(userInputDto.getPassword());
-        userRepository.save(user);
-        return user.getPassword();
+        User savedUser = userRepository.save(user);
+        return savedUser.getPassword();
     }
 
     @Override

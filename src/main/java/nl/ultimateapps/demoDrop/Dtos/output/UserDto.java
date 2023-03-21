@@ -13,6 +13,10 @@ import nl.ultimateapps.demoDrop.Models.Demo;
 
 import javax.persistence.Column;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class UserDto {
 
     @Getter

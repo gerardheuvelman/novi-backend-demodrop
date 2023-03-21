@@ -2,6 +2,7 @@ package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
+import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import nl.ultimateapps.demoDrop.Models.*;
 import nl.ultimateapps.demoDrop.Repositories.*;
@@ -10,11 +11,14 @@ import nl.ultimateapps.demoDrop.Utils.HyperlinkBuilder;
 import org.springframework.core.io.Resource;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,6 +45,9 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public List<DemoDto> getPersonalDemos(String username) { // NO AUTH
+        if (userRepository.findById(username).isEmpty()) {
+            throw new UsernameNotFoundException(username);
+        }
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByUserOrderByCreatedDateDesc(user);
         List<DemoDto> resultList = new ArrayList<>();
@@ -55,6 +62,9 @@ public class DemoServiceImpl implements DemoService {
     public List<DemoDto> getFavoriteDemos(String username) { //AUTH ONLY
         if (!AuthHelper.checkAuthorization(username)) { // check associative authorization
             throw new org.springframework.security.access.AccessDeniedException("User has insufficient rights to access Favorited demos for user " + username);
+        }
+        if (userRepository.findById(username).isEmpty()) {
+            throw new UsernameNotFoundException(username);
         }
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoList = demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user);
@@ -138,26 +148,26 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public DemoDto updateDemo(long demoId, DemoDto demoDto) { //AUTH ONLY
-        if (demoRepository.findById(demoId).isPresent()) {
-            Demo demo = demoRepository.findById(demoId).get();
-            if (!AuthHelper.checkAuthorization(demo)) { // check associative authorization:
-                throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + "has insufficient rights to update demo " + demoId);
-            }
-            demo.setTitle(demoDto.getTitle());
-            demo.setLength(demoDto.getLength());
-            demo.setBpm(demoDto.getBpm());
-            //Relationships
-            if (demoDto.getAudioFile() != null) {
-                demo.setAudioFile(demoDto.getAudioFile());
-            }
-            if (demoDto.getGenre() != null) {
-                demo.setGenre(demoDto.getGenre());
-            }
-            demoRepository.save(demo);
-            return DemoMapper.mapToDto(demo);
-        } else {
+        if (demoRepository.findById(demoId).isEmpty()) {
             throw new RecordNotFoundException();
         }
+        Demo demo = demoRepository.findById(demoId).get();
+        if (!AuthHelper.checkAuthorization(demo)) { // check associative authorization:
+            throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + "has insufficient rights to update demo " + demoId);
+        }
+        demo.setTitle(demoDto.getTitle());
+        demo.setLength(demoDto.getLength());
+        demo.setBpm(demoDto.getBpm());
+        //Relationships
+        if (demoDto.getAudioFile() != null) {
+            demo.setAudioFile(demoDto.getAudioFile());
+        }
+        if (demoDto.getGenre() != null) {
+            demo.setGenre(demoDto.getGenre());
+        }
+        demoRepository.save(demo);
+        return DemoMapper.mapToDto(demo);
+
     }
 
     @Override
@@ -241,14 +251,9 @@ public class DemoServiceImpl implements DemoService {
     }
 
     @Override
-    public Iterable<DemoDto> getDemoContaining(String query) { // NO AUTH
+    public List<DemoDto> getDemosContaining(String query) { // NO AUTH
         Iterable<Demo> foundDemos = demoRepository.findByTitleContaining(query);
-        ArrayList<DemoDto> resultList = new ArrayList<>();
-        for (Demo d : foundDemos) {
-            DemoDto newDemoDto = DemoMapper.mapToDto(d);
-            resultList.add(newDemoDto);
-        }
-        return resultList;
+       return DemoMapper.mapToDto(foundDemos);
     }
 
     @Override
@@ -257,22 +262,24 @@ public class DemoServiceImpl implements DemoService {
         User associatedUser = demoDto.getUser();
         if (AuthHelper.checkAuthorization(associatedUser)) { // check associative authorization
             AudioFile audioFile = audioFileService.processFileUpload(multipartFile);
-            return assignFileToDemo(audioFile.getAudioFileId(), demoId);
+            boolean result = assignFileToDemo(audioFile.getAudioFileId(), demoId);
+            return result;
         } else
             throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + "has insufficient rights to upload a file to be associated with demo " + demoId);
     }
 
     @Override
     public boolean assignFileToDemo(Long fileId, Long demoId) { // AUTH
-        if (!demoRepository.findById(demoId).isPresent()){
+        Optional<Demo> result = demoRepository.findById(demoId);
+        if (result.isEmpty()) {
             throw new RecordNotFoundException("Demo not found");
         }
         Demo demo = demoRepository.findById(demoId).get();
 
         if (!AuthHelper.checkAuthorization(demo)) { // check associative authorization
-            throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + "has insufficient rights to assign a file toe Demo " + demoId);
+            throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to assign a file to Demo " + demoId);
         }
-        if (!audioFileRepository.findById(fileId).isPresent()){
+        if (!audioFileRepository.findById(fileId).isPresent()) {
             throw new RecordNotFoundException("AudioFile not found");
         }
         AudioFile audioFile = audioFileRepository.findById(fileId).get();

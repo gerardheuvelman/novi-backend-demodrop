@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface DemoRepository extends JpaRepository<Demo, Long> {
 
-    public Iterable<Demo> findByFavoriteOfUsersOrderByTitleAsc(User user);
+    public Iterable<Demo> findByFavoriteOfUsersOrderByTitleAsc(User user); // Favorite Demo list
 
     public Iterable<Demo> findByTitleContaining(String brand);
 

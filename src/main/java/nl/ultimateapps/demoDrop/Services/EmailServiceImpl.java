@@ -1,5 +1,6 @@
 package nl.ultimateapps.demoDrop.Services;
 
+import lombok.AllArgsConstructor;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Models.User;
@@ -18,7 +19,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 @Service
-
 public class EmailServiceImpl implements EmailService {
 
     private JavaMailSender javaMailSender;

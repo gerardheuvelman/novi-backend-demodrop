@@ -12,6 +12,7 @@ import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class DemoDto {
 
     @Getter
@@ -22,8 +23,6 @@ public class DemoDto {
     @Setter
     private Date createdDate;
 
-//    @NotNull // MOET VALIDATIE HIER OF IN DE MODEL KLASSE? (ik denk hier in de DTO)
-//    @Size(min = 2, max = 120)
     @Getter
     @Setter
     private String title;

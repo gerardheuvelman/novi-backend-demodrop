@@ -10,6 +10,7 @@ import java.util.Date;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class AudioFile {
 
     @Id

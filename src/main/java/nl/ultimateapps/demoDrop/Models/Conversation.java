@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Conversation {
 
     @Id
@@ -23,6 +24,7 @@ public class Conversation {
             })
     @GeneratedValue(generator = "conversations-sequence-generator")
     @Getter
+    @Setter
     private Long ConversationId;
 
     @Getter

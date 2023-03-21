@@ -156,7 +156,7 @@ public class ConversationServiceImpl implements ConversationService {
         Conversation conversation = conversationRepository.findById(id).get();
 
         if (!AuthHelper.checkAuthorization(conversation)) { // check associative authorization
-            throw new AccessDeniedException("User" + AuthHelper.getPrincipalUsername() + " has insufficient rights to edit conversation " + conversation.getConversationId());
+            throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to edit conversation " + conversation.getConversationId());
         }
         conversation.setSubject((conversationDto.getSubject()));
         conversation.setBody((conversationDto.getBody()));
@@ -190,8 +190,8 @@ public class ConversationServiceImpl implements ConversationService {
             if (currentUserName.equals(conversation.getInterestedUser().getUsername())) {
                 conversation.setReadByInterestedUser(true);
             } else conversation.setReadByProducer(true);
-            conversationRepository.save(conversation);
-            return ConversationMapper.mapToDto(conversation);
+            Conversation savedConversation = conversationRepository.save(conversation);
+            return ConversationMapper.mapToDto(savedConversation);
         } else throw new RecordNotFoundException();
     }
 

@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class User {
 
     @Id
@@ -53,7 +54,6 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
-
     @Getter
     @Setter
     private Set<Authority> authorities = new HashSet<>();
@@ -73,8 +73,9 @@ public class User {
     @Setter
     private List<Conversation> conversationsAsInterestedParty;
 
-
     @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
     private List<Demo> favoriteDemos;
 
     public void addAuthority(Authority authority) {

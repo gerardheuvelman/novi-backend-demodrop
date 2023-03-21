@@ -9,6 +9,7 @@ import lombok.*;
 @Table(name = "authorities")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Authority implements Serializable {
 
     @Id
