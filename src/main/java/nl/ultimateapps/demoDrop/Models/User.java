@@ -51,7 +51,7 @@ public class User {
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
-            cascade = CascadeType.ALL,
+            cascade = CascadeType.DETACH,
             orphanRemoval = true,
             fetch = FetchType.EAGER)
     @Getter
@@ -63,7 +63,7 @@ public class User {
     @Setter
     private List<Demo> demos;
 
-    @OneToMany(mappedBy = "producer", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "producer", cascade = CascadeType.DETACH)
     @Getter
     @Setter
     private List<Conversation> conversationsAsProducer;

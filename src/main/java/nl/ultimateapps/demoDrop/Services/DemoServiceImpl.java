@@ -252,7 +252,7 @@ public class DemoServiceImpl implements DemoService {
 
     @Override
     public List<DemoDto> getDemosContaining(String query) { // NO AUTH
-        Iterable<Demo> foundDemos = demoRepository.findByTitleContaining(query);
+        Iterable<Demo> foundDemos = demoRepository.findByTitleContainingIgnoreCase(query);
        return DemoMapper.mapToDto(foundDemos);
     }
 

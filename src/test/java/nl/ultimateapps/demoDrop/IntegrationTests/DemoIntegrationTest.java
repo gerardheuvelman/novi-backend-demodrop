@@ -2,9 +2,6 @@ package nl.ultimateapps.demoDrop.IntegrationTests;
 
 import nl.ultimateapps.demoDrop.Models.Genre;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import nl.ultimateapps.demoDrop.Config.SpringSecurityConfig;
-import nl.ultimateapps.demoDrop.DemoDropApplication;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Filters.JwtRequestFilter;
 import nl.ultimateapps.demoDrop.Services.CustomUserDetailsService;
@@ -32,8 +29,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

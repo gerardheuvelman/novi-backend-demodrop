@@ -312,7 +312,7 @@ class DemoServiceTest extends ServiceTest {
         List<DemoDto> expectedDemoDtoList = allDemoDtos;
 
         //GIVEN
-        Mockito.when(demoRepository.findByTitleContaining(query)).thenReturn(demoIterable);
+        Mockito.when(demoRepository.findByTitleContainingIgnoreCase(query)).thenReturn(demoIterable);
 
         //ACT
         //WHEN

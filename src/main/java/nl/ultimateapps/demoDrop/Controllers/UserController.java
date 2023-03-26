@@ -114,7 +114,7 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
         boolean deletionSuccessful = userService.deleteUser(username);
         if (deletionSuccessful) {
-            return ResponseEntity.ok("User \""+ username + "\" was deleted successfully");
+            return ResponseEntity.ok("User \""+ username + "\" was deleted successfully.");
         } else throw new AccessDeniedException("You have insufficient rights to delete this account");
     }
 

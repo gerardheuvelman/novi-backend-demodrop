@@ -59,6 +59,6 @@ public class AudioFileController {
     @DeleteMapping("/purge")
     public ResponseEntity<String> DeleteOrphanedMp3Files(@Value("${my.upload_location}") String fileStorageLocation) throws Exception {
         int numDeletedFiles = audioFileService.deleteOrphanedMp3Files(fileStorageLocation);
-        return ResponseEntity.ok(numDeletedFiles + " orphaned mp3 files were successfully deleted from " + fileStorageLocation);
+        return ResponseEntity.ok(numDeletedFiles + " orphaned mp3 files were successfully deleted from " + fileStorageLocation + ".");
     }
 }
