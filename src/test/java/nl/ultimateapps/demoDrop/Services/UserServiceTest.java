@@ -5,7 +5,9 @@ import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
+import nl.ultimateapps.demoDrop.Models.Demo;
 import nl.ultimateapps.demoDrop.Models.User;
+import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
 import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -38,6 +40,15 @@ public class UserServiceTest extends ServiceTest {
 
     @Mock
     private BCryptPasswordEncoder passwordEncoder;
+
+    @Mock
+    private DemoRepository demoRepository;
+
+    @Mock
+    private DemoService demoService;
+
+    @Mock
+    private Demo demo;
 
     @InjectMocks
     private UserServiceImpl userServiceImpl;
@@ -160,7 +171,7 @@ public class UserServiceTest extends ServiceTest {
 
         //ACT
         //WHEN
-        String actualString = userServiceImpl.createUser(postRequestBodyUserDto);
+        String actualString = userServiceImpl.createUser(postRequestBodyUserDto, "ROLE_USER");
 
         //ASSERT
         //THEN
@@ -239,7 +250,7 @@ public class UserServiceTest extends ServiceTest {
     }
 
     @Test
-    public void deleteUserReturnsTrue() {
+    public void deleteUserReturnsTrue() throws UserPrincipalNotFoundException {
         //ARRANGE
         String username = user.getUsername();
         boolean expectedResult = true;
@@ -247,6 +258,9 @@ public class UserServiceTest extends ServiceTest {
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         Mockito.when(authentication.isAuthenticated()).thenReturn(true);
         Mockito.when(authentication.getName()).thenReturn(user.getUsername());
+        Mockito.when(userRepository.findById(username)).thenReturn(Optional.of(user));
+        Mockito.when(demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user)).thenReturn(usersFavoriteDemoList);
+        Mockito.when(demoService.setFavStatus(audioSecundo.getDemoId(), false)).thenReturn(false);
 
         //ACT
         //WHEN

@@ -344,7 +344,7 @@ class DemoServiceTest extends ServiceTest {
         Mockito.when(audioFileRepository.findById(audioFileId)).thenReturn(Optional.of(audioFile));
         Mockito.when(audioFileService.processFileUpload(multipartFile)).thenReturn(audioFile);
         Mockito.when(audioFileService.processFileUpload(multipartFile)).thenReturn(audioFile);
-        Mockito.when(demoServiceImpl.assignFileToDemo(audioFile.getAudioFileId(), demo.getDemoId())).thenReturn(true);// Werkt niet??
+        Mockito.when(demoServiceImpl.assignFileToDemo(audioFile.getAudioFileId(), demo.getDemoId())).thenReturn(true);
 
         //ACT
         //WHEN

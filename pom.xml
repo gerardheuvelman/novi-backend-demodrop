@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>nl.ultimateapps</groupId>
 	<artifactId>demoDrop</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version> <!-- APP VERSION -->
 	<name>demoDrop</name>
 	<description>Eindopdracht (backend) van Bootcamp Full stack developer van Novi Hogeschool - Gerard Heuvelman</description>
 	<properties>

@@ -6,6 +6,7 @@ import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Models.Authority;
 import nl.ultimateapps.demoDrop.Models.User;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public interface UserService {
 
     boolean userExists(String username);
 
-    String createUser(UserDto userDto);
+    String createUser(UserDto userDto, String role);
 
     String updateUser(String username, UserDto userDto);
 
@@ -28,7 +29,7 @@ public interface UserService {
 
     String changeEmail(String username, UserInputDto userInputDto);
 
-    boolean deleteUser(String username);
+    boolean deleteUser(String username) throws UserPrincipalNotFoundException;
 
     Set<Authority> getAuthorities(String username);
 

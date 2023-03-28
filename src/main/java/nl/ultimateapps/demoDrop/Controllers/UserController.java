@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.Map;
 import lombok.*;
@@ -65,8 +66,7 @@ public class UserController {
     @PostMapping(value = "")
     public ResponseEntity<Object> createStandardUser(@RequestBody UserDto dto) {;
         if (!userService.userExists(dto.getUsername())) {
-            String newUsername = userService.createUser(dto);
-            userService.addAuthority(newUsername, "ROLE_USER");
+            String newUsername = userService.createUser(dto, "ROLE_USER");
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
             return ResponseEntity.created(location).build();
         } else return ResponseEntity.unprocessableEntity().build();
@@ -75,8 +75,7 @@ public class UserController {
     @PostMapping(value = "/admin")
     public ResponseEntity<Object> createAdminUser(@RequestBody UserDto dto) {;
         if (!userService.userExists(dto.getUsername())) {
-            String newUsername = userService.createUser(dto);
-            userService.addAuthority(newUsername, "ROLE_ADMIN");
+            String newUsername = userService.createUser(dto, "ROLE_ADMIN");
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
             return ResponseEntity.created(location).build();
         } else return ResponseEntity.unprocessableEntity().build();
@@ -111,7 +110,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}")
-    public ResponseEntity<String> deleteUser(@PathVariable("username") String username) {
+    public ResponseEntity<String> deleteUser(@PathVariable("username") String username) throws UserPrincipalNotFoundException {
         boolean deletionSuccessful = userService.deleteUser(username);
         if (deletionSuccessful) {
             return ResponseEntity.ok("User \""+ username + "\" was deleted successfully.");
