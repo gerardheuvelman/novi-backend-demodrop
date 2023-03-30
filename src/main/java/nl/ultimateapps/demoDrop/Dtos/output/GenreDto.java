@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import nl.ultimateapps.demoDrop.Models.Demo;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @AllArgsConstructor
@@ -11,6 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class GenreDto {
 
+    @NotBlank
     @Getter
     @Setter
     private String name;

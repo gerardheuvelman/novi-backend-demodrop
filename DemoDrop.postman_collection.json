@@ -1,0 +1,3122 @@
+{
+	"info": {
+		"_postman_id": "798ce38f-b797-4df3-a015-3f95fe82a669",
+		"name": "DemoDrop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19328297"
+	},
+	"item": [
+		{
+			"name": "authenticate user gerard",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"gerard\",\r\n     \"password\" :  \"acme\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate user hendrik",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"hendrik\",\r\n     \"password\" :  \"acme\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate user aalke",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"aalke\",\r\n     \"password\" :  \"acme\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate disabled user (403)",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"disableduser\",\r\n     \"password\" :  \"acme\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticate admin",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"admin\",\r\n     \"password\" :  \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List public info users",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/public?limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"public"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get public info user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/public/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"public",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check  authentication (auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTg5MTYsImlhdCI6MTY3OTk5MTUyOX0.pkRV2OzMyMUFVWvD7J5FHQihO8AtjCspsetpOqUTV4M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticated",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticated"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List users (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users?limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List twelve users (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3OTU5NjIxMywiaWF0IjoxNjc3NzY4ODI2fQ.uuOu2CzJxCZ-ReYT_t-JSsDrMh0Ubw-v_oyc4sVSD40",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users?limit=12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user info (auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2Nzk5MzkzNTQsImlhdCI6MTY3ODExMTk2N30.5Wl8AjWNfmbWojvubSBWKLZUg0C3qCs5iPMFWrcneDc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check account status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3OTY3NTYxOSwiaWF0IjoxNjc3ODQ4MjMyfQ.0HYyaG2OxI4cZHAxGEQL9gwRLb-pTe80zR1bwNI6Z4s",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/getstatus",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"getstatus"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create (register) NEW user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"lienke\",\r\n    \"password\" : \"1234\",\r\n    \"email\" : \"lienke@blabla.com\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create admin user (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin2\",\r\n    \"password\" : \"admin\",\r\n    \"email\" : \"admin@blabla.com\" \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/admin",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Authenticate new user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"username\" : \"lienke\",\r\n     \"password\" :  \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/authenticate",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"authenticate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit user details (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODE5MzE3LCJpYXQiOjE2Nzk5OTE5MzB9.oyWTm4o62jVI0XPwmfNqa6MW60R_NBjJHVlpkPgAM4U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": \"gerard\",\r\n        \"password\": \"12345\",\r\n        \"enabled\": false,\r\n        \"apikey\": \"7847493\",\r\n        \"email\": \"gerardheuvelman@gmail.com\"\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit  user details (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTkyNDksImlhdCI6MTY3OTk5MTg2MX0.A45EC4hE4h667T8F64JTpH-ZlVU6uG53PKJNJNYdqRc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": \"gerard\",\r\n        \"password\": \"12345\",\r\n        \"enabled\": false,\r\n        \"apikey\": \"7847493\",\r\n        \"email\": \"gerardheuvelman@gmail.com\"\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set new password (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODE5MzE3LCJpYXQiOjE2Nzk5OTE5MzB9.oyWTm4o62jVI0XPwmfNqa6MW60R_NBjJHVlpkPgAM4U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": null,\r\n        \"password\": \"12345\",\r\n        \"email\": null\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/change-password",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set new password (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MjYwMTEsImlhdCI6MTY3OTk5ODYyNH0.YadoeniXMl4BhN0fQFUINRyfZOx7Cb2mKhWN8mgOdcc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": null,\r\n        \"password\": \"12345\",\r\n        \"email\": null\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/change-password",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"change-password"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change email (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODE5MzE3LCJpYXQiOjE2Nzk5OTE5MzB9.oyWTm4o62jVI0XPwmfNqa6MW60R_NBjJHVlpkPgAM4U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": null,\r\n        \"password\": null,\r\n        \"email\": \"mynewemail@gmail.com\"\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/change-email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"change-email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Change email (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTkyNDksImlhdCI6MTY3OTk5MTg2MX0.A45EC4hE4h667T8F64JTpH-ZlVU6uG53PKJNJNYdqRc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n         \"username\": null,\r\n        \"password\": null,\r\n        \"email\": \"mynewemail@gmail.com\"\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/change-email",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"change-email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Disable account (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTA0NjA5OCwiaWF0IjoxNjc5MjE4NzEwfQ.4mN26tK0peocxplv5yNdEunVHd6OcKpDaicOvKKtzv4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/setstatus?status=false",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"setstatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Enabe account (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTA0NjA5OCwiaWF0IjoxNjc5MjE4NzEwfQ.4mN26tK0peocxplv5yNdEunVHd6OcKpDaicOvKKtzv4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/setstatus?status=true",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"setstatus"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List demos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos?limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List twelve demos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2NzQ5MTg4MTQsImlhdCI6MTY3NDA1NDgxNH0.EoKtIyREY8nFrvlXqPCNQD9m5ZqmWItcscZ9mmkkDW4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/toptwelve",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"toptwelve"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List demos by genre",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/bygenre?genre=Alternative%20dance&limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"bygenre"
+					],
+					"query": [
+						{
+							"key": "genre",
+							"value": "Alternative%20dance"
+						},
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single demo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get demo fav status (auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTkyNDksImlhdCI6MTY3OTk5MTg2MX0.A45EC4hE4h667T8F64JTpH-ZlVU6uG53PKJNJNYdqRc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1002/isfav",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1002",
+						"isfav"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create demo (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"title\": \"postedTitle1\",\r\n        \"length\": 102.0,\r\n        \"bpm\": 140.0,\r\n        \"aufioFile\": null,\r\n        \"genre\": {\"name\":\"Dance\"}\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit demo (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODE5NzkwLCJpYXQiOjE2Nzk5OTI0MDJ9.HfcGXgraeg74F3neF1ziTCuFp2xhqbBxIbkLbMvAE14",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"title\": \"New Prime Audio\",\r\n        \"length\": 500.0,\r\n        \"bpm\": 124.0,\r\n        \"file\": null,\r\n        \"genre\": {\"name\": \"Dance\" }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit demo (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"title\": \"New Prime Audio\",\r\n        \"length\": 500.0,\r\n        \"bpm\": 124.0,\r\n        \"file\": null,\r\n        \"genre\": {\"name\": \"Dance\" }\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set demo fav status (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1003/setfav?status=true",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1003",
+						"setfav"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set  demo genre (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODE5NzkwLCJpYXQiOjE2Nzk5OTI0MDJ9.HfcGXgraeg74F3neF1ziTCuFp2xhqbBxIbkLbMvAE14",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001/setgenre/Dub-Step",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001",
+						"setgenre",
+						"Dub-Step"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set  demo genre (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001/setgenre/Dub-Step",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001",
+						"setgenre",
+						"Dub-Step"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List conversations (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations?limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List twelve conversations (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations?limit=12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single conversation (illegal)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODIxMzE2LCJpYXQiOjE2Nzk5OTM5Mjl9._MB04dE5ldErddXMzmRlTXQG_D4r1pbtHyzcvf2oDN4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single conversation (producer)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single conversation (interestedUser)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create conversation (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MjYwMTEsImlhdCI6MTY3OTk5ODYyNH0.YadoeniXMl4BhN0fQFUINRyfZOx7Cb2mKhWN8mgOdcc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"subject\": \"postedSubject1\",\r\n        \"body\": \"postedBody1\",\r\n        \"demo\": {\"demoId\":1001}\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reply to conversation (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODI1ODA1LCJpYXQiOjE2Nzk5OTg0MTd9.jox9acYIu10xdg1-sh5uZ7IhW6kOD3F9QDNoyrcDm5M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"subject\": \"updatedSubject1\",\r\n        \"body\": \"updatedBody1\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reply to conversation (producer)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MjYwMTEsImlhdCI6MTY3OTk5ODYyNH0.YadoeniXMl4BhN0fQFUINRyfZOx7Cb2mKhWN8mgOdcc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"subject\": \"updatedSubject1\",\r\n        \"body\": \"updatedBody1\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reply to conversation (interestedUser)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgyNTgxNSwiaWF0IjoxNjc5OTk4NDI4fQ.2Hltm5NEilHXYqMhpgOVGPUXDKwQlWw11KwFd_UK4kc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"subject\": \"updatedSubject1\",\r\n        \"body\": \"updatedBody1\"\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mark conversation as read (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODI1ODA1LCJpYXQiOjE2Nzk5OTg0MTd9.jox9acYIu10xdg1-sh5uZ7IhW6kOD3F9QDNoyrcDm5M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/conversations/2001/markread",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001",
+						"markread"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mark conversation as read (producer)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MjYwMTEsImlhdCI6MTY3OTk5ODYyNH0.YadoeniXMl4BhN0fQFUINRyfZOx7Cb2mKhWN8mgOdcc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/conversations/2001/markread",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001",
+						"markread"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mark conversation as read (interestedUser)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgyNTgxNSwiaWF0IjoxNjc5OTk4NDI4fQ.2Hltm5NEilHXYqMhpgOVGPUXDKwQlWw11KwFd_UK4kc",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/conversations/2001/markread",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001",
+						"markread"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload file & assign (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODIxNDc4LCJpYXQiOjE2Nzk5OTQwOTF9.deY57J82ouui3jEqD0PFic7XK_6n8Dz3-sveryTsCSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/My Drive/NOVI/PrimeAudioTestCopy.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001/upload",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Upload file & assign (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODEwNDYyNzcsImlhdCI6MTY3OTIxODg5MH0.d4H5Me-aTJ6PGqPGkTP6pHzXgC98QfHpEhtqKRvf3Ew",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/My Drive/NOVI/PrimeAudioTestCopy.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001/upload",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001",
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "INTERNAL create & save file (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/G:/My Drive/NOVI/PrimeAudioTestCopy2.mp3"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download single file",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001/download",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001",
+						"download"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List personal demos",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/demos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"demos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List favorite demos (illegal)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODIxNDc4LCJpYXQiOjE2Nzk5OTQwOTF9.deY57J82ouui3jEqD0PFic7XK_6n8Dz3-sveryTsCSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/favdemos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"favdemos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List favorite demos  (auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/favdemos",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"favdemos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List personal conversations  (illegal)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODIxNDc4LCJpYXQiOjE2Nzk5OTQwOTF9.deY57J82ouui3jEqD0PFic7XK_6n8Dz3-sveryTsCSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/conversations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"conversations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List personal conversations  (auth)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/conversations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"conversations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List personal authorities  (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/authorities",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"authorities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List demos containing \"some\"",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/find?query=some",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"find"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "some"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List demos containing \"Some\"",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/find?query=Some",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"find"
+					],
+					"query": [
+						{
+							"key": "query",
+							"value": "Some"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Assign personal authority  (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"authority\": \"ROLE_ADMIN\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/authorities",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"authorities"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List music genres",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/genres",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"genres"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get single genre",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/genres/Dance",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"genres",
+						"Dance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create genre (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"a new genre\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/genres",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"genres"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send simple email (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recipientUsername\":\"gerard\",\r\n    \"msgBody\":\"Simple email body...\",\r\n    \"subject\":\"simple email subject \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/email/sendsimple",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"email",
+						"sendsimple"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send email w/attachment (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"recipientUsername\":\"gerard\",\r\n    \"msgBody\":\"Simple email body...\",\r\n    \"subject\":\"simple email subject \",\r\n    \"attachment\":\"G:/My Drive/NOVI/PrimeAudioTestCopy.mp3\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/email/sendwithattachment",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"email",
+						"sendwithattachment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List audioFiles (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles?limit=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List twelve audioFiles (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles?limit=12",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "12"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get audioFile (admin)",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles/3001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles",
+						"3001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit audioFile (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"originalFileName\": \"NOT Prime Audio.mp3\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles/3001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles",
+						"3001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete orphaned mp3 files (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/audiofiles/purge",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"audiofiles",
+						"purge"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete genre (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/genres/Dance",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"genres",
+						"Dance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove personal authority  (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard/authorities/ROLE_USER",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard",
+						"authorities",
+						"ROLE_USER"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete conversation (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"latestReplyDate\": null,\r\n        \"subject\": \"updatedSubject1\",\r\n        \"body\": \"updatedBody1\",\r\n        \"demo\": null,\r\n        \"createdDate\": null\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations/2001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations",
+						"2001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete all conversations (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"latestReplyDate\": null,\r\n        \"subject\": \"updatedSubject1\",\r\n        \"body\": \"updatedBody1\",\r\n        \"demo\": null,\r\n        \"createdDate\": null\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/conversations",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"conversations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete single demo (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODIxNDc4LCJpYXQiOjE2Nzk5OTQwOTF9.deY57J82ouui3jEqD0PFic7XK_6n8Dz3-sveryTsCSE",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete single demo (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/1001",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete all demos (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY3OTU5NjczOSwiaWF0IjoxNjc3NzY5MzUxfQ.OXMDYmoCLmSUAc4ubVaZx7zJCBShd7AhBuVooQUCq74",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "    {\r\n        \"title\": \"updatedTitle1\",\r\n        \"createdDate\": null,\r\n        \"length\": 102.0,\r\n        \"audiofileUrl\": null,\r\n        \"conversations\": []\r\n    }\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/demos/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"demos",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove NEW account (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjc5NzU1MDA4LCJpYXQiOjE2Nzc5Mjc2MjF9.317u0UoaC3WxcVqfpadQop2AeM9bSrA4BVEJAZWMSCo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/lienke",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"lienke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove NEW account (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsaWVua2UiLCJleHAiOjE2ODE4MjI1MDksImlhdCI6MTY3OTk5NTEyMn0.n0_bjwdzRljafBYE5wC1cX58p3Gj9S84CWsIo3QhwIA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/lienke",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"lienke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove existing account (illegal)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJoZW5kcmlrIiwiZXhwIjoxNjgxODI1ODA1LCJpYXQiOjE2Nzk5OTg0MTd9.jox9acYIu10xdg1-sh5uZ7IhW6kOD3F9QDNoyrcDm5M",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove existing account (auth)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZXJhcmQiLCJleHAiOjE2ODE4MTk3MDEsImlhdCI6MTY3OTk5MjMxM30.QVSeRmB76Ou3m_T7EkWojPSAq0XQmSe_P4F-OWXSHsI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/gerard",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"gerard"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove any account (admin)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTY4MTgxODk4OSwiaWF0IjoxNjc5OTkxNjAxfQ.ZETOU1yS1tsa1zHDPGG0C9T6Hs_erW8n-myivfeRF_U",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/users/hendrik",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"hendrik"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

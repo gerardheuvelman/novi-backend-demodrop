@@ -10,6 +10,8 @@ import java.util.Objects;
 
 import lombok.*;
 
+import javax.validation.constraints.*;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
@@ -19,18 +21,27 @@ public class DemoDto {
     @Setter
     private Long demoId;
 
+    @NotBlank
     @Getter
     @Setter
     private Date createdDate;
 
+    @NotBlank
+    @Size(min=2 , max =30)
     @Getter
     @Setter
     private String title;
 
+    @NotNull
+    @Min(10)
+    @Max(10000)
     @Getter
     @Setter
     private Double length;
 
+    @NotNull
+    @Min(10)
+    @Max(1000)
     @Getter
     @Setter
     private Double bpm;
@@ -41,6 +52,7 @@ public class DemoDto {
     @Setter
     private AudioFile audioFile;
 
+    @NotNull
     @JsonIncludeProperties({"name"})
     @Getter
     @Setter

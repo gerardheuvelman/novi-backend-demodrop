@@ -12,6 +12,10 @@ import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.Demo;
 
 import javax.persistence.Column;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @AllArgsConstructor
@@ -19,26 +23,34 @@ import javax.persistence.Column;
 @EqualsAndHashCode
 public class UserDto {
 
+    @NotBlank
+    @Size(min=3, max=30)
     @Getter
     @Setter
     private String username;
 
+    @NotBlank
+    @Size(min=4, max=30)
     @Getter
     @Setter
     private String password;
 
+    @NotNull
     @Getter
     @Setter
     private boolean enabled;
 
+    @NotBlank
     @Getter
     @Setter
     private String apikey;
 
+    @Email
     @Getter
     @Setter
     private String email;
 
+    @NotNull
     @Getter
     @Setter
     private Date createdDate;

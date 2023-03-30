@@ -5,6 +5,8 @@ import lombok.*;
 import nl.ultimateapps.demoDrop.Models.Demo;
 
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -16,14 +18,17 @@ public class AudioFileDto {
     @Setter
     private long audioFileId;
 
+    @NotNull
     @Getter
     @Setter
     private Date createdDate;
 
+    @NotBlank
     @Getter
     @Setter
     private String originalFileName;
 
+    @NotNull
     @JsonIncludeProperties({"demoId", "title"})
     @Getter
     @Setter
