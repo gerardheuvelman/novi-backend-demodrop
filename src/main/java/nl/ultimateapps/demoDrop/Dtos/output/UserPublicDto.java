@@ -2,7 +2,9 @@ package nl.ultimateapps.demoDrop.Dtos.output;
 
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.*;
+import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Demo;
+import nl.ultimateapps.demoDrop.Models.User;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,5 +32,10 @@ public class UserPublicDto {
     @JsonIncludeProperties({"demoId", "createdDate", "title", "length", "bpm", "genre"})
     @Getter
     @Setter
-    private List<Demo> demos;
+    private List<DemoDto> demos;
+
+    public User toModel() {
+        return UserMapper.mapToModel(this);
+    }
+
 }

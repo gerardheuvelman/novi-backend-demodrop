@@ -2,7 +2,7 @@ INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_ADMIN');
 INSERT INTO authorities (username, authority) VALUES ('admin', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('gerard', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('aalke', 'ROLE_USER');
-INSERT INTO authorities (username, authority) VALUES ('someotheruser2', 'ROLE_USER');
+INSERT INTO authorities (username, authority) VALUES ('admin2', 'ROLE_ADMIN');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser3', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser4', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser5', 'ROLE_USER');
@@ -15,23 +15,23 @@ INSERT INTO authorities (username, authority) VALUES ('someotheruser11', 'ROLE_U
 INSERT INTO authorities (username, authority) VALUES ('someotheruser12', 'ROLE_USER');
 INSERT INTO authorities (username, authority) VALUES ('someotheruser13', 'ROLE_USER');
 
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('admin', '$2y$10$Te.lNeGaDiRAUAXXpBbR7.3s9vi/K8tKGNe2EvfuEjMOquXAbR/Uy', true, 'fakeKey1', 'admin@demodrop.nl', '2023-01-01');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('gerard', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey2', 'gerardheuvelman@gmail.com','2023-01-02');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('hendrik', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('aalke', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com1','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('disableduser', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', false, 'fakeKey3', 'hendrikheuvelman@icloud.com1','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser2', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com2','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser3', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com3','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser4', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com4','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser5', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com5','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser6', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com6','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser7', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com7','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser8', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com8','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser9', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com9','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser10', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com10','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser11', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com11','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser12', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com12','2023-01-03');
-INSERT INTO users (username, password, enabled, apikey, email, created_date) VALUES ('someotheruser13', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'fakeKey3', 'hendrikheuvelman@icloud.com13','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('admin', '$2y$10$Te.lNeGaDiRAUAXXpBbR7.3s9vi/K8tKGNe2EvfuEjMOquXAbR/Uy', true, 'admin@demodrop.nl', '2023-01-01');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('gerard', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'gerardheuvelman@gmail.com','2023-01-02');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('hendrik', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('aalke', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com1','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('disableduser', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', false, 'hendrikheuvelman@icloud.com1','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('admin2', '$2y$10$Te.lNeGaDiRAUAXXpBbR7.3s9vi/K8tKGNe2EvfuEjMOquXAbR/Uy', true, 'hendrikheuvelman@icloud.com2','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser3', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com3','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser4', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com4','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser5', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com5','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser6', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com6','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser7', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com7','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser8', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com8','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser9', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com9','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser10', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com10','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser11', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com11','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser12', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com12','2023-01-03');
+INSERT INTO users (username, password, enabled, email, created_date) VALUES ('someotheruser13', '$2y$10$b7KTevAvbO8kxrV9b6rEH.6iz49k4TFpE1lB4H97BZmlsdByswmPK', true, 'hendrikheuvelman@icloud.com13','2023-01-03');
 
 INSERT INTO demo (demo_id, created_date, title, length, bpm) VALUES (1001, '2023-01-01', 'Prime Audio', 260, 123.0);
 INSERT INTO demo (demo_id, created_date, title, length, bpm) VALUES (1002, '2023-01-02', 'Dance Monkey', 180, 120.0);
@@ -50,22 +50,22 @@ INSERT INTO demo (demo_id, created_date, title, length, bpm) VALUES (1014, '2023
 INSERT INTO demo (demo_id, created_date, title, length, bpm) VALUES (1015, '2023-01-03', 'some other demo 12', 300, 120.0);
 INSERT INTO demo (demo_id, created_date, title, length, bpm) VALUES (1016, '2023-01-03', 'some other demo 13', 300, 120.0);
 
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2001, 'subject1', '2023-01-11', '2023-01-14','body1' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2002, 'subject2', '2023-01-12', '2023-01-15','body2' , false , false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2003, 'subject3', '2023-01-13', '2023-01-16','body3' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2004, 'anothersubject1', '2023-01-13', '2023-01-16','anotherbody1' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2005, 'anothersubject2', '2023-01-13', '2023-01-16','anotherbody2' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2006, 'anothersubject3', '2023-01-13', '2023-01-16','anotherbody3' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2007, 'anothersubject4', '2023-01-13', '2023-01-16','anotherbody4' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2008, 'anothersubject5', '2023-01-13', '2023-01-16','anotherbody5' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2009, 'anothersubject6', '2023-01-13', '2023-01-16','anotherbody6' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2010, 'anothersubject7', '2023-01-13', '2023-01-16','anotherbody7' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2011, 'anothersubject8', '2023-01-13', '2023-01-16','anotherbody8' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2012, 'anothersubject9', '2023-01-13', '2023-01-16','anotherbody9' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2013, 'anothersubject10', '2023-01-13', '2023-01-16','anotherbody10' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2014, 'anothersubject11', '2023-01-13', '2023-01-16','anotherbody11' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2015, 'anothersubject12', '2023-01-13', '2023-01-16','anotherbody12' , false, false);
-INSERT INTO conversation (conversation_id, subject, created_date, latest_reply_date, body, read_by_producer, read_by_interested_user) VALUES (2016, 'anothersubject13', '2023-01-13', '2023-01-16','anotherbody13' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2001, true, 'RE: Prime Audio', '2023-01-11', '2023-01-14','body1' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2002, true, 'RE: Dance Monkey', '2023-01-12', '2023-01-15','body2' , false , false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2003, true, 'RE: Dubstep Wonderland', '2023-01-13', '2023-01-16','body3' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2004, false, 'No demo attached 1', '2023-01-14', '2023-01-16','anotherbody1' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2005, false, 'No demo attached 2', '2023-01-15', '2023-01-16','anotherbody2' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2006, true, 'anothersubject3', '2023-01-13', '2023-01-16','anotherbody3' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2007, true, 'anothersubject4', '2023-01-13', '2023-01-16','anotherbody4' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2008, true, 'anothersubject5', '2023-01-13', '2023-01-16','anotherbody5' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2009, true, 'anothersubject6', '2023-01-13', '2023-01-16','anotherbody6' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2010, true, 'anothersubject7', '2023-01-13', '2023-01-16','anotherbody7' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2011, true, 'anothersubject8', '2023-01-13', '2023-01-16','anotherbody8' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2012, true, 'anothersubject9', '2023-01-13', '2023-01-16','anotherbody9' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2013, true, 'anothersubject10', '2023-01-13', '2023-01-16','anotherbody10' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2014, true, 'anothersubject11', '2023-01-13', '2023-01-16','anotherbody11' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2015, true, 'anothersubject12', '2023-01-13', '2023-01-16','anotherbody12' , false, false);
+INSERT INTO conversation (conversation_id, has_demo, subject, created_date, latest_reply_date, body, read_by_correspondent, read_by_initiator) VALUES (2016, true, 'anothersubject13', '2023-01-13', '2023-01-16','anotherbody13' , false, false);
 
 INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3001, '2023-01-01' ,'PrimeAudio.mp3');
 INSERT INTO audio_file (audio_file_id, created_date, original_file_name) VALUES (3002, '2023-01-01' ,'DanceMonkey.mp3');
@@ -106,73 +106,90 @@ INSERT INTO genre (name) VALUES ('Dub-Step');
 INSERT INTO genre (name) VALUES ('Other');
 INSERT INTO genre (name) VALUES ('Unknown');
 
+
 INSERT INTO demos_users_favorites_ (demo_id, user_id) VALUES (1002, 'gerard');
 
+
+INSERT INTO user_report (user_report_id, created_date, type, subject, body) VALUES (4001, '2023-01-01', 'user', 'About user "gerard"', 'This person frequently sells tracks that he does not even have the rights to.' );
+INSERT INTO user_report (user_report_id, created_date, type, subject, body) VALUES (4002, '2023-01-01', 'demo', 'About demo "Dubstep Wonderland"', 'This track is not owned by the user offering it.');
+INSERT INTO user_report (user_report_id, created_date, type, subject, body) VALUES (4003, '2023-01-01', 'conversation', 'About conversation "RE Dubstep Wonderland"', 'User "gerard" was extremely rude to me!!');
+
+UPDATE user_report
+SET  reporter_name = 'hendrik', reported_user_name = 'gerard'
+WHERE user_report_id = 4001;
+
+UPDATE user_report
+SET  reporter_name = 'hendrik', reported_demo_id = 1003
+WHERE user_report_id = 4002;
+
+UPDATE user_report
+SET  reporter_name = 'hendrik', reported_conversation_id = 2003
+WHERE user_report_id = 4003;
+
+
 UPDATE demo
-SET username = 'gerard'
+SET producer = 'gerard'
 WHERE demo_id = 1001;
 
 UPDATE demo
-SET username = 'admin'
+SET producer = 'admin'
 WHERE demo_id = 1002;
 
 UPDATE demo
-SET username = 'gerard'
+SET producer = 'gerard'
 WHERE demo_id = 1003;
 
 UPDATE demo
-SET username = 'aalke'
+SET producer = 'aalke'
 WHERE demo_id = 1004;
 
 UPDATE demo
-SET username = 'someotheruser2'
+SET producer = 'admin2'
 WHERE demo_id = 1005;
 
 UPDATE demo
-SET username = 'someotheruser3'
+SET producer = 'someotheruser3'
 WHERE demo_id = 1006;
 
 UPDATE demo
-SET username = 'someotheruser4'
+SET producer = 'someotheruser4'
 WHERE demo_id = 1007;
 
 UPDATE demo
-SET username = 'someotheruser5'
+SET producer = 'someotheruser5'
 WHERE demo_id = 1008;
 
 UPDATE demo
-SET username = 'someotheruser6'
+SET producer = 'someotheruser6'
 WHERE demo_id = 1009;
 
 UPDATE demo
-SET username = 'someotheruser7'
+SET producer = 'someotheruser7'
 WHERE demo_id = 1010;
 
 UPDATE demo
-SET username = 'someotheruser8'
+SET producer = 'someotheruser8'
 WHERE demo_id = 1011;
 
 UPDATE demo
-SET username = 'someotheruser9'
+SET producer = 'someotheruser9'
 WHERE demo_id = 1012;
 
 UPDATE demo
-SET username = 'someotheruser10'
+SET producer = 'someotheruser10'
 WHERE demo_id = 1013;
 
 UPDATE demo
-SET username = 'someotheruser11'
+SET producer = 'someotheruser11'
 WHERE demo_id = 1014;
 
 UPDATE demo
-SET username = 'someotheruser12'
+SET producer = 'someotheruser12'
 WHERE demo_id = 1015;
 
 UPDATE demo
-SET username = 'someotheruser13'
+SET producer = 'someotheruser13'
 WHERE demo_id = 1016;
-
-
 
 UPDATE demo
 SET audio_file = 3001
@@ -303,65 +320,65 @@ SET genre = 'Dance'
 WHERE demo_id = 1016;
 
 UPDATE conversation
-SET demo_id = 1001, producer_name = 'gerard', interested_user_name = 'aalke'
+SET demo_id = 1001, correspondent = 'gerard', initiator = 'aalke'
 WHERE conversation_id = 2001;
 
 UPDATE conversation
-SET demo_id = 1002, producer_name = 'admin', interested_user_name = 'gerard'
+SET demo_id = 1002, correspondent = 'admin', initiator = 'gerard'
 WHERE conversation_id = 2002;
 
 UPDATE conversation
-SET demo_id = 1003, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1003, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2003;
 
 UPDATE conversation
-SET demo_id = 1004, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1004, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2004;
 
 UPDATE conversation
-SET demo_id = 1005, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1005, correspondent = 'hendrik', initiator = 'admin'
 WHERE conversation_id = 2005;
 
 UPDATE conversation
-SET demo_id = 1006, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1006, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2006;
 
 UPDATE conversation
-SET demo_id = 1007, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1007, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2007;
 
 UPDATE conversation
-SET demo_id = 1008, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1008, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2008;
 
 UPDATE conversation
-SET demo_id = 1009, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1009, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2009;
 
 UPDATE conversation
-SET demo_id = 1010, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1010, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2010;
 
 UPDATE conversation
-SET demo_id = 1011, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1011, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2011;
 
 UPDATE conversation
-SET demo_id = 1012, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1012, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2012;
 
 UPDATE conversation
-SET demo_id = 1013, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1013, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2013;
 
 UPDATE conversation
-SET demo_id = 1014, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1014, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2014;
 
 UPDATE conversation
-SET demo_id = 1015, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1015, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2015;
 
 UPDATE conversation
-SET demo_id = 1016, producer_name = 'gerard', interested_user_name = 'admin'
+SET demo_id = 1016, correspondent = 'gerard', initiator = 'admin'
 WHERE conversation_id = 2016;

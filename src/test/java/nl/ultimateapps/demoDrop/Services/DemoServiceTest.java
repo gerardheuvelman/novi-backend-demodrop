@@ -76,7 +76,7 @@ class DemoServiceTest extends ServiceTest {
 
         //GIVEN
         Mockito.when(userRepository.findById(user.getUsername())).thenReturn(Optional.of(user));
-        Mockito.when(demoRepository.findByUserOrderByCreatedDateDesc(user)).thenReturn(usersProducedDemoList);
+        Mockito.when(demoRepository.findByProducerOrderByCreatedDateDesc(user)).thenReturn(usersProducedDemoList);
 
         //ACT
         //WHEN
@@ -150,9 +150,9 @@ class DemoServiceTest extends ServiceTest {
     @Test
     public void CreateDemoReturnsADemoDto() throws UserPrincipalNotFoundException {
         //ARRANGE
-        Demo newDemo = new Demo(1003L, earlierDate, "Third Demo", 123D, 456D, null, null, null, null, null);
+        Demo newDemo = new Demo(1003L, earlierDate, "Third Demo", 123D, 456D, null, null, null, null, null, null);
 
-        DemoDto postRequestBodyDemoDto = new DemoDto(null, earlierDate, "Third Demo", 123D, 456D, null, null, null, null, null);
+        DemoDto postRequestBodyDemoDto = new DemoDto(null, earlierDate, "Third Demo", 123D, 456D, null, null, null, null, null, null);
 
         DemoDto expectedDemoDto = DemoMapper.mapToDto(newDemo);
 
@@ -180,10 +180,10 @@ class DemoServiceTest extends ServiceTest {
         //ARRANGE
         Demo demo = primeAudio;
         User producer = user;
-        demo.setUser(producer);
+        demo.setProducer(producer);
         long demoId = demo.getDemoId();
 
-        DemoDto putRequestBodyDemoDto = new DemoDto(null, earlierDate, "New Title", 123D, 456D, null, null, null, null, null);
+        DemoDto putRequestBodyDemoDto = new DemoDto(null, earlierDate, "New Title", 123D, 456D, null, null, null, null, null, null);
 
         DemoDto expectedDemoDto = putRequestBodyDemoDto;
         expectedDemoDto.setDemoId(demoId);
@@ -236,17 +236,17 @@ class DemoServiceTest extends ServiceTest {
     public void assignGenreToDemoReturnsADemoDto() {
         //ARRANGE
         Demo demo = primeAudio;
-        demo.setUser(user);
+        demo.setProducer(user);
         demo.setGenre(dance);
         long demoId = demo.getDemoId();
 
         Genre newGenre = rock;
 
         DemoDto demoDto = primeAudioDto;
-        demoDto.setGenre(newGenre);
+        demoDto.setGenre(newGenre.toDto());
 
         DemoDto expectedDemoDto = primeAudioDto;
-        expectedDemoDto.setGenre(newGenre);
+        expectedDemoDto.setGenre(newGenre.toDto());
 
         //GIVEN
         Mockito.when(demoRepository.findById(demoId)).thenReturn(Optional.of(demo));
@@ -285,7 +285,7 @@ class DemoServiceTest extends ServiceTest {
         //ARRANGE
 
         Demo demo = primeAudio;
-        demo.setUser(user);
+        demo.setProducer(user);
         long demoId = demo.getDemoId();
         long expectedDemoId = demoId;
         //GIVEN
@@ -329,7 +329,7 @@ class DemoServiceTest extends ServiceTest {
         //ARRANGE
         Demo demo = primeAudio;
         User producer = user;
-        demo.setUser(producer);
+        demo.setProducer(producer);
         long demoId = demo.getDemoId();
         AudioFile audioFile = primeAudioFile;
         long audioFileId = primeAudioFile.getAudioFileId();
@@ -364,7 +364,7 @@ class DemoServiceTest extends ServiceTest {
         audioFile.setDemo(demo);
 
         User producer = user;
-        demo.setUser(producer);
+        demo.setProducer(producer);
 
         boolean expectedResult = true;
 

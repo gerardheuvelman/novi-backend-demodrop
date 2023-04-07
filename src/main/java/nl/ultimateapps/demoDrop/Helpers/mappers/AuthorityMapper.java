@@ -11,7 +11,9 @@ import nl.ultimateapps.demoDrop.Models.Genre;
 import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -31,6 +33,16 @@ public class AuthorityMapper {
         }
         return authorityList;
     }
+
+    public static Set<Authority> mapToModel(Set<AuthorityDto> authorityDtoSet) {
+        ModelMapper modelMapper = new ModelMapper();
+        Set<Authority> authoritySet = new HashSet<>();
+        for (AuthorityDto authorityDto : authorityDtoSet) {
+            Authority Authority = modelMapper.map(authorityDto, Authority.class);
+            authoritySet.add(Authority);
+        }
+        return authoritySet;
+    }
     
     public static AuthorityDto mapToDto(Authority authority) {
         ModelMapper modelMapper = new ModelMapper();
@@ -45,6 +57,16 @@ public class AuthorityMapper {
             authorityDtoList.add(authorityDto);
         }
         return authorityDtoList;
+    }
+
+    public static Set<AuthorityDto> mapToDto(Set<Authority> authoritySet) {
+        ModelMapper modelMapper = new ModelMapper();
+        Set<AuthorityDto> authorityDtoSet = new HashSet<>();
+        for (Authority authority : authoritySet) {
+            AuthorityDto authorityDto = modelMapper.map(authority, AuthorityDto.class);
+            authorityDtoSet.add(authorityDto);
+        }
+        return authorityDtoSet;
     }
 
     public static List<AuthorityDto> mapToDto(Iterable<Authority> authorityIterable) {

@@ -53,7 +53,7 @@ public class DemoControllerTest {
     public void testEndpointGetDemos() throws Exception {
 
         //ARRANGE
-        DemoDto demoDto = new DemoDto(1001L, null, "Prime Audio", null, null, null, null, null, null, null);
+        DemoDto demoDto = new DemoDto(1001L, null, "Prime Audio", null, null, null, null, null, null, null, null);
 
         List<DemoDto> allDemoDtos = Arrays.asList(demoDto);
 

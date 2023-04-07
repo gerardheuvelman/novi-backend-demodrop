@@ -2,16 +2,14 @@ package nl.ultimateapps.demoDrop.Dtos.output;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import nl.ultimateapps.demoDrop.Models.Authority;
+import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
+import nl.ultimateapps.demoDrop.Models.*;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import lombok.*;
-import nl.ultimateapps.demoDrop.Models.Conversation;
-import nl.ultimateapps.demoDrop.Models.Demo;
 
-import javax.persistence.Column;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,7 +19,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class UserDto {
+public class UserPrivateDto {
 
     @NotBlank
     @Size(min=3, max=30)
@@ -40,11 +38,6 @@ public class UserDto {
     @Setter
     private boolean enabled;
 
-    @NotBlank
-    @Getter
-    @Setter
-    private String apikey;
-
     @Email
     @Getter
     @Setter
@@ -60,17 +53,47 @@ public class UserDto {
     @JsonIncludeProperties({"authority"})
     @Getter
     @Setter
-    private Set<Authority> authorities;
+    private Set<AuthorityDto> authorities;
 
     @JsonIncludeProperties({"title"})
     @Getter
-    private List<Demo> demos;
+    @Setter
+    private List<DemoDto> demos;
 
     @JsonIgnore
     @Getter
-    private List<Conversation> conversationsAsInterestedParty;
+    @Setter
+    private List<ConversationDto> conversationsAsInitiator;
 
     @JsonIgnore
     @Getter
-    private List<Demo> favoriteDemos;
+    @Setter
+    private List<ConversationDto> conversationsAsCorrespondent;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    private List<UserReportDto> userReportsAsReporter;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    private List<UserReportDto> userReportsAsReportedUser;
+
+    @JsonIgnore
+    @Getter
+    @Setter
+    private List<DemoDto> favoriteDemos;
+
+    public User toModel() {
+        return UserMapper.mapToModel(this);
+    }
+
+    public UserPublicDto toUserPublicDto() {
+        UserPublicDto userPublicDto = new UserPublicDto();
+        userPublicDto.setUsername(this.getUsername());
+        userPublicDto.setCreatedDate(this.getCreatedDate());
+        userPublicDto.setDemos(this.getDemos());
+        return userPublicDto;
+    }
 }

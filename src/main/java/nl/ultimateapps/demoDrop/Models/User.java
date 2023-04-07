@@ -1,11 +1,15 @@
 package nl.ultimateapps.demoDrop.Models;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.List;
 import lombok.*;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
+import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -34,11 +38,6 @@ public class User {
     @Column
     @Getter
     @Setter
-    private String apikey;
-
-    @Column
-    @Getter
-    @Setter
     private String email;
 
     @Column
@@ -58,25 +57,44 @@ public class User {
     @Setter
     private Set<Authority> authorities = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "producer", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     @Getter
     @Setter
     private List<Demo> demos;
 
-    @OneToMany(mappedBy = "producer", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "initiator", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
-    private List<Conversation> conversationsAsProducer;
+    private List<Conversation> conversationsAsInitiator;
 
-    @OneToMany(mappedBy = "interestedUser", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "correspondent", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
-    private List<Conversation> conversationsAsInterestedParty;
+    private List<Conversation> conversationsAsCorrespondent;
+
+    @OneToMany(mappedBy = "reporter", cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
+    private List<UserReport> userReportsAsReporter;
+
+    @OneToMany(mappedBy = "reportedUser", cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
+    private List<UserReport> userReportsAsReportedUser;
 
     @ManyToMany(mappedBy = "favoriteOfUsers" , cascade = CascadeType.REMOVE)
     @Getter
     @Setter
     private List<Demo> favoriteDemos;
+
+
+    public UserPrivateDto toPrivateDto() {
+        return UserMapper.mapToPrivateDto(this);
+    }
+
+    public UserPublicDto toPublicDto() {
+        return UserMapper.mapToPublicDto(this);
+    }
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

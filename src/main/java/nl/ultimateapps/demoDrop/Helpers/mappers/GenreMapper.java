@@ -1,11 +1,9 @@
 package nl.ultimateapps.demoDrop.Helpers.mappers;
 
-import jdk.dynalink.beans.StaticClass;
+import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
 import nl.ultimateapps.demoDrop.Dtos.output.GenreDto;
-import nl.ultimateapps.demoDrop.Dtos.output.GenreDto;
+import nl.ultimateapps.demoDrop.Models.Demo;
 import nl.ultimateapps.demoDrop.Models.Genre;
-import nl.ultimateapps.demoDrop.Models.Genre;
-import org.modelmapper.ModelMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,31 +12,67 @@ import java.util.stream.StreamSupport;
 
 public class GenreMapper {
 
+    static boolean processing = false;
+
     public static Genre mapToModel(GenreDto genreDto) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(genreDto, Genre.class);
+        if (processing) {
+            return null;
+        }
+        processing = true;
+        Genre genre = mapGenreDtoToGenre(genreDto);
+        processing = false;
+        return genre;
+    }
+
+
+    private static Genre mapGenreDtoToGenre(GenreDto genreDto) {
+        Genre genre = new Genre();
+
+        //normal fields:
+        genre.setName(genreDto.getName());
+
+        //Relationships (lists)
+        genre.setDemos(genreDto.getDemos() != null ? DemoMapper.mapToModel(genreDto.getDemos()) : null);
+
+        return genre;
     }
 
     public static List<Genre> mapToModel(List<GenreDto> genreDtoList) {
-        ModelMapper modelMapper = new ModelMapper();
         List<Genre> genreList = new ArrayList<>();
         for (GenreDto genreDto : genreDtoList) {
-            Genre genre = modelMapper.map(genreDto, Genre.class);
+            Genre genre = mapToModel(genreDto);
             genreList.add(genre);
         }
         return genreList;
     }
 
     public static GenreDto mapToDto(Genre genre) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(genre, GenreDto.class);
+        if (processing) {
+            return null;
+        }
+        processing = true;
+        GenreDto genreDto = mapGenreToGenreDto(genre);
+        processing = false;
+        return genreDto;
+    }
+
+
+    private static GenreDto mapGenreToGenreDto(Genre genre) {
+        GenreDto genreDto = new GenreDto();
+
+        //Normal fields
+        genreDto.setName(genre.getName());
+
+        // Relationships (lists)
+        genreDto.setDemos(genre.getDemos() != null ? DemoMapper.mapToDto(genre.getDemos()): null);
+
+        return genreDto;
     }
 
     public static List<GenreDto> mapToDto(List<Genre> genreList) {
-        ModelMapper modelMapper = new ModelMapper();
         List<GenreDto> genreDtoList = new ArrayList<>();
         for (Genre genre : genreList) {
-            GenreDto genreDto = modelMapper.map(genre, GenreDto.class);
+            GenreDto genreDto = mapToDto(genre);
             genreDtoList.add(genreDto);
         }
         return genreDtoList;

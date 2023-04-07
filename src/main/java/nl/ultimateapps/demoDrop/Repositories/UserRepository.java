@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
-    public Iterable<User> findAllByOrderByCreatedDateDesc(); // Conversations sorted by date descending
+    public Iterable<User> findAllByOrderByCreatedDateDesc(); // Users sorted by date descending
 
 }

@@ -7,7 +7,9 @@ import nl.ultimateapps.demoDrop.Dtos.output.AudioFileDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Helpers.mappers.AudioFileMapper;
 import nl.ultimateapps.demoDrop.Models.AudioFile;
+import nl.ultimateapps.demoDrop.Models.Demo;
 import nl.ultimateapps.demoDrop.Repositories.AudioFileRepository;
+import nl.ultimateapps.demoDrop.Repositories.DemoRepository;
 import nl.ultimateapps.demoDrop.Utils.FileConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -35,15 +37,20 @@ public class AudioFileServiceImpl implements AudioFileService {
     private Path fileStoragePath;
     @Getter
     @Setter
-    private final String fileStorageLocation;
+    private String fileStorageLocation;
     @Getter
     @Setter
-    private final AudioFileRepository audioFileRepository;
+    private AudioFileRepository audioFileRepository;
 
-    public AudioFileServiceImpl(@Value("${my.upload_location}") String fileStorageLocation, AudioFileRepository audioFileRepository) {
+    @Getter
+    @Setter
+    private DemoRepository demoRepository;
+
+    public AudioFileServiceImpl(@Value("${my.upload_location}") String fileStorageLocation, AudioFileRepository audioFileRepository, DemoRepository demoRepository) {
         fileStoragePath = Paths.get(fileStorageLocation).toAbsolutePath().normalize();
         this.fileStorageLocation = fileStorageLocation;
         this.audioFileRepository = audioFileRepository;
+        this.demoRepository = demoRepository;
         try {
             Files.createDirectories(fileStoragePath);
         } catch (IOException e) {
@@ -114,6 +121,20 @@ public class AudioFileServiceImpl implements AudioFileService {
         return retrievedId;
     }
 
+//    @Override
+//    public int deleteAllOrphanedAudioFiles() { //ADMIN ONLY
+//            List<AudioFile> audioFiles = audioFileRepository.findAll();
+//            int numDeletedAudioFiles = 0;
+//            for (AudioFile audioFile : audioFiles) {
+//                // Only delete it if there is no more Demo for this audioFile
+//                if audioFile.getDemo().getDemoId() {
+//                    audioFileRepository.delete(audioFile);
+//                }
+//
+//                numDeletedAudioFiles++;
+//            }
+//            return numDeletedAudioFiles;
+//        }
 
     @Override
     public int deleteOrphanedMp3Files(String fileStorageLocation) {

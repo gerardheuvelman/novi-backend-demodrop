@@ -21,4 +21,6 @@ public interface AudioFileService {
     Resource downloadMp3File(AudioFile audioFile);
 
     AudioFileDto editAudioFile(Long audioFileId, AudioFileDto audioFileDto);
+
+//    int deleteAllOrphanedAudioFiles();
 }

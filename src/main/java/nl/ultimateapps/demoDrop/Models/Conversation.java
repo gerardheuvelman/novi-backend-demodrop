@@ -2,7 +2,13 @@ package nl.ultimateapps.demoDrop.Models;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+
 import lombok.*;
+import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
+import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
+import nl.ultimateapps.demoDrop.Helpers.mappers.ConversationMapper;
+import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,6 +45,10 @@ public class Conversation {
 
     @Getter
     @Setter
+    private Boolean hasDemo;
+
+    @Getter
+    @Setter
     private String subject;
 
     @Getter
@@ -47,28 +57,38 @@ public class Conversation {
 
     @Getter
     @Setter
-    private boolean readByProducer;
+    private boolean readByInitiator;
 
     @Getter
     @Setter
-    private boolean readByInterestedUser;
+    private boolean readByCorrespondent;
 
     //Relationships:
+
+    @ManyToOne
+    @JoinColumn(name = "initiator")
+    @Getter
+    @Setter
+    private User initiator;
+
+    @ManyToOne
+    @JoinColumn(name = "correspondent")
+    @Getter
+    @Setter
+    private User correspondent;
+
     @ManyToOne
     @JoinColumn(name = "Demo_id")  //optioneel. Dit is sowieso de default naam
     @Getter
     @Setter
     private Demo demo;
 
-    @ManyToOne
-    @JoinColumn(name = "producer_name")
+    @OneToMany(mappedBy = "reportedConversation", cascade = CascadeType.REMOVE)
     @Getter
     @Setter
-    private User producer;
+    private List<UserReport> userReports;
 
-    @ManyToOne
-    @JoinColumn(name = "interested_user_name")
-    @Getter
-    @Setter
-    private User interestedUser;
+    public ConversationDto toDto() {
+        return ConversationMapper.mapToDto(this);
+    }
 }

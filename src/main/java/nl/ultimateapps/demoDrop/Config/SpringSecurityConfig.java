@@ -50,15 +50,15 @@ public class SpringSecurityConfig {
                 .authorizeRequests()
 
                 .antMatchers(HttpMethod.GET,"/users/public").permitAll() // LIST USERS (PUBLIC INFO)
-                .antMatchers(HttpMethod.GET,"/users/public/**").permitAll()  // GET USER (PUBLIC INFO)
+                .antMatchers(HttpMethod.GET,"/users/**/public").permitAll()  // GET USER (PUBLIC INFO)
 
-                .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN") // LIST USERS
+                .antMatchers(HttpMethod.GET,"/users/private").hasRole("ADMIN") // LIST USERS (SENSITIVE INFO)
+                .antMatchers(HttpMethod.GET,"/users/**/private").permitAll() // GET USER (SENSITIVE INFO)
                 .antMatchers(HttpMethod.GET, "/users/**/demos").permitAll() // PERSONAL DEMO LIST
                 .antMatchers(HttpMethod.GET, "/users/**/favdemos").authenticated() // PERSONAL FAVORITE DEMO LIST
                 .antMatchers(HttpMethod.GET, "/users/**/conversations").authenticated() // PERSONAL INBOX
                 .antMatchers(HttpMethod.GET, "/users/**/authorities").hasRole("ADMIN")  // LIST USER AUTHORITIES
                 .antMatchers(HttpMethod.GET,"/users/**/getstatus").permitAll()  // FETCH ACCOUNT STATUS
-                .antMatchers(HttpMethod.GET,"/users/**/").permitAll() // GET ESSENTIAL USER INFO
                 .antMatchers(HttpMethod.POST, "/users").permitAll() // REGISTER A NEW USER
                 .antMatchers(HttpMethod.POST, "/users/admin").hasRole("ADMIN") // CREATE ADMIN ACCOUNT
                 .antMatchers(HttpMethod.POST, "/users/**/authorities").hasRole("ADMIN")  // ASSIGN AUTHORITY TO USER
@@ -67,6 +67,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PATCH, "/users/**/change-email").authenticated() // CHANGE EMAIL
                 .antMatchers(HttpMethod.PATCH, "/users/**/setstatus").hasRole("ADMIN") // SET ACCOUNT STATUS
                 .antMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN") // DELETE ALL USERS
+                .antMatchers(HttpMethod.DELETE, "/users/selected").hasRole("ADMIN") // DELETE SELECTED USERS
                 .antMatchers(HttpMethod.DELETE, "/users/**/authorities/**").hasRole("ADMIN")  // REMOVE AUTHORITY FROM USER
                 .antMatchers(HttpMethod.DELETE,  "/users/**").authenticated() // DELETE USER ACCOUNT
 
@@ -80,6 +81,7 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PATCH, "/demos/**/setgenre/**").authenticated() // ASSIGN A GENRE TO A DEMO
                 .antMatchers(HttpMethod.PATCH, "/demos/**/setfav").authenticated() // ADD / REMOVE A USER FROM FAVLIST
                 .antMatchers(HttpMethod.DELETE,"/demos").hasRole("ADMIN")// DELETE ALL DEMOS
+                .antMatchers(HttpMethod.DELETE,"/demos/selected").hasRole("ADMIN")// DELETE SELECTED DEMOS
                 .antMatchers(HttpMethod.DELETE, "/demos/**").authenticated()// DELETE SINGLE DEMO
 
                 .antMatchers(HttpMethod.POST,"/demos/**/upload").authenticated() // UPLOAD MP3 FILE & ASSIGN TO EXISTING DEMO (>1MB ENABLED)
@@ -88,7 +90,6 @@ public class SpringSecurityConfig {
                 // Direct CRUD for audiofiles (admin only)
                 .antMatchers(HttpMethod.GET, "/audiofiles").hasRole("ADMIN") // LIST AUDIOFILES
                 .antMatchers(HttpMethod.GET, "/audiofiles/**").hasRole("ADMIN") // GET SINGLE AUDIOFILE INFO
-                .antMatchers(HttpMethod.DELETE,"/audiofiles").hasRole("ADMIN") // DELETE ALL AUDIOFILES (ALSO ON DISK)
                 .antMatchers(HttpMethod.DELETE,"/audiofiles/**").hasRole("ADMIN") // DELETE SINGLE AUDIOFILE (ALSO ON DISK)
                 .antMatchers(HttpMethod.DELETE,"/audiofiles/purge").hasRole("ADMIN") // DELETE ORPHAN MP3 FILES ON DISK
 
@@ -98,11 +99,19 @@ public class SpringSecurityConfig {
                 .antMatchers(HttpMethod.PUT, "/conversations/**").authenticated() // REPLY TO EXISTING CONVERSATION
                 .antMatchers(HttpMethod.PATCH, "/conversations/**/markread").authenticated()//  MARK CONVERSATION AS READ
                 .antMatchers(HttpMethod.DELETE,"/conversations").hasRole("ADMIN") // DELETE ALL CONVERSATIONS
+                .antMatchers(HttpMethod.DELETE,"/conversations/selected").hasRole("ADMIN") // DELETE SELECTED CONVERSATIONS
                 .antMatchers(HttpMethod.DELETE, "/conversations/**").hasRole("ADMIN") //  DELETE SINGLE CONVERSATION
+
+                .antMatchers(HttpMethod.GET,"/userreports").hasRole("ADMIN") // LIST USER REPORTS
+                .antMatchers(HttpMethod.GET,"/userreports/**").hasRole("ADMIN") // USER REPORT DETAILS
+                .antMatchers(HttpMethod.POST,"/userreports").authenticated() // CREATE NEW USER REPORT
+                .antMatchers(HttpMethod.DELETE,"/userreports").hasRole("ADMIN") // DELETE ALL USER REPORTS
+                .antMatchers(HttpMethod.DELETE,"/userreports/selected").hasRole("ADMIN") // DELETE SELECTED USER REPORTS
+                .antMatchers(HttpMethod.DELETE, "/userreports/**").hasRole("ADMIN") //  DELETE SINGLE USER REPORTS
 
                 .antMatchers(HttpMethod.GET,"/genres", "/genres/**").permitAll() // LIST MUSIC GENRES
                 .antMatchers(HttpMethod.POST,"/genres").hasRole("ADMIN") // CREATE MUSIC GENRE
-                .antMatchers(HttpMethod.DELETE,"/genres", "/genres/**").hasRole("ADMIN") // DELETE MUSIC GENRE
+                .antMatchers(HttpMethod.DELETE,"/genres", "/genres/selected", "/genres/**").hasRole("ADMIN") // DELETE MUSIC GENRE
 
                 .antMatchers(HttpMethod.POST, "/authenticate").permitAll() //USER LOGIN
                 .antMatchers(HttpMethod.GET, "/authenticated").authenticated() // AUTHENTICATION TEST ROUTE

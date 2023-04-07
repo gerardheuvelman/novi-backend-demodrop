@@ -116,7 +116,7 @@ public class DemoIntegrationTest {
         demoDTO.setLength(120.0);
         demoDTO.setBpm(140.0);
         demoDTO.setAudioFile(null);
-        demoDTO.setGenre(newGenre);
+        demoDTO.setGenre(newGenre.toDto());
 
         ObjectMapper objectMapper = new ObjectMapper();
         String demoJson = objectMapper.writeValueAsString(demoDTO);

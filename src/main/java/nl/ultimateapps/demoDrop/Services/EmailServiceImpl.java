@@ -1,6 +1,5 @@
 package nl.ultimateapps.demoDrop.Services;
 
-import lombok.AllArgsConstructor;
 import nl.ultimateapps.demoDrop.Models.Conversation;
 import nl.ultimateapps.demoDrop.Models.EmailDetails;
 import nl.ultimateapps.demoDrop.Models.User;
@@ -99,14 +98,14 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public String SendNewMessageEmail(Conversation conversation, boolean newConversation) {
-        User msgSender, emailRecipient;
+        User emailSender, emailRecipient;
         // get the message sender
-        if (conversation.isReadByInterestedUser() == true) {
-            msgSender = conversation.getInterestedUser();
-            emailRecipient = conversation.getProducer();
+        if (conversation.isReadByInitiator() == true) {
+            emailSender = conversation.getInitiator();
+            emailRecipient = conversation.getCorrespondent();
         } else {
-            msgSender = conversation.getProducer();
-            emailRecipient = conversation.getInterestedUser();
+            emailSender = conversation.getCorrespondent();
+            emailRecipient = conversation.getInitiator();
         }
 
         String emailSubject;
@@ -116,13 +115,23 @@ public class EmailServiceImpl implements EmailService {
 
         // compose the message body.
         StringBuilder bodyBuilder = new StringBuilder();
-        bodyBuilder.append(msgSender);
-        if (newConversation) {
-            bodyBuilder.append(" has shown interest in your demo \"");
-        } else {
-            bodyBuilder.append(" has replied to your message regarding \"");
+        bodyBuilder.append("User ");
+        bodyBuilder.append(emailSender);
+        if (conversation.getHasDemo() == true) {
+            if (newConversation) {
+                bodyBuilder.append(" has shown interest in your demo \"");
+            } else {
+                bodyBuilder.append(" has replied to your last message regarding \"");
+            }
+            bodyBuilder.append(conversation.getDemo().getTitle());
         }
-        bodyBuilder.append(conversation.getDemo().getTitle());
+        if (conversation.getHasDemo() == false) {
+            if (newConversation) {
+                bodyBuilder.append(" has sent you a new message.");
+            } else {
+                bodyBuilder.append(" has replied to your last message.");
+            }
+        }
         bodyBuilder.append("\".\nClick on the link below to read the message.\n\n");
         HyperlinkBuilder hyperlinkBuilder = new HyperlinkBuilder();
         String hyperLink= hyperlinkBuilder.buildConversationHyperlink(conversation);

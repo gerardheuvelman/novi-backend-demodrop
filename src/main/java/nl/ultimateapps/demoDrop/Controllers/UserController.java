@@ -3,7 +3,7 @@ package nl.ultimateapps.demoDrop.Controllers;
 import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
 import nl.ultimateapps.demoDrop.Dtos.output.ConversationDto;
 import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
-import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Exceptions.BadRequestException;
 import nl.ultimateapps.demoDrop.Services.*;
@@ -36,25 +36,25 @@ public class UserController {
     private ConversationService conversationService;
 
     @GetMapping(value = "/public")
-    public ResponseEntity<List<UserPublicDto>> getUserPublicDtos(@RequestParam int limit) {
+    public ResponseEntity<List<UserPublicDto>> getUsersPublic(@RequestParam int limit) {
         List<UserPublicDto> userPublicDtos = userService.getUserPublicDtos(limit);
         return ResponseEntity.ok().body(userPublicDtos);
     }
-    @GetMapping(value = "/public/{username}")
+    @GetMapping(value = "/{username}/public")
     public ResponseEntity<UserPublicDto> getUserPublic(@PathVariable("username") String username) {
         UserPublicDto userPublicDto = userService.getUserPublicDto(username);
         return ResponseEntity.ok().body(userPublicDto);
     }
-    @GetMapping(value = "")
-    public ResponseEntity<List<UserDto>> getUsers(@RequestParam int limit) {
-        List<UserDto> userDtos = userService.getUserDtos(limit);
-        return ResponseEntity.ok().body(userDtos);
+    @GetMapping(value = "/private")
+    public ResponseEntity<List<UserPrivateDto>> getUsersPrivate(@RequestParam int limit) {
+        List<UserPrivateDto> userPrivateDtos = userService.getUserPrivateDtos(limit);
+        return ResponseEntity.ok().body(userPrivateDtos);
     }
 
-    @GetMapping(value = "/{username}")
-    public ResponseEntity<UserDto> getUserEssentialInfo(@PathVariable("username") String username) {
-        UserDto userDto = userService.getUserDto(username);
-        return ResponseEntity.ok().body(userDto);
+    @GetMapping(value = "/{username}/private")
+    public ResponseEntity<UserPrivateDto> getUserPrivate(@PathVariable("username") String username) {
+        UserPrivateDto userPrivateDto = userService.getUserPrivateDto(username);
+        return ResponseEntity.ok().body(userPrivateDto);
     }
 
     @GetMapping("{username}/getstatus")
@@ -64,7 +64,7 @@ public class UserController {
     }
 
     @PostMapping(value = "")
-    public ResponseEntity<Object> createStandardUser(@RequestBody UserDto dto) {;
+    public ResponseEntity<Object> createStandardUser(@RequestBody UserPrivateDto dto) {;
         if (!userService.userExists(dto.getUsername())) {
             String newUsername = userService.createUser(dto, "ROLE_USER");
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
@@ -73,7 +73,7 @@ public class UserController {
     }
 
     @PostMapping(value = "/admin")
-    public ResponseEntity<Object> createAdminUser(@RequestBody UserDto dto) {;
+    public ResponseEntity<Object> createAdminUser(@RequestBody UserPrivateDto dto) {;
         if (!userService.userExists(dto.getUsername())) {
             String newUsername = userService.createUser(dto, "ROLE_ADMIN");
             URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}").buildAndExpand(newUsername).toUri();
@@ -81,16 +81,15 @@ public class UserController {
         } else return ResponseEntity.unprocessableEntity().build();
     }
 
-
     @PutMapping(value = "/{username}")
-    public ResponseEntity<String> updateUser(@PathVariable("username") String username, @RequestBody UserDto dto) {
+    public ResponseEntity<String> updateUser(@PathVariable("username") String username, @RequestBody UserPrivateDto dto) {
         String userFromDb= userService.updateUser(username, dto);
         return ResponseEntity.ok("user \"" + userFromDb + "\" was updated successfully" );
     }
 
     @PatchMapping(value = "/{username}/change-password")
     public ResponseEntity<String> changePassword(@PathVariable("username") String username, @RequestBody UserInputDto userInputDto) {
-        String oldHash = userService.getUserDto(username).getPassword();
+        String oldHash = userService.getUserPrivateDto(username).getPassword();
         String newHash = userService.changePassword(username, userInputDto);
         String message = "Password was updated successfully."+ System.lineSeparator() + "Old hash: " + oldHash + System.lineSeparator() + "New hash: " + newHash;
         return ResponseEntity.ok(message);
@@ -116,6 +115,24 @@ public class UserController {
             return ResponseEntity.ok("User \""+ username + "\" was deleted successfully.");
         } else throw new AccessDeniedException("You have insufficient rights to delete this account");
     }
+
+    @DeleteMapping(value = "/selected")
+    public ResponseEntity<String> deleteSelectedUsers(@RequestBody List<String> usernames) throws UserPrincipalNotFoundException {
+        int numDeletedUsers = userService.deleteSelectedUsers(usernames);
+        if (numDeletedUsers > 0) {
+            return ResponseEntity.ok(numDeletedUsers + " users were successfully deleted.");
+        } else throw new AccessDeniedException("You have insufficient rights to perform this delete action");
+    }
+
+
+    @DeleteMapping(value = "")
+    public ResponseEntity<String> deleteAllUsers() throws UserPrincipalNotFoundException {
+        int numDeletedUsers = userService.deleteAllUsers();
+        if (numDeletedUsers > 0) {
+            return ResponseEntity.ok(numDeletedUsers + " users were successfully deleted.");
+        } else throw new AccessDeniedException("You have insufficient rights to perform this delete action");
+    }
+
 
     @GetMapping(value = "/{username}/authorities")
     public ResponseEntity<Object> getUserAuthorities(@PathVariable("username") String username) {

@@ -49,7 +49,7 @@ public class DemoServiceImpl implements DemoService {
             throw new UsernameNotFoundException(username);
         }
         User user = userRepository.findById(username).get();
-        Iterable<Demo> demoList = demoRepository.findByUserOrderByCreatedDateDesc(user);
+        Iterable<Demo> demoList = demoRepository.findByProducerOrderByCreatedDateDesc(user);
         List<DemoDto> resultList = new ArrayList<>();
         for (Demo demo : demoList) {
             DemoDto demoDto = DemoMapper.mapToDto(demo);
@@ -123,7 +123,7 @@ public class DemoServiceImpl implements DemoService {
         // Set the User object from the Security context (NOT the request body!)
         String currentPrincipalName = AuthHelper.getPrincipalUsername();
         if (userRepository.findById(currentPrincipalName).isPresent()) {
-            demo.setUser(userRepository.findById(currentPrincipalName).get());
+            demo.setProducer(userRepository.findById(currentPrincipalName).get());
         } else throw new UserPrincipalNotFoundException(currentPrincipalName);
         Demo savedDemo = demoRepository.save(demo);
 
@@ -140,7 +140,7 @@ public class DemoServiceImpl implements DemoService {
         bodyBuilder.append(hyperlink);
         emailDetails.setMsgBody(bodyBuilder.toString());
 
-        emailDetails.setRecipientUsername(demo.getUser().getUsername());
+        emailDetails.setRecipientUsername(demo.getProducer().getUsername());
         String sendResult = emailService.sendSimpleMail(emailDetails);
 
         return DemoMapper.mapToDto(savedDemo);
@@ -160,10 +160,10 @@ public class DemoServiceImpl implements DemoService {
         demo.setBpm(demoDto.getBpm());
         //Relationships
         if (demoDto.getAudioFile() != null) {
-            demo.setAudioFile(demoDto.getAudioFile());
+            demo.setAudioFile(demoDto.getAudioFile().toModel());
         }
         if (demoDto.getGenre() != null) {
-            demo.setGenre(demoDto.getGenre());
+            demo.setGenre(demoDto.getGenre().toModel());
         }
         demoRepository.save(demo);
         return DemoMapper.mapToDto(demo);
@@ -259,7 +259,7 @@ public class DemoServiceImpl implements DemoService {
     @Override
     public boolean uploadFileAndAssignToDemo(Long demoId, MultipartFile multipartFile) throws AccessDeniedException { // AUTH ONLY
         DemoDto demoDto = getDemo(demoId);
-        User associatedUser = demoDto.getUser();
+        User associatedUser = demoDto.getProducer().toModel();
         if (AuthHelper.checkAuthorization(associatedUser)) { // check associative authorization
             AudioFile audioFile = audioFileService.processFileUpload(multipartFile);
             boolean result = assignFileToDemo(audioFile.getAudioFileId(), demoId);

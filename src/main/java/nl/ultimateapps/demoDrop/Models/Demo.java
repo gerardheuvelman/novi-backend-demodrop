@@ -1,9 +1,12 @@
 package nl.ultimateapps.demoDrop.Models;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import lombok.*;
+import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
+import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -58,12 +61,11 @@ public class Demo {
     @Setter
     private Genre genre;
 
-    //Relationships:
     @ManyToOne
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "producer")
     @Getter
     @Setter
-    private User user;
+    private User producer;
 
     @OneToMany(mappedBy = "demo", cascade = CascadeType.REMOVE)
     @Getter
@@ -75,4 +77,13 @@ public class Demo {
     @Getter
     @Setter
     private List<User> favoriteOfUsers;
+
+    @OneToMany(mappedBy = "reportedDemo", cascade = CascadeType.REMOVE)
+    @Getter
+    @Setter
+    private List<UserReport> userReports;
+
+    public DemoDto toDto() {
+        return DemoMapper.mapToDto(this);
+    }
 }

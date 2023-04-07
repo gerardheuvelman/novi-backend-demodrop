@@ -17,7 +17,7 @@ public interface DemoRepository extends JpaRepository<Demo, Long> {
 
     public Iterable<Demo> findByGenreOrderByCreatedDateDesc(Genre genre);
 
-    public Iterable<Demo> findByUserOrderByCreatedDateDesc(User user); // Personal Demo list
+    public Iterable<Demo> findByProducerOrderByCreatedDateDesc(User user); // Personal Demo list
 
     public Optional<Demo> findTopByOrderByCreatedDateDesc(); // voor de Hero sectie van de Front end
 }

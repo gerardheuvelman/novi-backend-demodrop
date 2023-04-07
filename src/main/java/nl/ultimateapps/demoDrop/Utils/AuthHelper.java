@@ -3,8 +3,6 @@ package nl.ultimateapps.demoDrop.Utils;
 import lombok.AllArgsConstructor;
 import nl.ultimateapps.demoDrop.Exceptions.DemoDropAuthenticationException;
 import nl.ultimateapps.demoDrop.Models.*;
-import nl.ultimateapps.demoDrop.Repositories.UserRepository;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,6 +38,17 @@ public class AuthHelper {
         return isAdmin;
     }
 
+    public static boolean checkAuthorization() {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        Authentication authentication = securityContext.getAuthentication();
+        if (!authentication.isAuthenticated()) {
+            throw new DemoDropAuthenticationException("User must be authenticated to perform this action");
+        }
+        if (hasAdminRole(authentication)) {
+            return true;
+        } else return false;
+    }
+
     public static boolean checkAuthorization(String username) {
         // make sure that the username current user is the same as the username being passed in.
         SecurityContext securityContext = SecurityContextHolder.getContext();
@@ -62,15 +71,15 @@ public class AuthHelper {
     }
 
     public static boolean checkAuthorization(Demo demo) {
-        String username = demo.getUser().getUsername();
+        String username = demo.getProducer().getUsername();
         return checkAuthorization(username);
     }
 
     public static boolean checkAuthorization(Conversation conversation) {
-        String producerName = conversation.getProducer().getUsername();
-        String interestedUserName = conversation.getInterestedUser().getUsername();
-        boolean principalIsProducerOrAdmin = checkAuthorization(producerName);
-        boolean principalIsInterestedUserOrAdmin = checkAuthorization(interestedUserName);
-        return principalIsProducerOrAdmin || principalIsInterestedUserOrAdmin;
+        String correspondent = conversation.getCorrespondent().getUsername();
+        String initiatorName = conversation.getInitiator().getUsername();
+        boolean principalIsCorrespondentOrAdmin = checkAuthorization(correspondent);
+        boolean principalIsInitiatorOrAdmin = checkAuthorization(initiatorName);
+        return principalIsCorrespondentOrAdmin || principalIsInitiatorOrAdmin;
     }
 }

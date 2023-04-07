@@ -1,6 +1,10 @@
 package nl.ultimateapps.demoDrop.Models;
 
 import lombok.*;
+import nl.ultimateapps.demoDrop.Dtos.output.AudioFileDto;
+import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
+import nl.ultimateapps.demoDrop.Helpers.mappers.AudioFileMapper;
+import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -43,5 +47,7 @@ public class AudioFile {
     @Setter
     private Demo demo;
 
-
+    public AudioFileDto toDto() {
+        return AudioFileMapper.mapToDto(this);
+    }
 }

@@ -66,10 +66,9 @@ public class ConversationServiceTest extends ServiceTest {
     public void GetConversationReturnsAConversationDto() {
         //ARRANGE
         Conversation conversation = aboutPrimeAudio;
-        conversation.setProducer(user);
-        conversation.setInterestedUser(admin);
+        conversation.setCorrespondent(user);
+        conversation.setInitiator(admin);
         long conversationId = conversation.getConversationId();
-
         ConversationDto expectedConversationDto = aboutPrimeAudioDto;
 
         //GIVEN
@@ -92,9 +91,9 @@ public class ConversationServiceTest extends ServiceTest {
     public void CreateConversationReturnsAConversationDto() throws UserPrincipalNotFoundException {
         //ARRANGE
         Demo demo = primeAudio;
-        demo.setUser(user);
-        ConversationDto newConversationDto = new ConversationDto(null, earlierDate, earlierDate, "About Prime Audio Again", "body3", false, true, null, null, null);
-        newConversationDto.setDemo(demo);
+        demo.setProducer(user);
+        ConversationDto newConversationDto = new ConversationDto(null, earlierDate, earlierDate, true, "About Prime Audio Again", "body3", false, true, null, null, null, null);
+        newConversationDto.setDemo(demo.toDto());
 
         Conversation newConversation = ConversationMapper.mapToModel(newConversationDto);
         newConversation.setConversationId(2003L);
@@ -108,7 +107,6 @@ public class ConversationServiceTest extends ServiceTest {
         // Fake a user with admin authority
         Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
         Mockito.when(authentication.isAuthenticated()).thenReturn(true);
-        Mockito.when(authentication.getAuthorities()).thenReturn(grantedAuthorities);
 
         String expectedSubject = newConversationDto.getSubject();
 
@@ -126,8 +124,8 @@ public class ConversationServiceTest extends ServiceTest {
         //ARRANGE
 
         Conversation conversation = aboutPrimeAudio;
-        conversation.setProducer(user);
-        conversation.setInterestedUser(admin);
+        conversation.setCorrespondent(user);
+        conversation.setInitiator(admin);
 
         ConversationDto inputConversationDto = aboutPrimeAudioDto;
 
@@ -149,13 +147,13 @@ public class ConversationServiceTest extends ServiceTest {
     @Test
     public void markConversationAsReadReturnsACorrectConversationDto() {
         //ARRANGE
-        User producer = user;
-        User interestedUser = admin;
+        User correspondent = user;
+        User initiator = admin;
         Conversation conversation = aboutPrimeAudio;
         Conversation savedConversation = conversation;
-        savedConversation.setReadByProducer(false);
-        savedConversation.setProducer(producer);
-        conversation.setInterestedUser(interestedUser);
+        savedConversation.setReadByCorrespondent(false);
+        savedConversation.setCorrespondent(correspondent);
+        conversation.setInitiator(initiator);
 
         //GIVEN
         Mockito.when(conversationRepository.findById(conversation.getConversationId())).thenReturn(Optional.of(conversation));
@@ -168,8 +166,8 @@ public class ConversationServiceTest extends ServiceTest {
         ConversationDto actualConversationDto = conversationServiceImpl.markConversationAsRead(conversation.getConversationId());
 
         //ASSERT
-        assertEquals(false, actualConversationDto.isReadBbyProducer());
-        assertEquals(false, actualConversationDto.isReadByInterestedUser());
+        assertEquals(true, actualConversationDto.isReadByCorrespondent());
+        assertEquals(false, actualConversationDto.isReadByInitiator());
 
     }
 
@@ -193,8 +191,8 @@ public class ConversationServiceTest extends ServiceTest {
     public void deleteConversationReturnsTheIdOfTheDeletedConversation() {
         //ARRANGE
         Conversation conversation = aboutPrimeAudio;
-        conversation.setProducer(user);
-        conversation.setInterestedUser(admin);
+        conversation.setCorrespondent(user);
+        conversation.setInitiator(admin);
 
         long expectedConversationId = conversation.getConversationId();
 

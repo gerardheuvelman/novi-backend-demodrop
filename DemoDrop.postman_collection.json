@@ -1438,7 +1438,7 @@
 			"response": []
 		},
 		{
-			"name": "Get single conversation (producer)",
+			"name": "Get single conversation (correspondent)",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -1479,7 +1479,7 @@
 			"response": []
 		},
 		{
-			"name": "Get single conversation (interestedUser)",
+			"name": "Get single conversation (initiator)",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -1595,7 +1595,7 @@
 			"response": []
 		},
 		{
-			"name": "Reply to conversation (producer)",
+			"name": "Reply to conversation (correspondent)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1633,7 +1633,7 @@
 			"response": []
 		},
 		{
-			"name": "Reply to conversation (interestedUser)",
+			"name": "Reply to conversation (initiator)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1701,7 +1701,7 @@
 			"response": []
 		},
 		{
-			"name": "Mark conversation as read (producer)",
+			"name": "Mark conversation as read (correspondent)",
 			"request": {
 				"auth": {
 					"type": "bearer",
@@ -1731,7 +1731,7 @@
 			"response": []
 		},
 		{
-			"name": "Mark conversation as read (interestedUser)",
+			"name": "Mark conversation as read (initiator)",
 			"request": {
 				"auth": {
 					"type": "bearer",

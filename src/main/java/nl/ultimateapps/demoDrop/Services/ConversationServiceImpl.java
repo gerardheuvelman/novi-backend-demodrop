@@ -75,14 +75,14 @@ public class ConversationServiceImpl implements ConversationService {
         }
         // First, get the User object
         User user = userRepository.findById(username).get();
-        // get the conversations in which te user has the role "producer"
-        Iterable<Conversation> conversationsAsProducer = conversationRepository.findByProducerOrderByLatestReplyDateDesc(user);
-        // now, get the conversations for this user by the field "interestedUser"
-        Iterable<Conversation> conversationsAsInterestedUser = conversationRepository.findByInterestedUserOrderByLatestReplyDateDesc(user);
+        // get the conversations in which te user has the role "correspondent"
+        Iterable<Conversation> conversationsAsProducer = conversationRepository.findByCorrespondentOrderByLatestReplyDateDesc(user);
+        // now, get the conversations for this user by the field "initiator"
+        Iterable<Conversation> conversationsAsInitiator = conversationRepository.findByInitiatorOrderByLatestReplyDateDesc(user);
         // splice these two lists together into a new list;
         List<Conversation> completeConversationList = new ArrayList<>();
         conversationsAsProducer.forEach(completeConversationList::add);
-        conversationsAsInterestedUser.forEach(completeConversationList::add);
+        conversationsAsInitiator.forEach(completeConversationList::add);
         // Since correct sorting was lost during the splice, re-apply it:
         Comparator<Conversation> conversationComparator = new Comparator<Conversation>() {
             @Override
@@ -114,37 +114,38 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     public ConversationDto createConversation(ConversationDto conversationDto) throws UserPrincipalNotFoundException, AccessDeniedException { // AUTH ONLY
-        long demoId = conversationDto.getDemo().getDemoId();
-        // get the demo object form the repository
-        if (!demoRepository.findById(demoId).isPresent()) {
-            throw new RecordNotFoundException();
-        }
-        Demo retrievedDemo = demoRepository.findById(demoId).get();
-
-        // Check associative authorization
-        if (!AuthHelper.checkAuthorization(retrievedDemo)) {
-            throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to create a new conversation for demo " + demoId);
+        long demoId;
+        Demo retrievedDemo = null;User correspondent = null;
+        if (conversationDto.isHasDemo()) {
+            demoId = conversationDto.getDemo().getDemoId();
+            // get the demo object form the repository
+            if (!demoRepository.findById(demoId).isPresent()) {
+                throw new RecordNotFoundException();
+            }
+            retrievedDemo = demoRepository.findById(demoId).get();
+            // Set correspondent To the demo producer
+            conversationDto.setCorrespondent(retrievedDemo.getProducer().toPublicDto());
         }
         Conversation conversation = ConversationMapper.mapToModel(conversationDto);
         Date now = Date.from(Instant.now());
         conversation.setCreatedDate(now);
         conversation.setLatestReplyDate(now);
-        conversation.setDemo(retrievedDemo);
-        // set the producer through the demo relationship:
-        conversation.setProducer(retrievedDemo.getUser());
-        conversation.setReadByInterestedUser(true);
-        conversation.setReadByProducer(false);
-        // set the field "interestedUser" from the current security principal.
+        if (conversation.getHasDemo()) {
+            conversation.setDemo(retrievedDemo);
+        }
+        conversation.setReadByInitiator(true);
+        conversation.setReadByCorrespondent(false);
+        // set the field "initiator" from the current security principal.
         String currentPrincipalName = AuthHelper.getPrincipalUsername();
         if (!userRepository.findById(currentPrincipalName).isPresent()) {
             throw new UserPrincipalNotFoundException(currentPrincipalName);
         }
         User currentPrincipal = userRepository.findById(currentPrincipalName).get();
-        conversation.setInterestedUser(currentPrincipal);
+        conversation.setInitiator(currentPrincipal);
         Conversation savedConversation = conversationRepository.save(conversation);
-        // before returning, send a "New message" email to the producer of the demo and log it :
-        String sendResult = emailService.SendNewMessageEmail(savedConversation, true);
-        System.out.println(sendResult);
+            // before returning, send a "New message" email to the correspondent and log it :
+            String sendResult = emailService.SendNewMessageEmail(savedConversation, true);
+            System.out.println(sendResult);
         return ConversationMapper.mapToDto(savedConversation);
     }
 
@@ -164,12 +165,12 @@ public class ConversationServiceImpl implements ConversationService {
         // set the 'readBy flags'
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        if (currentPrincipalName.equals(conversation.getInterestedUser().getUsername())) {
-            conversation.setReadByInterestedUser(true);
-            conversation.setReadByProducer(false);
+        if (currentPrincipalName.equals(conversation.getInitiator().getUsername())) {
+            conversation.setReadByInitiator(true);
+            conversation.setReadByCorrespondent(false);
         } else {
-            conversation.setReadByInterestedUser(false);
-            conversation.setReadByProducer(true);
+            conversation.setReadByInitiator(false);
+            conversation.setReadByCorrespondent(true);
         }
         Conversation savedConversation = conversationRepository.save(conversation);
         // before returning, send a "New message" email to the producer of the demo and log it :
@@ -187,9 +188,9 @@ public class ConversationServiceImpl implements ConversationService {
                 throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to mark conversation" + conversation.getConversationId() + " as read.");
             }
             String currentUserName = AuthHelper.getPrincipalUsername();
-            if (currentUserName.equals(conversation.getInterestedUser().getUsername())) {
-                conversation.setReadByInterestedUser(true);
-            } else conversation.setReadByProducer(true);
+            if (currentUserName.equals(conversation.getInitiator().getUsername())) {
+                conversation.setReadByInitiator(true);
+            } else conversation.setReadByCorrespondent(true);
             Conversation savedConversation = conversationRepository.save(conversation);
             return ConversationMapper.mapToDto(savedConversation);
         } else throw new RecordNotFoundException();

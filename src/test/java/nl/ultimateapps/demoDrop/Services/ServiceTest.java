@@ -45,6 +45,8 @@ public abstract class ServiceTest implements IServiceTest {
     protected Authority adminAuthority;
     protected Conversation aboutPrimeAudio;
     protected Conversation aboutAudioSecundo;
+    protected UserReport userReport1;
+    protected UserReport userReport2;
     protected Demo primeAudio;
     protected Demo audioSecundo;
     protected EmailDetails demoCreatedEmail;
@@ -59,14 +61,17 @@ public abstract class ServiceTest implements IServiceTest {
     protected AuthorityDto adminAuthorityDto;
     protected ConversationDto aboutPrimeAudioDto;
     protected ConversationDto aboutAudioSecundoDto;
+
+    protected UserReportDto userReport1Dto;
+    protected UserReportDto userReport2Dto;
     protected DemoDto primeAudioDto;
     protected DemoDto audioSecundoDto;
     protected EmailDetailsDto demoCreatedEmailDto;
     protected EmailDetailsDto sentMessageEmailDto;
     protected GenreDto danceDto;
     protected GenreDto rockDto;
-    protected UserDto userUserDto;
-    protected UserDto adminUserDto;
+    protected UserPrivateDto userUserPrivateDto;
+    protected UserPrivateDto adminUserPrivateDto;
 
     protected UserPublicDto userUserPublicDto;
     protected UserPublicDto adminUserPublicDto;
@@ -102,6 +107,8 @@ public abstract class ServiceTest implements IServiceTest {
     protected List<AuthorityDto> allAuthorityDtos;
     protected List<Conversation> allConversations;
     protected List<ConversationDto> allConversationDtos;
+    protected List<UserReport> allUserReports;
+    protected List<UserReportDto> allUserReportDtos;
     protected List<Demo> allDemos;
     protected List<DemoDto> allDemoDtos;
     protected List<EmailDetails> allEmailDetailss;
@@ -109,7 +116,7 @@ public abstract class ServiceTest implements IServiceTest {
     protected List<Genre> allGenres;
     protected List<GenreDto> allGenreDtos;
     protected List<User> allUsers;
-    protected List<UserDto> allUserDtos;
+    protected List<UserPrivateDto> allUserPrivateDtos;
     protected List<UserPublicDto> allUserPublicDtos;
 
 
@@ -122,7 +129,7 @@ public abstract class ServiceTest implements IServiceTest {
     protected List<DemoDto> usersFavoriteDemoDtoList;
     protected List<Demo> adminsFavoriteDemoList;
     protected List<DemoDto> adminsFavoriteDemoDtoList;
-    protected List<Conversation> usersConversationsAsProducerList;
+    protected List<Conversation> usersConversationsAsCorrespondentList;
     protected List<ConversationDto> usersConversationsAsProducerDtoList;
     protected List<Conversation> adminsConversationsAsProducerList;
     protected List<ConversationDto> adminsConversationsAsProducerDtoList;
@@ -186,41 +193,47 @@ public abstract class ServiceTest implements IServiceTest {
         dance = new Genre("Dance", null);
         rock = new Genre("Rock", null);
 
-        user = new User("user", "12345", true, "fake key", "user@gmail.com", laterDate, userAuthoritySet, null, null, null, null);
+        user = new User("user", "12345", true, "user@gmail.com", laterDate, userAuthoritySet, null, null, null, null, null, null);
 
-        admin = new User("admin", "54321", true, "fake key", "admin@gmail.com", earlierDate, adminAuthoritySet, null, null, null, null);
+        admin = new User("admin", "54321", true, "admin@gmail.com", earlierDate, adminAuthoritySet, null, null, null, null, null, null);
 
-        primeAudio = new Demo(1001L, earlierDate, "Prime Audio", 123D, 456D, null, null, null, null, null);
+        primeAudio = new Demo(1001L, earlierDate, "Prime Audio", 123D, 456D, null, null, null, null, null, null);
 
-        audioSecundo = new Demo(1002L, earlierDate, "Audio Secundo", 456D, 123D, null, null, null, null, null);
+        audioSecundo = new Demo(1002L, earlierDate, "Audio Secundo", 456D, 123D, null, null, null, null, null, null);
 
         primeAudioFile = new AudioFile(3001, earlierDate, primeAudioFileName, null);
         audioSecundoFile = new AudioFile(3002, earlierDate, audioSecundoFilename, null);
 
-        aboutPrimeAudio = new Conversation(2001L, earlierDate, earlierDate, "Re: Prime Audio", "body1", false, false, null, null, null);
-        aboutAudioSecundo = new Conversation(2002L, earlierDate, earlierDate, "Re: Audio Secundo", "body2", false, false, null, null, null);
+        aboutPrimeAudio = new Conversation(2001L, earlierDate, earlierDate, true ,"RE: Prime Audio", "body1", false, false, null, null, null, null);
+        aboutAudioSecundo = new Conversation(2002L, earlierDate, earlierDate, true , "RE: Audio Secundo", "body2", false, false, null, null, null, null);
+
+        userReport1 = new UserReport(4001L, earlierDate, "demo" ,"About Prime Audio", "body1",  null, null, null, null);
+        userReport2 = new UserReport(4002L, earlierDate, "conversation" , "About a conversation", "body2", null, null, null, null);
+
 
         demoCreatedEmail = new EmailDetails(null, "Prime Audio was created", "demoCreatedEmail body", null);
         sentMessageEmail = new EmailDetails(null, "A message has been sent to user user to alert him/her of your interest in demo Prime Audio ", "", null);
 
 
         // INITIALIZE DTOS
-        userUserPublicDto = new UserPublicDto("user", earlierDate, Arrays.asList(primeAudio));
-        adminUserPublicDto = new UserPublicDto("admin", laterDate, Arrays.asList(audioSecundo));
+        userUserPublicDto = new UserPublicDto("user", earlierDate, Arrays.asList(primeAudio.toDto()));
+        adminUserPublicDto = new UserPublicDto("admin", laterDate, Arrays.asList(audioSecundo.toDto()));
         primeAudioFileDto = AudioFileMapper.mapToDto(primeAudioFile);
         audioSecundoFileDto = AudioFileMapper.mapToDto(audioSecundoFile);
         userAuthorityDto = AuthorityMapper.mapToDto(userAuthority);
         adminAuthorityDto = AuthorityMapper.mapToDto(adminAuthority);
         aboutPrimeAudioDto = ConversationMapper.mapToDto(aboutPrimeAudio);
         aboutAudioSecundoDto = ConversationMapper.mapToDto(aboutAudioSecundo);
+        userReport1Dto = UserReportMapper.mapToDto(userReport1);
+        userReport2Dto = UserReportMapper.mapToDto(userReport2);
         primeAudioDto = DemoMapper.mapToDto(primeAudio);
         audioSecundoDto = DemoMapper.mapToDto(audioSecundo);
         demoCreatedEmailDto = EmailDetailsMapper.mapToDto(demoCreatedEmail);
         sentMessageEmailDto = EmailDetailsMapper.mapToDto(sentMessageEmail);
         danceDto = GenreMapper.mapToDto(dance);
         rockDto = GenreMapper.mapToDto(rock);
-        userUserDto = UserMapper.mapToDto(user);
-        adminUserDto = UserMapper.mapToDto(admin);
+        userUserPrivateDto = UserMapper.mapToPrivateDto(user);
+        adminUserPrivateDto = UserMapper.mapToPrivateDto(admin);
 
         // INITIALIZE LISTS
         allAudioFiles = Arrays.asList(primeAudioFile, audioSecundoFile);
@@ -228,6 +241,10 @@ public abstract class ServiceTest implements IServiceTest {
         allAuthorities = Arrays.asList(userAuthority, adminAuthority);
         allConversations = Arrays.asList(aboutPrimeAudio, aboutAudioSecundo);
         allConversationDtos = ConversationMapper.mapToDto(allConversations);
+        allUserReports = Arrays.asList(userReport1, userReport2);
+        allUserReportDtos = UserReportMapper.mapToDto(allUserReports);
+
+        allUserReportDtos = UserReportMapper.mapToDto(allUserReports);
         allDemos = Arrays.asList(primeAudio, audioSecundo);
         allDemoDtos = DemoMapper.mapToDto(allDemos);
         allEmailDetailss = Arrays.asList(demoCreatedEmail, sentMessageEmail);
@@ -235,7 +252,7 @@ public abstract class ServiceTest implements IServiceTest {
         allGenres = Arrays.asList(dance, rock);
         allGenreDtos = GenreMapper.mapToDto(allGenres);
         allUsers = Arrays.asList(user, admin);
-        allUserDtos = UserMapper.mapToDto(allUsers);
+        allUserPrivateDtos = UserMapper.mapToPrivateDto(allUsers);
         allUserPublicDtos = Arrays.asList(userUserPublicDto, adminUserPublicDto);
 
         usersProducedDemoList = Arrays.asList(primeAudio);
@@ -246,12 +263,12 @@ public abstract class ServiceTest implements IServiceTest {
         usersFavoriteDemoDtoList = DemoMapper.mapToDto(usersFavoriteDemoList);
         adminsFavoriteDemoList = Arrays.asList(primeAudio);
         adminsFavoriteDemoDtoList = DemoMapper.mapToDto(adminsFavoriteDemoList);
-        usersConversationsAsProducerList = Arrays.asList(aboutPrimeAudio);
-        usersConversationsAsProducerDtoList = ConversationMapper.mapToDto(usersConversationsAsProducerList);
+        usersConversationsAsCorrespondentList = Arrays.asList(aboutPrimeAudio);
+        usersConversationsAsProducerDtoList = ConversationMapper.mapToDto(usersConversationsAsCorrespondentList);
         adminsConversationsAsProducerList = Arrays.asList(aboutAudioSecundo);
         adminsConversationsAsProducerDtoList = ConversationMapper.mapToDto(adminsConversationsAsProducerList);
         usersConversationsAsInterestedPartyList = Arrays.asList(aboutAudioSecundo);
-        usersConversationsAsInterestedPartyDtoList = ConversationMapper.mapToDto(usersConversationsAsProducerList);
+        usersConversationsAsInterestedPartyDtoList = ConversationMapper.mapToDto(usersConversationsAsCorrespondentList);
         adminsConversationsAsInterestedPartyList = Arrays.asList(aboutPrimeAudio);
         adminsConversationsAsInterestedPartyDtoList = ConversationMapper.mapToDto(adminsConversationsAsProducerList);
 

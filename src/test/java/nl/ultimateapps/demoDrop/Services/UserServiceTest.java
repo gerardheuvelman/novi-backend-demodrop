@@ -1,7 +1,7 @@
 package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
-import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
@@ -100,21 +100,21 @@ public class UserServiceTest extends ServiceTest {
     }
 
     @Test
-    public void getUserDtosReturnsAListOfUserDtos() {
+    public void getUserPublicDtosReturnsAListOfUserDtos() {
         //ARRANGE
-        List<UserDto> expectedUserDtoList = allUserDtos;
+        List<UserPrivateDto> expectedUserPrivateDtoList = allUserPrivateDtos;
 
         //GIVEN
         Mockito.when(userRepository.findAllByOrderByCreatedDateDesc()).thenReturn(allUsers);
 
         //ACT
         //WHEN
-        List<UserDto> actualUserDtoList = userServiceImpl.getUserDtos(0);
+        List<UserPublicDto> actualUserPublicDtoList = userServiceImpl.getUserPublicDtos(0);
 
         //ASSERT
         //THEN
-        UserDto firstEntry = actualUserDtoList.get(0);
-        UserDto secondEntry = actualUserDtoList.get(1);
+        UserPublicDto firstEntry = actualUserPublicDtoList.get(0);
+        UserPublicDto secondEntry = actualUserPublicDtoList.get(1);
 
         assertEquals(user.getUsername(), firstEntry.getUsername());
         assertEquals(admin.getUsername(), secondEntry.getUsername());
@@ -124,18 +124,18 @@ public class UserServiceTest extends ServiceTest {
     void getUserDtoReturnsTheCorrectUserDto() {
         //ARRANGE
         String username = user.getUsername();
-        UserDto expectedUserDto = userUserDto;
+        UserPrivateDto expectedUserPrivateDto = userUserPrivateDto;
         //GIVEN
 
         Mockito.when(userRepository.findById(user.getUsername())).thenReturn(Optional.of(user));
 
         //ACT
         //WHEN
-        UserDto actualUserDto = userServiceImpl.getUserDto(username);
+        UserPrivateDto actualUserPrivateDto = userServiceImpl.getUserPrivateDto(username);
 
         //ASSERT
         //THEN
-        assertEquals(expectedUserDto.getUsername(), actualUserDto.getUsername());
+        assertEquals(expectedUserPrivateDto.getUsername(), actualUserPrivateDto.getUsername());
     }
 
     @Test
@@ -159,10 +159,10 @@ public class UserServiceTest extends ServiceTest {
     @Test
     public void createUserReturnsTheUsersUsername() throws UserPrincipalNotFoundException {
         //ARRANGE
-        User newUser = new User("NewUser", "12345", true, "fake key", "newuser@gmail.com", laterDate, userAuthoritySet, null, null, null, null);
+        User newUser = new User("NewUser", "12345", true, "newuser@gmail.com", laterDate, userAuthoritySet, null, null, null, null, null, null);
 
 
-        UserDto postRequestBodyUserDto = new UserDto("NewUser", "12345", true, null, "newuser@gmail.com", null, null, null, null, null);
+        UserPrivateDto postRequestBodyUserPrivateDto = new UserPrivateDto("NewUser", "12345", true, "newuser@gmail.com", null, null, null, null, null, null, null, null);
 
         String expectedString = "NewUser";
 
@@ -171,7 +171,7 @@ public class UserServiceTest extends ServiceTest {
 
         //ACT
         //WHEN
-        String actualString = userServiceImpl.createUser(postRequestBodyUserDto, "ROLE_USER");
+        String actualString = userServiceImpl.createUser(postRequestBodyUserPrivateDto, "ROLE_USER");
 
         //ASSERT
         //THEN
@@ -184,7 +184,7 @@ public class UserServiceTest extends ServiceTest {
         //ARRANGE
         User userToBeUpdated = user;
         userToBeUpdated.setEmail("newemail@gmail.com");
-        UserDto putRequestBodyUserDto = UserMapper.mapToDto(userToBeUpdated);
+        UserPrivateDto putRequestBodyUserPrivateDto = UserMapper.mapToPrivateDto(userToBeUpdated);
 
         String expectedString = "newemail@gmail.com";
 
@@ -198,7 +198,7 @@ public class UserServiceTest extends ServiceTest {
 
         //ACT
         //WHEN
-        String actualString = userServiceImpl.updateUser(user.getUsername() ,putRequestBodyUserDto);
+        String actualString = userServiceImpl.updateUser(user.getUsername() , putRequestBodyUserPrivateDto);
 
         //ASSERT
         //THEN
@@ -345,13 +345,13 @@ public class UserServiceTest extends ServiceTest {
     @Test
     public void updateExistingUserReturnsTheCorrectUser() {
         //ARRANGE
-        UserDto userDto = userUserDto;
+        UserPrivateDto userPrivateDto = userUserPrivateDto;
         String newEmail = "newemail@gmail.com";
-        userDto.setEmail(newEmail);
+        userPrivateDto.setEmail(newEmail);
         String expectedString = newEmail;
 
         //ACT
-        String actualString = userServiceImpl.updateExistingUser(user, userDto).getEmail();
+        String actualString = userServiceImpl.updateExistingUser(user, userPrivateDto).getEmail();
 
         //ASSERT
         assertEquals(expectedString, actualString);

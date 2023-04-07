@@ -2,6 +2,7 @@ package nl.ultimateapps.demoDrop.Dtos.output;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+import nl.ultimateapps.demoDrop.Helpers.mappers.DemoMapper;
 import nl.ultimateapps.demoDrop.Models.*;
 
 import java.util.Date;
@@ -50,40 +51,35 @@ public class DemoDto {
     @JsonIncludeProperties({"audioFileId", "originalFileName"})
     @Getter
     @Setter
-    private AudioFile audioFile;
+    private AudioFileDto audioFile;
 
     @NotNull
     @JsonIncludeProperties({"name"})
     @Getter
     @Setter
-    private Genre genre;
+    private GenreDto genre;
 
-    // Relationships:
     @JsonIncludeProperties({"username"})
     @Getter
     @Setter
-    private User user;
+    private UserPublicDto producer;
 
     @JsonIgnore
     @Getter
     @Setter
-    private List<Conversation> conversations;
+    private List<ConversationDto> conversations;
 
     @JsonIncludeProperties({"username"})
     @Getter
     @Setter
-    private List<User> favoriteOfUsers;
+    private List<UserPublicDto> favoriteOfUsers;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DemoDto demoDto = (DemoDto) o;
-        return Objects.equals(demoId, demoDto.demoId) && Objects.equals(createdDate, demoDto.createdDate) && Objects.equals(title, demoDto.title) && Objects.equals(length, demoDto.length) && Objects.equals(bpm, demoDto.bpm) && Objects.equals(audioFile, demoDto.audioFile) && Objects.equals(genre, demoDto.genre) && Objects.equals(user, demoDto.user) && Objects.equals(conversations, demoDto.conversations) && Objects.equals(favoriteOfUsers, demoDto.favoriteOfUsers);
-    }
+    @JsonIgnore
+    @Getter
+    @Setter
+    private List<UserReportDto> userReports;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(demoId, createdDate, title, length, bpm, audioFile, genre, user, conversations, favoriteOfUsers);
+    public Demo toModel() {
+        return DemoMapper.mapToModel(this);
     }
 }

@@ -1,18 +1,17 @@
 package nl.ultimateapps.demoDrop.Dtos.output;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIncludeProperties;
-import nl.ultimateapps.demoDrop.Models.Demo;
+import nl.ultimateapps.demoDrop.Helpers.mappers.ConversationMapper;
+import nl.ultimateapps.demoDrop.Models.Conversation;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 
 import lombok.*;
-import nl.ultimateapps.demoDrop.Models.User;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,6 +32,12 @@ public class ConversationDto {
     @Setter
     private Date latestReplyDate;
 
+    @NotNull
+    @Getter
+    @Setter
+    private boolean hasDemo;
+
+
     @NotBlank
     @Size(min=2 , max =100)
     @Getter
@@ -48,26 +53,36 @@ public class ConversationDto {
     @NotNull
     @Getter
     @Setter
-    private boolean readBbyProducer;
+    private boolean readByInitiator;
 
     @NotNull
     @Getter
     @Setter
-    private boolean readByInterestedUser;
+    private boolean readByCorrespondent;
 
     //Relationships:
+
+    @JsonIncludeProperties({"username"})
+    @Getter
+    @Setter
+    private UserPublicDto initiator;
+
+    @JsonIncludeProperties({"username"})
+    @Getter
+    @Setter
+    private UserPublicDto correspondent;
+
     @JsonIncludeProperties({"demoId", "title"})
     @Getter
     @Setter
-    private Demo demo;
+    private DemoDto demo;
 
-    @JsonIncludeProperties({"username", "email"})
+    @JsonIgnore
     @Getter
     @Setter
-    private User producer;
+    private List<UserReportDto> userReports;
 
-    @JsonIncludeProperties({"username", "email"})
-    @Getter
-    @Setter
-    private User interestedUser;
+    public Conversation toModel() {
+        return ConversationMapper.mapToModel(this);
+    }
 }

@@ -1,11 +1,11 @@
 package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
-import nl.ultimateapps.demoDrop.Dtos.output.DemoDto;
-import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Exceptions.RecordNotFoundException;
 import nl.ultimateapps.demoDrop.Exceptions.UsernameNotFoundException;
+import nl.ultimateapps.demoDrop.Helpers.mappers.AuthorityMapper;
 import nl.ultimateapps.demoDrop.Helpers.mappers.UserMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
 import nl.ultimateapps.demoDrop.Models.Demo;
@@ -64,21 +64,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ArrayList<UserDto> getUserDtos(int limit) {
+    public ArrayList<UserPrivateDto> getUserPrivateDtos(int limit) {
         ArrayList<User> userList = GetUsersFromRepo(limit);
-        ArrayList<UserDto> userDtoList = new ArrayList<>();
+        ArrayList<UserPrivateDto> userPrivateDtoList = new ArrayList<>();
         for (User user : userList) {
-            UserDto userDto = UserMapper.mapToDto(user);
-            userDtoList.add(userDto);
+            UserPrivateDto userPrivateDto = UserMapper.mapToPrivateDto(user);
+            userPrivateDtoList.add(userPrivateDto);
         }
-        return userDtoList;
+        return userPrivateDtoList;
     }
 
     @Override
-    public UserDto getUserDto(String username) {
+    public UserPrivateDto getUserPrivateDto(String username) {
         User user = getUserFromRepo(username);
-        UserDto userDto = UserMapper.mapToDto(user);
-        return UserMapper.mapToDto(user);
+        return UserMapper.mapToPrivateDto(user);
     }
 
     @Override
@@ -87,14 +86,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createUser(UserDto userDto, String authorityName) {
+    public String createUser(UserPrivateDto userPrivateDto, String authorityName) {
         String randomString = RandomStringGenerator.generateAlphaNumeric(20);
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        userDto.setEnabled(true);
-        userDto.setApikey(randomString);
-        userDto.setCreatedDate(Date.from(Instant.now()));
-        userDto.setAuthorities(new HashSet<>());
-        User user = UserMapper.mapToModel(userDto);
+        userPrivateDto.setPassword(passwordEncoder.encode(userPrivateDto.getPassword()));
+        userPrivateDto.setEnabled(true);
+//        userPrivateDto.setApikey(randomString); // use of an API key is deprecated, but I am leaving this line of code as a comment to be able to quickly reintroduce it should the need arise.
+        userPrivateDto.setCreatedDate(Date.from(Instant.now()));
+        userPrivateDto.setAuthorities(new HashSet<>());
+        User user = UserMapper.mapToModel(userPrivateDto);
         addAuthority(user, authorityName);
         userRepository.save(user);
         return user.getUsername();
@@ -102,14 +101,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public String updateUser(String username, UserDto userDto) {
+    public String updateUser(String username, UserPrivateDto userPrivateDto) {
         if (!AuthHelper.checkAuthorization(username)) { // check associative authorization
             throw new AccessDeniedException("User has insufficient rights to alter user details for user " + username);
         }
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userPrivateDto.setPassword(passwordEncoder.encode(userPrivateDto.getPassword()));
         User user = userRepository.findById(username).get();
-        userRepository.save(updateExistingUser(user, userDto));
+        userRepository.save(updateExistingUser(user, userPrivateDto));
         return user.getUsername();
 
     }
@@ -145,21 +144,62 @@ public class UserServiceImpl implements UserService {
         if (!AuthHelper.checkAuthorization(username)) { // check associative authorization
             throw new AccessDeniedException("User " + AuthHelper.getPrincipalUsername() + " has insufficient rights to delete user " + username + " from the system");
         }
-        // Before we delete the user, we must first delete hos/her favorites (otherwise we orphan entries in the helper table, or , using casading remove, we will end up deleting other user's demos )
-        // Find favorite demos
         if (userRepository.findById(username).isEmpty()) {
             throw new UsernameNotFoundException(username);
         }
-
+        // Before we delete the user, we must first delete his/her favorites (otherwise we orphan entries in the helper table, or , using casading remove, we will end up deleting other user's demos )
+        // Find favorite demos
         User user = userRepository.findById(username).get();
         Iterable<Demo> demoIterable = demoRepository.findByFavoriteOfUsersOrderByTitleAsc(user);
         for (Demo demo : demoIterable) {
             demoService.setFavStatus(demo.getDemoId(), false);
         }
+//        // now, delete all demos this user has in the system
+//        List<DemoDto> demoDtoList = demoService.getPersonalDemos(username);
+//        List<Demo> demoList =DemoMapper.mapToModel(demoDtoList);
+//        for (Demo demo : demoList) {
+//            demoRepository.deleteById(demo.getDemoId());
+//            demoRepository.save(demo);
+//        }
+
         // Now we can safely delete the user
         userRepository.deleteById(username);
         return true;
     }
+
+
+    @Override
+    public int deleteSelectedUsers(List<String> usernames) throws UserPrincipalNotFoundException {
+        // We will delete all users by calling deleteUser() on each of them
+        //Side note: The account being used to make the request will NOT be deleted.
+        int numDeletedUsers = 0;
+        String principalUserName = AuthHelper.getPrincipalUsername();
+        for (String username : usernames) {
+            if (!username.equals(principalUserName)) {
+                deleteUser(username);
+                numDeletedUsers++;
+            }
+        }
+        return numDeletedUsers;
+    }
+
+    @Override
+    public int deleteAllUsers() throws UserPrincipalNotFoundException {
+        // We will delete all users by retrieving a list of all users, and then calling deletUser() on each of them
+        //Side note: The account being used to make the request will NOT be deleted.
+        ArrayList<User> allUsers = GetUsersFromRepo(0);
+        int numDeletedUsers = 0;
+        String principalUserName = AuthHelper.getPrincipalUsername();
+        for (User user : allUsers) {
+            String username = user.getUsername();
+            if (!username.equals(principalUserName)) {
+                deleteUser(username);
+                numDeletedUsers++;
+            }
+        }
+        return numDeletedUsers;
+    }
+
 
     @Override
     public Set<Authority> getAuthorities(String username) {
@@ -168,8 +208,8 @@ public class UserServiceImpl implements UserService {
         }
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        UserDto userDto = UserMapper.mapToDto(user);
-        return userDto.getAuthorities();
+        UserPrivateDto userPrivateDto = UserMapper.mapToPrivateDto(user);
+        return AuthorityMapper.mapToModel(userPrivateDto.getAuthorities());
     }
 
     @Override
@@ -203,27 +243,24 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User updateExistingUser(User user, UserDto userDto) {
-        if (userDto.getUsername() != null) {
-            user.setUsername(userDto.getUsername());
+    public User updateExistingUser(User user, UserPrivateDto userPrivateDto) {
+        if (userPrivateDto.getUsername() != null) {
+            user.setUsername(userPrivateDto.getUsername());
         }
-        if (userDto.getPassword() != null) {
-            user.setPassword(userDto.getPassword());
+        if (userPrivateDto.getPassword() != null) {
+            user.setPassword(userPrivateDto.getPassword());
         }
 
-        user.setEnabled(userDto.isEnabled());
+        user.setEnabled(userPrivateDto.isEnabled());
 
-        if (userDto.getApikey() != null) {
-            user.setApikey(userDto.getApikey());
+        if (userPrivateDto.getEmail() != null) {
+            user.setEmail(userPrivateDto.getEmail());
         }
-        if (userDto.getEmail() != null) {
-            user.setEmail(userDto.getEmail());
+        if (userPrivateDto.getCreatedDate() != null) {
+            user.setCreatedDate(userPrivateDto.getCreatedDate());
         }
-        if (userDto.getCreatedDate() != null) {
-            user.setCreatedDate(userDto.getCreatedDate());
-        }
-        if (userDto.getAuthorities() != null) {
-            user.setAuthorities(userDto.getAuthorities());
+        if (userPrivateDto.getAuthorities() != null) {
+            user.setAuthorities( AuthorityMapper.mapToModel(userPrivateDto.getAuthorities()));
         }
         return user;
     }

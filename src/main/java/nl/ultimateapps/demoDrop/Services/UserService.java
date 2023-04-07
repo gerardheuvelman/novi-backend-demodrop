@@ -1,13 +1,14 @@
 package nl.ultimateapps.demoDrop.Services;
 
 import nl.ultimateapps.demoDrop.Dtos.input.UserInputDto;
-import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
 import nl.ultimateapps.demoDrop.Dtos.output.UserPublicDto;
 import nl.ultimateapps.demoDrop.Models.Authority;
 import nl.ultimateapps.demoDrop.Models.User;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public interface UserService {
@@ -15,15 +16,15 @@ public interface UserService {
 
     UserPublicDto getUserPublicDto(String username);
 
-    ArrayList<UserDto> getUserDtos(int limit);
+    ArrayList<UserPrivateDto> getUserPrivateDtos(int limit);
 
-    UserDto getUserDto(String username);
+    UserPrivateDto getUserPrivateDto(String username) ;
 
     boolean userExists(String username);
 
-    String createUser(UserDto userDto, String role);
+    String createUser(UserPrivateDto userPrivateDto, String role);
 
-    String updateUser(String username, UserDto userDto);
+    String updateUser(String username, UserPrivateDto userPrivateDto);
 
     String changePassword(String username, UserInputDto userInputDto);
 
@@ -31,13 +32,15 @@ public interface UserService {
 
     boolean deleteUser(String username) throws UserPrincipalNotFoundException;
 
+    int deleteAllUsers() throws UserPrincipalNotFoundException;
+
     Set<Authority> getAuthorities(String username);
 
     void addAuthority(String username, String authority);
 
     void removeAuthority(String username, String authority);
 
-    User updateExistingUser(User user, UserDto userDto);
+    User updateExistingUser(User user, UserPrivateDto userPrivateDto);
 
     void addAuthorityToUser(Authority authority, User user);
 
@@ -46,4 +49,6 @@ public interface UserService {
     boolean checkAccountStatus(String username);
 
     boolean setAccountStatus(String username, boolean desiredStatus);
+
+    int deleteSelectedUsers(List<String> usernames) throws UserPrincipalNotFoundException;
 }

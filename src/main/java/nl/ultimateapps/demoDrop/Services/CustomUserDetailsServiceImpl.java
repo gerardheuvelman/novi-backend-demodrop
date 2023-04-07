@@ -1,7 +1,10 @@
 package nl.ultimateapps.demoDrop.Services;
 
-import nl.ultimateapps.demoDrop.Dtos.output.UserDto;
+import nl.ultimateapps.demoDrop.Dtos.output.UserPrivateDto;
+import nl.ultimateapps.demoDrop.Helpers.mappers.AuthorityMapper;
 import nl.ultimateapps.demoDrop.Models.Authority;
+import nl.ultimateapps.demoDrop.Models.User;
+import nl.ultimateapps.demoDrop.Repositories.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,11 +24,15 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomU
     @Setter
     private UserServiceImpl userService;
 
+    @Getter
+    @Setter
+    private UserRepository userRepository;
+
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        UserDto userDto = userService.getUserDto(username);
-        String password = userDto.getPassword();
-        Set<Authority> authorities = userDto.getAuthorities();
+    public UserDetails loadUserByUsername(String username){
+        User user = userRepository.findById(username).get();
+        String password = user.getPassword();
+        Set<Authority> authorities = user.getAuthorities();
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Authority authority: authorities) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
